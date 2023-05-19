@@ -1,0 +1,27 @@
+def levenshtein(s1, s2, allow_substring=False):
+    """Return the Levenshtein distance between two strings.
+
+    The Levenshtein distance (a.k.a "edit difference") is the number of characters that need to be substituted,
+    inserted or deleted to transform s1 into s2.
+
+    Setting the `allow_substring` parameter to True allows s1 to be a
+    substring of s2, so that, for example, "hello" and "hello there" would have a distance of zero.
+
+    :param string s1: The first string
+    :param string s2: The second string
+    :param bool allow_substring: Whether to allow s1 to be a substring of s2
+    :returns: Levenshtein distance.
+    :rtype int
+    """
+    len1, len2 = len(s1), len(s2)
+    lev = []
+    for i in range(len1 + 1):
+        lev.append([0] * (len2 + 1))
+    for i in range(len1 + 1):
+        lev[i][0] = i
+    for j in range(len2 + 1):
+        lev[0][j] = 0 if allow_substring else j
+    for i in range(len1):
+        for j in range(len2):
+            lev[i + 1][j + 1] = min(lev[i][j + 1] + 1, lev[i + 1][j] + 1, lev[i][j] + (s1[i] != s2[j]))
+    return min(lev[len1]) if allow_substring else lev[len1][len2]

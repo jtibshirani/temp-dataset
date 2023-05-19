@@ -1,0 +1,5 @@
+def enqueue(self, data, priority=None):
+        if priority:
+            raise NotImplementedError('Task priorities are not supported by '
+                                      'this storage.')
+        self.conn.lpush(self.queue_key, data)

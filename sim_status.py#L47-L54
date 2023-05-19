@@ -1,0 +1,8 @@
+def get_description(status_code):
+    """
+    Get the description for a status code.
+    """
+    description = _descriptions.get(status_code)
+    if description is None:
+        description = 'code = %s (no description)' % str(status_code)
+    return description

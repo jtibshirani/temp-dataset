@@ -1,0 +1,30 @@
+def _set_observable(self, observable_name, new_value):
+        
+        ## check old value
+        if self._has_value(observable_name):
+            old_value = self.new_value(observable_name)
+            
+            ## set only if different value
+            must_set = np.any(new_value != old_value)
+            if must_set:
+                
+                ## if values are observable_names with observers call associated observers of sub observable_names
+                if isinstance(old_value, Observable) and isinstance(new_value, Observable):
+                    ## copy observer
+                    old_value.copy_observers_to(new_value)
+                    
+                    ## notify old observer
+                    old_value._notify_observers(observable_name=None, include_everything_observers=True)
+                    for observable_name in old_value._observers.keys():
+                        old_has_value = old_value._has_value(observable_name)
+                        new_has_value = new_value._has_value(observable_name)
+                        if old_has_value != new_has_value or (old_has_value and new_has_value and np.any(old_value._get_value(observable_name) != new_value._get_value(observable_name))):
+                            old_value._notify_observers(observable_name=observable_name, include_everything_observers=False)
+        else:
+            must_set = True
+        
+            
+        ## set new observable_name value and call observer
+        if must_set:
+            self._set_value(observable_name, new_value)
+            self._notify_observers(observable_name)

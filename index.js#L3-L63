@@ -1,0 +1,61 @@
+module.exports = function permutater(options){
+
+    const propType = Object.prototype.toString
+
+    if( propType.call(options) != '[object Object]' )
+        throw TypeError('options object required')
+
+    if( typeof options.length != 'number' )
+        throw TypeError('key length required')
+
+    if( propType.call(options.characters) != '[object Array]' &&
+        propType.call(options.charactersAt) != '[object Object]' )
+        throw TypeError('array of characters needed')
+
+    const characters = options.characters || []
+    const charactersAt = options.charactersAt || {}
+    const key_length = options.length
+    const limit = options.limit
+
+    let total_permutations = 1;
+
+    // calculate total permutations based on the provided characters set
+    for(let i = 0; i < key_length; i++){
+        if( charactersAt[i] ){
+            total_permutations *= charactersAt[i].length
+        }else{
+            total_permutations *= characters.length
+        }
+    }
+
+    // by default, warn about too many permutations
+    // 100,000 being a safe number
+    if( typeof options.warn == 'undefined' &&
+        total_permutations > 100000 &&
+        ( typeof limit == 'undefined' || limit > 100000) ){
+
+        console.warn('Permutation Warning: be aware that generating too many'+
+        ' permutations is an intensive task which can lead to memory overflow')
+        console.warn('Use options.limit to limit the number of results' +
+        ' and options.warn to turn off this warning')
+    }
+
+    // warn about limit vs total possible permutations
+    if( limit &&
+        total_permutations < limit &&
+        typeof options.warn == 'undefined' ){
+
+        console.warn('Permutation Warning: Your desired limit is greather'+
+        ' than the total possible permutations'+
+        ` ( total: ${total_permutations} < limit: ${limit}) `)
+
+        return generateAll(characters, charactersAt, key_length, '')
+    }
+
+    if( limit && limit == 1 ) return [generateOne(characters, charactersAt, key_length)]
+
+    if( limit ) return generateWithLimit(characters, charactersAt, key_length, limit)
+
+    // no limit, generate all
+    return generateAll(characters, charactersAt, key_length, '');
+}

@@ -1,0 +1,4 @@
+def _error_response(e):
+    res = make_response(e.urlencoded, e.status_code)
+    res.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    return res

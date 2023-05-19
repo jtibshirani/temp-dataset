@@ -1,0 +1,26 @@
+def fromEpoch(cls, epoch_time):
+
+        ''' a method for constructing a labDT object from epoch timestamp
+
+        :param epoch_time: number with epoch timestamp info
+        :return: labDT object
+        '''
+
+    # validate input
+        title = 'Epoch time input for labDT.fromEpoch'
+        if not isinstance(epoch_time, float) and not isinstance(epoch_time, int):
+            raise TypeError('\n%s must be an integer or float.' % title)
+
+    # construct labDT from epoch time
+        dT = datetime.utcfromtimestamp(epoch_time).replace(tzinfo=pytz.utc)
+        dt_kwargs = {
+            'year': dT.year,
+            'month': dT.month,
+            'day': dT.day,
+            'hour': dT.hour,
+            'minute': dT.minute,
+            'second': dT.second,
+            'microsecond': dT.microsecond,
+            'tzinfo': dT.tzinfo
+        }
+        return labDT(**dt_kwargs)

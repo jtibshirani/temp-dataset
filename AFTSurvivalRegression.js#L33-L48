@@ -1,0 +1,16 @@
+var AFTSurvivalRegression = function (uid) {
+        this.logger = Logger.getLogger("ml/regression/AFTSurvivalRegression_js");
+        var jvmObject;
+        if (arguments.length > 0) {
+            if (arguments[0] instanceof org.apache.spark.ml.regression.AFTSurvivalRegression) {
+                jvmObject = arguments[0];
+            } else {
+                jvmObject = new org.apache.spark.ml.regression.AFTSurvivalRegression(uid);
+            }
+        } else {
+            jvmObject = new org.apache.spark.ml.regression.AFTSurvivalRegression();
+        }
+
+        JavaWrapper.call(this, jvmObject);
+
+    };

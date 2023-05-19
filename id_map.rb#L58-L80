@@ -1,0 +1,23 @@
+def load(filename_or_io)
+		@entries.clear
+		open_io(filename_or_io, :read) do |io|
+			fuzzy = false
+			while true
+				begin
+					line = io.readline.strip
+					if line.empty?
+						fuzzy = false
+					elsif line == "# fuzzy"
+						fuzzy = true
+					elsif line !~ /\A#/
+						title, id = line.split("\t=>\t", 2)
+						add(title, id, fuzzy, false)
+						fuzzy = false
+					end
+				rescue EOFError
+					break
+				end
+			end
+		end
+		return self
+	end

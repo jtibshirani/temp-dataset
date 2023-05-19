@@ -1,0 +1,4 @@
+func (s *Socket) SetRecvTimeout(d time.Duration) error {
+	s.rto = d
+	return nil
+}

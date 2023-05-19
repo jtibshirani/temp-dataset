@@ -1,0 +1,11 @@
+def _sma_observable(observable_name, expected, function=None, param=None, value=None):
+    param = param or os.environ.get(observable_name)
+    if not param:
+        return
+    groups = parse_param(param) if not isinstance(param, list) else param
+    function = function or globals()['test_' + observable_name]
+    value = value or function(*groups)
+    name = function.__name__.replace('test_', '').replace('_', ' ').capitalize()
+    print('{}.name = "{} {}"'.format(observable_name, name, groups[1]))
+    print('{}.value = {}'.format(observable_name, value))
+    print('{}.expected = {}'.format(observable_name, expected))

@@ -1,0 +1,8 @@
+function parseDate(object, date) {
+  let dateString = date.toDateString()
+
+  object.day = dateString.split(' ')[0]
+  object.month = dateString.split(' ')[1]
+  object.monthDate = ordinal(date.getDate())
+  object.year = date.getFullYear()
+}

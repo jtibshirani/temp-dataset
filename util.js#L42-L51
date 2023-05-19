@@ -1,0 +1,10 @@
+function tsTimeToPTPTime (t) {
+  if (typeof t !== 'number') {
+    throw new TypeError(`Timestamp must be a number and provided value is ${typeof t}.`);
+  }
+  var epochTSDays = (Date.now() / tsDaysMS) | 0;
+  var ticksSinceEpoch = tsDay * epochTSDays + t;
+  var secondsSinceEpoch = ticksSinceEpoch / 90000;
+  var roundedSeconds = secondsSinceEpoch | 0;
+  return [ roundedSeconds, (secondsSinceEpoch - roundedSeconds) * 1000000000|0 ];
+}

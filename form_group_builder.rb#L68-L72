@@ -1,0 +1,5 @@
+def form_group_label_text(label)
+      text = label[:text] if label.is_a?(Hash)
+      text ||= label if label.is_a?(String)
+      text
+    end

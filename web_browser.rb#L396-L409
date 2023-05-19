@@ -1,0 +1,14 @@
+def check_checkbox(checkBoxName, values=nil)
+      if values
+        values.class == Array ? arys = values : arys = [values]
+        arys.each {|cbx_value|
+					if Watir::VERSION =~ /^1/ then		
+          	checkbox(:name, checkBoxName, cbx_value).set						
+					else
+          	checkbox(:name => checkBoxName, :value => cbx_value).set
+					end
+        }
+      else
+        checkbox(:name, checkBoxName).set
+      end
+    end

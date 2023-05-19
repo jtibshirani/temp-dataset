@@ -1,0 +1,41 @@
+return task.add(file_path, function(next)
+  {
+    //Read the file path
+    return json.read(file_path, function(error, data)
+    {
+      //Check the error
+      if(error)
+      {
+        //Check for not found error
+        if(error.code === 'ENOENT')
+        {
+          //File does not exists, initialize the data object
+          data = {};
+        }
+        else
+        {
+          //Next task
+          next();
+
+          //Another error -> call the callback with the error
+          return cb(error, null);
+        }
+      }
+
+      //Assign the new values
+      data = Object.assign(data, file_content);
+
+      //Add the document id
+      data._id = file_id;
+
+      //Save to the file
+      return json.write(file_path, data, function(error)
+      {
+        //Next task
+        next();
+
+        //Call the callback
+        return cb(error, data);
+      });
+    });
+  });

@@ -1,0 +1,9 @@
+def csv_to_json_other(row, data = {})
+      # The following fields are not present in the JSON API response but are in
+      # the All User Profiles report - they are included for completeness.
+      data['jobRole'] = row[5] || ''
+      data['lastLogin'] = row[8]
+      data['name'] = row[2] || ''
+      data['visibility'] = row[6] || ''
+      data
+    end

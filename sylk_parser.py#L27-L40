@@ -1,0 +1,14 @@
+def to_csv(self, fbuf, quotechar='"', delimiter=','):
+        csvwriter = csv.writer(
+            fbuf,
+            quotechar=quotechar,
+            delimiter=delimiter,
+            lineterminator="\n",
+            quoting=csv.QUOTE_ALL
+        )
+
+        if self.headers:
+            csvwriter.writerow(self.headers)
+
+        for line in self.sylk_handler.stream_rows():
+            csvwriter.writerow(line)

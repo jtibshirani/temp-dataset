@@ -1,0 +1,8 @@
+func log2Ceil(v uint32) uint {
+	var isNotPowerOfTwo uint = 1
+	// Golang doesn't know how to convert bool to int - branch required
+	if (v & (v - 1)) == 0 {
+		isNotPowerOfTwo = 0
+	}
+	return log2Floor(v) + isNotPowerOfTwo
+}

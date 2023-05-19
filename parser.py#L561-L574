@@ -1,0 +1,14 @@
+def html(self):
+        """
+        Render the test suite as a HTML report with links to errors first.
+        :return:
+        """
+
+        page = self.get_html_head()
+        page += "<body><h1>Test Report</h1>"
+        page += self.toc()
+        for suite in self.suites:
+            page += suite.html()
+        page += "</body></html>"
+
+        return page

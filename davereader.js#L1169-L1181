@@ -1,0 +1,13 @@
+function saveSubscriptionList (listname, xmltext, callback) {
+		var f = config.listsFolder + listname, now = new Date ();
+		fsSureFilePath (f, function () {
+			fs.writeFile (f, xmltext, function (err) {
+				if (err) {
+					myConsoleLog ("saveSubscriptionList: f == " + f + ", err.message == " + err.message);
+					}
+				if (callback !== undefined) {
+					callback ();
+					}
+				});
+			});
+		}

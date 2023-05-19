@@ -1,0 +1,20 @@
+def read_object
+      klass_name = read(cache: false)
+      klass = safe_const_get(klass_name)
+
+      object = klass.allocate
+      @object_cache << object
+
+      ivars = read_hash(cache: false)
+      ivars.each do |name, value|
+        if name[0] == '@'
+          object.instance_variable_set(name, value)
+        else
+          # MRI allows an object to have ivars that do not start from '@'
+          # https://github.com/ruby/ruby/blob/ab3a40c1031ff3a0535f6bcf26de40de37dbb1db/range.c#L1225
+          `object[name] = value`
+        end
+      end
+
+      object
+    end

@@ -1,0 +1,12 @@
+def to_json(self):
+        map = dict()
+        map["peer_pubkey"] = self.peer_pubkey
+        map["max_authorize"] = self.max_authorize
+        map["old_peerCost"] = self.old_peerCost
+        map["new_peer_cost"] = self.new_peer_cost
+        map["set_cost_view"] = self.set_cost_view
+        map["field1"] = self.field1
+        map["field2"] = self.field2
+        map["field3"] = self.field3
+        map["field4"] = self.field4
+        return map

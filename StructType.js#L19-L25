@@ -1,0 +1,7 @@
+type.read = function read (opts, parent) {
+      let val = readImpl(opts, parent)
+      for (let i = 0, l = mapRead.length; i < l; i++) {
+        val = mapRead[i].call(type, val)
+      }
+      return val
+    }

@@ -1,0 +1,8 @@
+func Dt14ForInts(yyyy, mm, dd, hr, mn, dy int) int64 {
+	sDt14 := fmt.Sprintf("%04d%02d%02d%02d%02d%02d", yyyy, mm, dd, hr, mn, dy)
+	iDt14, err := strconv.ParseInt(sDt14, 10, 64)
+	if err != nil {
+		panic(err)
+	}
+	return int64(iDt14)
+}

@@ -1,0 +1,114 @@
+func structFieldInfo(typ reflect.Type, f *reflect.StructField) (*fieldInfo, error) {
+	finfo := &fieldInfo{idx: f.Index}
+
+	// Split the tag from the xml namespace if necessary.
+	tag := f.Tag.Get("xml")
+	if i := strings.Index(tag, " "); i >= 0 {
+		finfo.xmlns, tag = tag[:i], tag[i+1:]
+	}
+
+	// Parse flags.
+	tokens := strings.Split(tag, ",")
+	if len(tokens) == 1 {
+		finfo.flags = fElement
+	} else {
+		tag = tokens[0]
+		for _, flag := range tokens[1:] {
+			switch flag {
+			case "attr":
+				finfo.flags |= fAttr
+			case "chardata":
+				finfo.flags |= fCharData
+			case "innerxml":
+				finfo.flags |= fInnerXml
+			case "comment":
+				finfo.flags |= fComment
+			case "any":
+				finfo.flags |= fAny
+			case "omitempty":
+				finfo.flags |= fOmitEmpty
+			case "typeattr":
+				finfo.flags |= fTypeAttr
+			}
+		}
+
+		// Validate the flags used.
+		valid := true
+		switch mode := finfo.flags & fMode; mode {
+		case 0:
+			finfo.flags |= fElement
+		case fAttr, fCharData, fInnerXml, fComment, fAny:
+			if f.Name == "XMLName" || tag != "" && mode != fAttr {
+				valid = false
+			}
+		default:
+			// This will also catch multiple modes in a single field.
+			valid = false
+		}
+		if finfo.flags&fMode == fAny {
+			finfo.flags |= fElement
+		}
+		if finfo.flags&fOmitEmpty != 0 && finfo.flags&(fElement|fAttr) == 0 {
+			valid = false
+		}
+		if !valid {
+			return nil, fmt.Errorf("xml: invalid tag in field %s of type %s: %q",
+				f.Name, typ, f.Tag.Get("xml"))
+		}
+	}
+
+	// Use of xmlns without a name is not allowed.
+	if finfo.xmlns != "" && tag == "" {
+		return nil, fmt.Errorf("xml: namespace without name in field %s of type %s: %q",
+			f.Name, typ, f.Tag.Get("xml"))
+	}
+
+	if f.Name == "XMLName" {
+		// The XMLName field records the XML element name. Don't
+		// process it as usual because its name should default to
+		// empty rather than to the field name.
+		finfo.name = tag
+		return finfo, nil
+	}
+
+	if tag == "" {
+		// If the name part of the tag is completely empty, get
+		// default from XMLName of underlying struct if feasible,
+		// or field name otherwise.
+		if xmlname := lookupXMLName(f.Type); xmlname != nil {
+			finfo.xmlns, finfo.name = xmlname.xmlns, xmlname.name
+		} else {
+			finfo.name = f.Name
+		}
+		return finfo, nil
+	}
+
+	// Prepare field name and parents.
+	parents := strings.Split(tag, ">")
+	if parents[0] == "" {
+		parents[0] = f.Name
+	}
+	if parents[len(parents)-1] == "" {
+		return nil, fmt.Errorf("xml: trailing '>' in field %s of type %s", f.Name, typ)
+	}
+	finfo.name = parents[len(parents)-1]
+	if len(parents) > 1 {
+		if (finfo.flags & fElement) == 0 {
+			return nil, fmt.Errorf("xml: %s chain not valid with %s flag", tag, strings.Join(tokens[1:], ","))
+		}
+		finfo.parents = parents[:len(parents)-1]
+	}
+
+	// If the field type has an XMLName field, the names must match
+	// so that the behavior of both marshalling and unmarshalling
+	// is straightforward and unambiguous.
+	if finfo.flags&fElement != 0 {
+		ftyp := f.Type
+		xmlname := lookupXMLName(ftyp)
+		if xmlname != nil && xmlname.name != finfo.name {
+			return nil, fmt.Errorf("xml: name %q in tag of %s.%s conflicts with name %q in %s.XMLName",
+				finfo.name, typ, f.Name, xmlname.name, ftyp)
+		}
+	}
+	return finfo, nil
+}

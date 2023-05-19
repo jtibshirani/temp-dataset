@@ -1,0 +1,20 @@
+def exists?(word, options=nil)
+      options = options || @options
+
+      return false unless word.is_a?(String)
+
+      word = word.dup
+      word.strip! if options[:strip_whitespace]
+
+      return false if word.empty?
+
+      if block? word
+        return false if options[:single_word_mode]
+        return block_exists? word
+      end
+      
+      return true if options[:ignore_numeric] && number?(word)
+      return false if options[:exclude_alphabet] && word.length == 1 && @alphabet_exclusion_list.include?(word.upcase)
+
+      valid_word? word
+    end

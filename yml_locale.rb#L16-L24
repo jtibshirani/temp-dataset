@@ -1,0 +1,9 @@
+def get_data
+      text = ''
+      
+      f = File.open(file_path, 'r')
+      f.each_line { |line| text += line }
+      f.close
+      
+      text
+    end

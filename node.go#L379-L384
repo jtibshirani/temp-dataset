@@ -1,0 +1,6 @@
+func (xmlNode *XmlNode) Parent() Node {
+	if C.xmlNodePtrCheck(unsafe.Pointer(xmlNode.Ptr.parent)) == C.int(0) {
+		return nil
+	}
+	return NewNode(unsafe.Pointer(xmlNode.Ptr.parent), xmlNode.Document)
+}

@@ -1,0 +1,8 @@
+def _serve_ready(self):
+		read_check = [self.__wakeup_fd]
+		for sub_server in self.sub_servers:
+			read_check.extend(sub_server.read_checkable_fds)
+		all_read_ready, _, _ = select.select(read_check, [], [])
+		for read_ready in all_read_ready:
+			if isinstance(read_ready, (_RequestEmbryo, http.server.HTTPServer)):
+				read_ready.serve_ready()

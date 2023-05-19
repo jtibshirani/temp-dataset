@@ -1,0 +1,18 @@
+def _output_paths(file)
+      input_file_dir = File.dirname(file)
+      file_name = _output_filename(file)
+      file_name = "#{file_name}.html" if _append_html_ext_to_output_path?(file_name)
+      input_file_dir = input_file_dir.gsub(Regexp.new("#{options[:input]}(\/){0,1}"), '') if options[:input]
+
+      if options[:output]
+        Array(options[:output]).map do |output_dir|
+          File.join(output_dir, input_file_dir, file_name)
+        end
+      else
+        if input_file_dir == ''
+          [file_name]
+        else
+          [File.join(input_file_dir, file_name)]
+        end
+      end
+    end

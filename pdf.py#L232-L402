@@ -1,0 +1,171 @@
+def make_pdf_from_html(
+        # Mandatory parameters:
+        on_disk: bool,
+        html: str,
+        # Disk options:
+        output_path: str = None,
+        # Shared options:
+        header_html: str = None,
+        footer_html: str = None,
+        wkhtmltopdf_filename: str = _WKHTMLTOPDF_FILENAME,
+        wkhtmltopdf_options: Dict[str, Any] = None,
+        file_encoding: str = "utf-8",
+        debug_options: bool = False,
+        debug_content: bool = False,
+        debug_wkhtmltopdf_args: bool = True,
+        fix_pdfkit_encoding_bug: bool = None,
+        processor: str = _DEFAULT_PROCESSOR) -> Union[bytes, bool]:
+    """
+    Takes HTML and either returns a PDF in memory or makes one on disk.
+
+    For preference, uses ``wkhtmltopdf`` (with ``pdfkit``):
+
+    - faster than ``xhtml2pdf``
+    - tables not buggy like ``Weasyprint``
+    - however, doesn't support CSS Paged Media, so we have the
+      ``header_html`` and ``footer_html`` options to allow you to pass
+      appropriate HTML content to serve as the header/footer (rather than
+      passing it within the main HTML).
+
+    Args:
+        on_disk: make file on disk (rather than returning it in memory)?
+
+        html: main HTML
+
+        output_path: if ``on_disk``, the output filename
+
+        header_html: optional page header, as HTML
+
+        footer_html: optional page footer, as HTML
+
+        wkhtmltopdf_filename: filename of the ``wkhtmltopdf`` executable
+
+        wkhtmltopdf_options: options for ``wkhtmltopdf``
+
+        file_encoding: encoding to use when writing the header/footer to disk
+
+        debug_options: log ``wkhtmltopdf`` config/options passed to ``pdfkit``?
+
+        debug_content: log the main/header/footer HTML?
+
+        debug_wkhtmltopdf_args: log the final command-line arguments to
+            that will be used by ``pdfkit`` when it calls ``wkhtmltopdf``?
+
+        fix_pdfkit_encoding_bug: attempt to work around bug in e.g.
+            ``pdfkit==0.5.0`` by encoding ``wkhtmltopdf_filename`` to UTF-8
+            before passing it to ``pdfkit``? If you pass ``None`` here, then
+            a default value is used, from
+            :func:`get_default_fix_pdfkit_encoding_bug`.
+
+        processor: a PDF processor type from :class:`Processors`
+
+    Returns:
+        the PDF binary as a ``bytes`` object
+
+    Raises:
+        AssertionError: if bad ``processor``
+        RuntimeError: if requested processor is unavailable
+
+    """
+    wkhtmltopdf_options = wkhtmltopdf_options or {}  # type: Dict[str, Any]
+    assert_processor_available(processor)
+
+    if debug_content:
+        log.debug("html: {}", html)
+        log.debug("header_html: {}", header_html)
+        log.debug("footer_html: {}", footer_html)
+
+    if fix_pdfkit_encoding_bug is None:
+        fix_pdfkit_encoding_bug = get_default_fix_pdfkit_encoding_bug()
+
+    if processor == Processors.XHTML2PDF:
+
+        if on_disk:
+            with open(output_path, mode='wb') as outfile:
+                # noinspection PyUnresolvedReferences
+                xhtml2pdf.document.pisaDocument(html, outfile)
+            return True
+        else:
+            memfile = io.BytesIO()
+            # noinspection PyUnresolvedReferences
+            xhtml2pdf.document.pisaDocument(html, memfile)
+            # ... returns a document, but we don't use it, so we don't store it
+            # to stop pychecker complaining
+            # http://xhtml2pdf.appspot.com/static/pisa-en.html
+            memfile.seek(0)
+            return memfile.read()
+            # http://stackoverflow.com/questions/3310584
+
+    elif processor == Processors.WEASYPRINT:
+
+        if on_disk:
+            return weasyprint.HTML(string=html).write_pdf(output_path)
+        else:
+            # http://ampad.de/blog/generating-pdfs-django/
+            return weasyprint.HTML(string=html).write_pdf()
+
+    elif processor == Processors.PDFKIT:
+
+        # Config:
+        if not wkhtmltopdf_filename:
+            config = None
+        else:
+            if fix_pdfkit_encoding_bug:  # needs to be True for pdfkit==0.5.0
+                log.debug("Attempting to fix bug in pdfkit (e.g. version 0.5.0)"
+                          " by encoding wkhtmltopdf_filename to UTF-8")
+                config = pdfkit.configuration(
+                    wkhtmltopdf=wkhtmltopdf_filename.encode('utf-8'))
+                # the bug is that pdfkit.pdfkit.PDFKit.__init__ will attempt to
+                # decode the string in its configuration object;
+                # https://github.com/JazzCore/python-pdfkit/issues/32
+            else:
+                config = pdfkit.configuration(wkhtmltopdf=wkhtmltopdf_filename)
+
+        # Temporary files that a subprocess can read:
+        #   http://stackoverflow.com/questions/15169101
+        # wkhtmltopdf requires its HTML files to have ".html" extensions:
+        #   http://stackoverflow.com/questions/5776125
+        h_filename = None
+        f_filename = None
+        try:
+            if header_html:
+                h_fd, h_filename = tempfile.mkstemp(suffix='.html')
+                os.write(h_fd, header_html.encode(file_encoding))
+                os.close(h_fd)
+                wkhtmltopdf_options["header-html"] = h_filename
+            if footer_html:
+                f_fd, f_filename = tempfile.mkstemp(suffix='.html')
+                os.write(f_fd, footer_html.encode(file_encoding))
+                os.close(f_fd)
+                wkhtmltopdf_options["footer-html"] = f_filename
+            if debug_options:
+                log.debug("wkhtmltopdf config: {!r}", config)
+                log.debug("wkhtmltopdf_options: {}",
+                          pformat(wkhtmltopdf_options))
+            kit = pdfkit.pdfkit.PDFKit(html, 'string', configuration=config,
+                                       options=wkhtmltopdf_options)
+
+            if on_disk:
+                path = output_path
+            else:
+                path = None
+                # With "path=None", the to_pdf() function directly returns
+                # stdout from a subprocess.Popen().communicate() call (see
+                # pdfkit.py). Since universal_newlines is not set, stdout will
+                # be bytes in Python 3.
+
+            if debug_wkhtmltopdf_args:
+                log.debug("Probable current user: {!r}", getpass.getuser())
+                log.debug("wkhtmltopdf arguments will be: {!r}",
+                          kit.command(path=path))
+
+            return kit.to_pdf(path=path)
+
+        finally:
+            if h_filename:
+                os.remove(h_filename)
+            if f_filename:
+                os.remove(f_filename)
+
+    else:
+        raise AssertionError("Unknown PDF engine")

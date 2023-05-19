@@ -1,0 +1,6 @@
+networkInterfaces[interfaceName].forEach(function (ipAddressInfo) {
+                    // if this is an IPv4 address, and if it is not a non-loopback address, add it to our list of IPv4 network interface addresses
+                    if (ipAddressInfo.family === "IPv4" && ipAddressInfo.address != "127.0.0.1" && ipAddressInfo.internal === false) {
+                        ipv4NetworkInterfaceAddresses.push({'ipv4Address': ipAddressInfo.address, 'netmask': ipAddressInfo.netmask});
+                    }
+                });

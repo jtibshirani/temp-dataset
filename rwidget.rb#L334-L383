@@ -1,0 +1,50 @@
+def get_attrib str
+        return FFI::NCurses::A_NORMAL unless str
+        # next line allows us to do a one time conversion and keep the value
+        #  in the same variable
+        if str.is_a? Integer
+          if [
+            FFI::NCurses::A_BOLD,
+            FFI::NCurses::A_REVERSE,    
+            FFI::NCurses::A_NORMAL,
+            FFI::NCurses::A_UNDERLINE,
+            FFI::NCurses::A_STANDOUT,    
+            FFI::NCurses::A_DIM,    
+            FFI::NCurses::A_BOLD | FFI::NCurses::A_REVERSE,    
+            FFI::NCurses::A_BOLD | FFI::NCurses::A_UNDERLINE,    
+            FFI::NCurses::A_REVERSE | FFI::NCurses::A_UNDERLINE,    
+            FFI::NCurses::A_BLINK
+          ].include? str
+          return str
+          else
+            raise ArgumentError, "get_attrib got a wrong value: #{str} "
+          end
+        end
+
+
+        att = nil
+        str = str.downcase.to_sym if str.is_a? String
+        case str #.to_s.downcase
+        when :bold
+          att = FFI::NCurses::A_BOLD
+        when :reverse
+          att = FFI::NCurses::A_REVERSE    
+        when :normal
+          att = FFI::NCurses::A_NORMAL
+        when :underline
+          att = FFI::NCurses::A_UNDERLINE
+        when :standout
+          att = FFI::NCurses::A_STANDOUT
+        when :bold_reverse
+          att = FFI::NCurses::A_BOLD | FFI::NCurses::A_REVERSE
+        when :bold_underline
+          att = FFI::NCurses::A_BOLD | FFI::NCurses::A_UNDERLINE
+        when :dim
+          att = FFI::NCurses::A_DIM    
+        when :blink
+          att = FFI::NCurses::A_BLINK    # unlikely to work
+        else
+          att = FFI::NCurses::A_NORMAL
+        end
+        return att
+      end

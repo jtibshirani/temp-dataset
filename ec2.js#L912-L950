@@ -1,0 +1,39 @@
+}], function() {
+    var ip, address;
+    _.each(resourceRecordSets, function(recordSet) {
+      if (recordSet.Name === fqdn+'.' && recordSet.Type === 'A') {
+        if (recordSet.ResourceRecords && recordSet.ResourceRecords.length > 0) {
+          ip = recordSet.ResourceRecords[0].Value;
+        }
+      }
+    });
+
+    if (ip) {
+      _.each(addresses, function(address_) {
+        if (address_.PublicIp === ip) {
+          // address is our EIP
+          address = address_;
+        }
+      });
+
+      if (address) {
+        var aaParams = _.extend({ AllocationId : address.AllocationId, InstanceId : instanceId}, argv);
+
+        return raEc2.associateAddress(aaParams, context, function(err, result) {
+          if (err) { return die(err, callback, 'libEc2.assignFqdnToInstance.associateAddress'); }
+
+          return callback(err, result);
+        });
+      }
+
+      /* otherwise -- found IP, not address */
+      console.error("Found IP, not Address: "+ip+" maybe you want to add *****  --session=prod --acct=244406501905 --role=mobilewebassist *****");
+      _.each(addresses, function(address) {
+        console.error('address:', sg.inspect(address));
+      });
+      return callback(sg.toError("Found IP, not Address: "+ip+" maybe you want to add *****  --session=prod --acct=244406501905 --role=mobilewebassist *****"));
+    }
+
+    /* otherwise -- did not find IP address */
+    return callback(sg.toError("Did not find IP"+" maybe you want to add *****  --session=prod --acct=244406501905 --role=mobilewebassist *****"));
+  });

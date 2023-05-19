@@ -1,0 +1,7 @@
+transformComment: function(file, line, text, kind) {
+                    return [
+                        '<comment file="' + file.replace(/"/g, '"') + '" line="' + line + '" pattern="' + kind + '">',
+                        text,
+                        '</comment>',
+                    ];
+                },

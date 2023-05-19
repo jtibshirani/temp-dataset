@@ -1,0 +1,9 @@
+def print_diff(self, summary1=None, summary2=None):
+        """Compute diff between to summaries and print it.
+
+        If no summary is provided, the diff from the last to the current
+        summary is used. If summary1 is provided the diff from summary1
+        to the current summary is used. If summary1 and summary2 are
+        provided, the diff between these two is used.
+        """
+        summary.print_(self.diff(summary1=summary1, summary2=summary2))

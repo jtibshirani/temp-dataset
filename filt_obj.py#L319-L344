@@ -1,0 +1,26 @@
+def fuzzmatch(self, fuzzkey, multi=False):
+        """
+        Identify a filter by fuzzy string matching.
+
+        Partial ('fuzzy') matching performed by `fuzzywuzzy.fuzzy.ratio`
+
+        Parameters
+        ----------
+        fuzzkey : str
+            A string that partially matches one filter name more than the others.
+
+        Returns
+        -------
+        The name of the most closely matched filter. : str
+        """
+
+        keys, ratios = np.array([(f, seqm(None, fuzzkey, f).ratio()) for f in self.components.keys()]).T
+        mratio = max(ratios)
+
+        if multi:
+            return keys[ratios == mratio]
+        else:
+            if sum(ratios == mratio) == 1:
+                return keys[ratios == mratio][0]
+            else:
+                raise ValueError("\nThe filter key provided ('{:}') matches two or more filter names equally well:\n".format(fuzzkey) + ', '.join(keys[ratios == mratio]) + "\nPlease be more specific!")

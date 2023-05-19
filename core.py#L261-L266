@@ -1,0 +1,6 @@
+def no_data(self):
+        try:
+            empty = self.dfdata.empty
+        except AttributeError:
+            empty = True
+        return empty

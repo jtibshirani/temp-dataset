@@ -1,0 +1,58 @@
+def linear_regression(self, target, regression_length, mask=NotSpecified):
+        """
+        Construct a new Factor that performs an ordinary least-squares
+        regression predicting the columns of `self` from `target`.
+
+        This method can only be called on factors which are deemed safe for use
+        as inputs to other factors. This includes `Returns` and any factors
+        created from `Factor.rank` or `Factor.zscore`.
+
+        Parameters
+        ----------
+        target : zipline.pipeline.Term with a numeric dtype
+            The term to use as the predictor/independent variable in each
+            regression. This may be a Factor, a BoundColumn or a Slice. If
+            `target` is two-dimensional, regressions are computed asset-wise.
+        regression_length : int
+            Length of the lookback window over which to compute each
+            regression.
+        mask : zipline.pipeline.Filter, optional
+            A Filter describing which assets should be regressed with the
+            target slice each day.
+
+        Returns
+        -------
+        regressions : zipline.pipeline.factors.RollingLinearRegression
+            A new Factor that will compute linear regressions of `target`
+            against the columns of `self`.
+
+        Examples
+        --------
+        Suppose we want to create a factor that regresses AAPL's 10-day returns
+        against the 10-day returns of all other assets, computing each
+        regression over 30 days. This can be achieved by doing the following::
+
+            returns = Returns(window_length=10)
+            returns_slice = returns[sid(24)]
+            aapl_regressions = returns.linear_regression(
+                target=returns_slice, regression_length=30,
+            )
+
+        This is equivalent to doing::
+
+            aapl_regressions = RollingLinearRegressionOfReturns(
+                target=sid(24), returns_length=10, regression_length=30,
+            )
+
+        See Also
+        --------
+        :func:`scipy.stats.linregress`
+        :class:`zipline.pipeline.factors.RollingLinearRegressionOfReturns`
+        """
+        from .statistical import RollingLinearRegression
+        return RollingLinearRegression(
+            dependent=self,
+            independent=target,
+            regression_length=regression_length,
+            mask=mask,
+        )

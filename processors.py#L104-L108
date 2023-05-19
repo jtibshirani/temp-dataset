@@ -1,0 +1,5 @@
+def __call__(self, value):
+        for substring in self.substrings:
+            if value.endswith(substring):
+                return value[:-len(substring)]
+        return value

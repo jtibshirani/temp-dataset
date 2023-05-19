@@ -1,0 +1,7 @@
+def post_json(url, json = {})
+      body = json.to_json
+      headers = {
+        'Content-Type' => 'application/json',
+      }
+      http('post', url, body: body, headers: headers)
+    end

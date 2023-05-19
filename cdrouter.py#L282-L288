@@ -1,0 +1,7 @@
+def list(self, base, filter=None, type=None, sort=None, limit=None, page=None, format=None): # pylint: disable=redefined-builtin
+        if sort != None:
+            if not isinstance(sort, list):
+                sort = [sort]
+            sort = ','.join(sort)
+        return self.get(base, params={'filter': filter, 'type': type, 'sort': sort, 'limit': limit,
+                                      'page': page, 'format': format})

@@ -1,0 +1,7 @@
+def is_substr(find, strlist):
+    if len(strlist) < 1 and len(find) < 1:
+        return False
+    for i in range(len(strlist)):
+        if find not in strlist[i]:
+            return False
+    return True

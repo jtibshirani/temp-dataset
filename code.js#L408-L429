@@ -1,0 +1,22 @@
+Code.copyCode = function (copy) {
+  copy = {};
+  copy.jsTab = document.getElementById('tab_javascript');
+  copy.copyBtn = document.getElementById('copyCode');
+
+  copy.clipboard = new Clipboard('#copyCode');
+
+  copy.clipboard.on('success', function (e) {
+    copy.copyBtn.setAttribute('data-tooltip', 'Copied!!!');
+  });
+  copy.copyBtn.addEventListener('mouseleave', function () {
+    copy.copyBtn.setAttribute('data-tooltip', 'Copy to clipboard');
+  });
+
+  copy.jsTab.addEventListener('click', function () {
+    copy.copyBtn.style.display = 'table-cell';
+  });
+
+  document.getElementById('tab_blocks').addEventListener('click', function () {
+    copy.copyBtn.style.display = 'none';
+  });
+};

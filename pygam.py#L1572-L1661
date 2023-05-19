@@ -1,0 +1,90 @@
+def summary(self):
+        """produce a summary of the model statistics
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
+        if not self._is_fitted:
+            raise AttributeError('GAM has not been fitted. Call fit first.')
+
+        # high-level model summary
+        width_details = 47
+        width_results = 58
+
+        model_fmt = [
+            (self.__class__.__name__, 'model_details', width_details),
+            ('', 'model_results', width_results)
+            ]
+
+        model_details = []
+
+        objective = 'UBRE' if self.distribution._known_scale else 'GCV'
+
+        model_details.append({'model_details': space_row('Distribution:', self.distribution.__class__.__name__, total_width=width_details),
+                              'model_results': space_row('Effective DoF:', str(np.round(self.statistics_['edof'], 4)), total_width=width_results)})
+        model_details.append({'model_details': space_row('Link Function:', self.link.__class__.__name__, total_width=width_details),
+                              'model_results': space_row('Log Likelihood:', str(np.round(self.statistics_['loglikelihood'], 4)), total_width=width_results)})
+        model_details.append({'model_details': space_row('Number of Samples:', str(self.statistics_['n_samples']), total_width=width_details),
+                              'model_results': space_row('AIC: ', str(np.round(self.statistics_['AIC'], 4)), total_width=width_results)})
+        model_details.append({'model_results': space_row('AICc: ', str(np.round(self.statistics_['AICc'], 4)), total_width=width_results)})
+        model_details.append({'model_results': space_row(objective + ':', str(np.round(self.statistics_[objective], 4)), total_width=width_results)})
+        model_details.append({'model_results': space_row('Scale:', str(np.round(self.statistics_['scale'], 4)), total_width=width_results)})
+        model_details.append({'model_results': space_row('Pseudo R-Squared:', str(np.round(self.statistics_['pseudo_r2']['explained_deviance'], 4)), total_width=width_results)})
+
+        # term summary
+        data = []
+
+        for i, term in enumerate(self.terms):
+
+            # TODO bug: if the number of samples is less than the number of coefficients
+            # we cant get the edof per term
+            if len(self.statistics_['edof_per_coef']) == len(self.coef_):
+                idx = self.terms.get_coef_indices(i)
+                edof = np.round(self.statistics_['edof_per_coef'][idx].sum(), 1)
+            else:
+                edof = ''
+
+            term_data = {
+                        'feature_func': repr(term),
+                        'lam': '' if term.isintercept else np.round(flatten(term.lam), 4),
+                        'rank': '{}'.format(term.n_coefs),
+                        'edof': '{}'.format(edof),
+                        'p_value': '%.2e'%(self.statistics_['p_values'][i]),
+                        'sig_code': sig_code(self.statistics_['p_values'][i])
+                        }
+
+            data.append(term_data)
+
+        fmt = [
+            ('Feature Function', 'feature_func', 33),
+            ('Lambda', 'lam', 20),
+            ('Rank', 'rank', 12),
+            ('EDoF', 'edof', 12),
+            ('P > x', 'p_value', 12),
+            ('Sig. Code', 'sig_code', 12)
+            ]
+
+        print( TablePrinter(model_fmt, ul='=', sep=' ')(model_details) )
+        print("="*106)
+        print( TablePrinter(fmt, ul='=')(data) )
+        print("="*106)
+        print("Significance codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
+        print()
+        print("WARNING: Fitting splines and a linear function to a feature introduces a model identifiability problem\n" \
+              "         which can cause p-values to appear significant when they are not.")
+        print()
+        print("WARNING: p-values calculated in this manner behave correctly for un-penalized models or models with\n" \
+              "         known smoothing parameters, but when smoothing parameters have been estimated, the p-values\n" \
+              "         are typically lower than they should be, meaning that the tests reject the null too readily.")
+
+        # P-VALUE BUG
+        warnings.warn("KNOWN BUG: p-values computed in this summary are likely "\
+                      "much smaller than they should be. \n \n"\
+                      "Please do not make inferences based on these values! \n\n"\
+                      "Collaborate on a solution, and stay up to date at: \n"\
+                      "github.com/dswah/pyGAM/issues/163 \n", stacklevel=2)

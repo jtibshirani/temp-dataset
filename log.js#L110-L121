@@ -1,0 +1,12 @@
+function memoize (fn) {
+  const memoized = function (...parameters) {
+    const key = parameters[0]
+    if (memoizationCache.has(key)) {
+      return memoizationCache.get(key)
+    }
+    const result = fn.apply(null, parameters)
+    memoizationCache.set(key, result)
+    return result
+  }
+  return memoized
+}

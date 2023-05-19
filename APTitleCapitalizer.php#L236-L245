@@ -1,0 +1,10 @@
+protected function processWord($word)
+	{
+		if ($this->isStandardProtectedWord($word)) {
+			return $this->lowercaseWord($word);
+		}
+		if ($this->isCustomProtectedWord($word)) {
+			return $word;
+		}
+		return $this->capitalizeWord($word);
+	}

@@ -1,0 +1,9 @@
+def timestamp_serializer(self, date):
+        if not date:
+            return ''
+
+        # Any serialized timestamp should be localized, we need to
+        # convert to UTC before converting to string (DATE_FORMAT uses UTC)
+        date = date.astimezone(pytz.utc)
+
+        return date.strftime(DATE_FORMAT)

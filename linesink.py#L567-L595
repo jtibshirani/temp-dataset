@@ -1,0 +1,29 @@
+def initialize(self):
+        for ls in self.lslist:
+            ls.initialize()
+        # Same order for all elements in string
+        self.ncp = self.nls * self.lslist[0].ncp
+        self.nparam = self.nls * self.lslist[0].nparam
+        self.nunknowns = self.nparam
+        self.xls = np.empty((self.nls, 2))
+        self.yls = np.empty((self.nls, 2))
+        for i, ls in enumerate(self.lslist):
+            self.xls[i, :] = [ls.x1, ls.x2]
+            self.yls[i, :] = [ls.y1, ls.y2]
+        if self.aq is None:
+            self.aq = self.model.aq.find_aquifer_data(self.lslist[0].xc,
+                                                      self.lslist[0].yc)
+        self.parameters = np.zeros((self.nparam, 1))
+        # As parameters are only stored for the element not the list,
+        # we need to combine the following
+        self.xc = np.array([ls.xc for ls in self.lslist]).flatten()
+        self.yc = np.array([ls.yc for ls in self.lslist]).flatten()
+        self.xcin = np.array([ls.xcin for ls in self.lslist]).flatten()
+        self.ycin = np.array([ls.ycin for ls in self.lslist]).flatten()
+        self.xcout = np.array([ls.xcout for ls in self.lslist]).flatten()
+        self.ycout = np.array([ls.ycout for ls in self.lslist]).flatten()
+        self.cosnorm = np.array([ls.cosnorm for ls in self.lslist]).flatten()
+        self.sinnorm = np.array([ls.sinnorm for ls in self.lslist]).flatten()
+        self.aqin = self.model.aq.find_aquifer_data(self.xcin[0], self.ycin[0])
+        self.aqout = self.model.aq.find_aquifer_data(self.xcout[0],
+                                                     self.ycout[0])

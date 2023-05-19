@@ -1,0 +1,28 @@
+def _extract_zip(self, url, content, value):
+        zipinmemory = IO(content)
+        zcopied = 0
+        with zipfile.ZipFile(zipinmemory) as zipf:
+            progress_logger.debug('%d files in zip archive', len(zipf.namelist()))
+
+            for filepath in zipf.namelist():
+                if filepath.endswith('/'):
+                    continue
+                regex_pattern, targets = None, None
+                for r, t in value.items():
+                    if re.match(r, filepath):
+                        regex_pattern, targets = r, t
+                        break
+                if regex_pattern is None:
+                    progress_logger.debug('"%s" no target found', filepath)
+                elif targets is None:
+                    progress_logger.debug('"%s" skipping (regex: "%s")', filepath, regex_pattern)
+                else:
+                    if isinstance(targets, str):
+                        targets = [targets]
+                    for target in targets:
+                        new_path = self._file_path(filepath, target, regex=regex_pattern)
+                        progress_logger.debug('"%s" ➤ "%s" (regex: "%s")',
+                                              filepath, new_path.relative_to(self.download_root), regex_pattern)
+                        self._write(new_path, zipf.read(filepath), url)
+                        zcopied += 1
+        return zcopied

@@ -1,0 +1,7 @@
+function addFilter(filter) {
+        if (filter &&
+            typeof filter.inputFilter === 'function' &&
+            typeof filter.outputFilter === 'function') {
+            _filters.push(filter);
+        }
+    }

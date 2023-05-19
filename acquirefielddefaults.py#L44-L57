@@ -1,0 +1,14 @@
+def __call__(self, field):
+
+        acquire = getattr(field, 'acquire', True)
+        if acquire:
+            fieldname = getattr(field, 'acquire_fieldname', field.getName())
+            current = self.context
+            while hasattr(current, 'aq_parent'):
+                current = current.aq_parent
+                if IPloneSiteRoot.providedBy(current):
+                    break
+                if fieldname in current.Schema()._names:
+                    value = current.Schema()[fieldname].get(current)
+                    if value is not None:
+                        return value

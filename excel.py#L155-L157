@@ -1,0 +1,3 @@
+def save(self):
+        pyexcel_export.save_data(self.excel_filename, data=self.excel_raw, retain_meta=True,
+                                 created=self.created, modified=datetime.now().isoformat())

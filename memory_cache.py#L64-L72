@@ -1,0 +1,9 @@
+def _read_csv(self, csv_path):
+        logger.info("Reading Dataframe from %s", csv_path)
+        df = pd.read_csv(csv_path)
+        if 'seqname' in df:
+            # by default, Pandas will infer the type as int,
+            # then switch to str when it hits non-numerical
+            # chromosomes. Make sure whole column has the same type
+            df['seqname'] = df['seqname'].map(str)
+        return df

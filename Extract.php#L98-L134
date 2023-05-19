@@ -1,0 +1,37 @@
+public static function extractFile(Entry $entry)
+    {
+        if (null === self::$compression) {
+            self::$compression = array(
+                'bzip2' => function_exists('bzdecompress'),
+                'gzip' => function_exists('gzinflate'),
+            );
+        }
+
+        $reader = $entry->getArchive()->getReader();
+
+        $reader->seek($entry->getOffset());
+
+        $contents = $reader->read($entry->getCompressedSize());
+
+        if ($entry->isCompressed(Entry::BZ2)) {
+            if (!self::$compression['bzip2']) {
+                throw FileException::createUsingFormat(
+                    'The "bz2" extension is required to decompress "%s".',
+                    $entry->getName()
+                );
+            }
+
+            $contents = bzdecompress($contents);
+        } elseif ($entry->isCompressed(Entry::GZ)) {
+            if (!self::$compression['gzip']) {
+                throw FileException::createUsingFormat(
+                    'The "zlib" extension is required to decompress "%s".',
+                    $entry->getName()
+                );
+            }
+
+            $contents = gzinflate($contents);
+        }
+
+        return $contents;
+    }

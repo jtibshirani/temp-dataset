@@ -1,0 +1,5 @@
+def status_for(status)
+      code   = Rack::Utils.status_code(status || :ok)
+      status = "HTTP/1.1 #{code} #{Rack::Utils::HTTP_STATUS_CODES[code]}"
+      @dav.tag! "D:status", status
+    end

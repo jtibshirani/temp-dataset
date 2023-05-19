@@ -1,0 +1,9 @@
+def migrate(self, connection):
+        # use transactions
+        if connection.engine.name == 'sqlite':
+            self._migrate_sqlite(connection)
+        elif connection.engine.name == 'postgresql':
+            self._migrate_postgresql(connection)
+        else:
+            raise DatabaseMissingError(
+                'Do not know how to migrate {} engine.'.format(self.connection))

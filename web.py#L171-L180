@@ -1,0 +1,10 @@
+def get_html_source(self):
+        """Gets source page of url
+        :return: HTML source
+        """
+        req = urllib.request.Request(self.url)
+        req.add_header("user-agent", random.choice(USER_AGENTS))
+        req_text = urllib.request.urlopen(req).read()
+        self.source = str(req_text)
+        self.soup = BeautifulSoup(self.source, "html.parser")
+        return self.source

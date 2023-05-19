@@ -1,0 +1,9 @@
+function subscribeFn(_event, _conf, _map, _bus) {
+            var wayToListen = _conf.once ? '$once' : '$on';
+            var fn = _conf.handler ? _conf.handler.bind(this) : _conf.bind(this);
+
+            _map[_event]
+              ? _map[_event].push(fn)
+              : _map[_event] = [fn];
+            _bus[wayToListen](_event, fn);
+          }

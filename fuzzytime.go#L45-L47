@@ -1,0 +1,3 @@
+func FuzzyAfter(d, fuzz time.Duration) <-chan time.Time {
+	return time.After(FuzzyDuration(d, fuzz))
+}

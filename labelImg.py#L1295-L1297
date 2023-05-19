@@ -1,0 +1,3 @@
+def saveFileAs(self, _value=False):
+        assert not self.image.isNull(), "cannot save empty image"
+        self._saveFile(self.saveFileDialog())

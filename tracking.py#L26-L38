@@ -1,0 +1,13 @@
+def clean_file(filename):
+    f = open(filename, 'r')
+    new_lines = []
+    for line in f.readlines():
+        new_lines.append(line.rstrip())
+    f.close()
+
+    f = open(filename, 'w')
+    for line in new_lines:
+        f.write(line + '\n')
+
+
+    f.close()

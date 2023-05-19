@@ -1,0 +1,5 @@
+def local_to_utc(time)
+      time = sanitize(time)
+
+      (time - rule_for_local(time).rules.first[OFFSET_BIT]).utc
+    end

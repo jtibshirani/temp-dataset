@@ -1,0 +1,6 @@
+def custom_api_error(status, message, errors)
+      http_status_code = Rack::Utils.status_code(status)
+      title = Rack::Utils::HTTP_STATUS_CODES[http_status_code]
+      error_hash = {status: http_status_code, title: title, message: message, details: errors}
+      render json: error_hash.to_json, status: status
+    end

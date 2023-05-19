@@ -1,0 +1,29 @@
+public function setValue($value)
+	{
+		$this->value = $value;
+
+		if ( ! is_array($value) && ! $value instanceof \ArrayAccess)
+		{
+			$valueArray = [$value];
+		}
+		else
+		{
+			$valueArray = $value;
+		}
+
+		// Loop through the contents and make any checked that need to be
+		foreach ($this->getContents() as $checkbox)
+		{
+			$checkboxValue = $checkbox->getValue();
+			if (in_array($checkboxValue, $valueArray))
+			{
+				$checkbox->setChecked(true);
+			}
+			else
+			{
+				$checkbox->setChecked(false);
+			}
+		}
+
+		return $this;
+	}

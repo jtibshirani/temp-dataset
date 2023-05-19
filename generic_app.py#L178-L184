@@ -1,0 +1,7 @@
+def tear_down_logger(app_name):
+    logger = logging.getLogger(app_name)
+    # must have a copy of the handlers list since we cannot modify the original
+    # list while we're deleting items from that list
+    handlers = [x for x in logger.handlers]
+    for x in handlers:
+        logger.removeHandler(x)

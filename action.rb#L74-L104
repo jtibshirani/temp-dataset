@@ -1,0 +1,31 @@
+def connect_to(host, port, timeout = nil)
+      timeout = timeout && Float(timeout)
+      addr = Socket.getaddrinfo(host, nil, Socket::AF_INET)
+      sock = Socket.new(Socket.const_get(addr[0][0]), Socket::SOCK_STREAM, 0)
+      sock.setsockopt Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1
+
+      if timeout
+        secs = Integer(timeout)
+        usecs = Integer((timeout - secs) * 1_000_000)
+        optval = [secs, usecs].pack("l_2")
+        sock.setsockopt Socket::SOL_SOCKET, Socket::SO_RCVTIMEO, optval
+        sock.setsockopt Socket::SOL_SOCKET, Socket::SO_SNDTIMEO, optval
+
+        begin
+          sock.connect_nonblock(Socket.pack_sockaddr_in(port, addr[0][3]))
+        rescue Errno::EINPROGRESS
+          result = IO.select(nil, [sock], nil, timeout)
+          if result.nil?
+            raise ConnectionError.new(@svc.host, @svc.port)
+          end
+          begin
+            sock.connect_nonblock(Socket.pack_sockaddr_in(port, addr[0][3]))
+          rescue Errno::EISCONN
+          end
+        end
+      else
+        sock.connect(Socket.pack_sockaddr_in(port, addr[0][3]))
+      end
+
+      sock
+    end

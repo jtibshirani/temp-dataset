@@ -1,0 +1,12 @@
+func getRoutesFromRouteList(list map[string]interface{}) ([]interface{}, error) {
+	// Parse list of routes
+	kind, ok := list["kind"].(string)
+	if !ok || kind != "RouteList" {
+		return nil, errs.New("No route list returned from endpoint")
+	}
+	items, ok := list["items"].([]interface{})
+	if !ok {
+		return nil, errs.New("No list of routes in response")
+	}
+	return items, nil
+}

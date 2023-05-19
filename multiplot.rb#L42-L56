@@ -1,0 +1,15 @@
+def plot(term = nil, multiplot_part: false, **options)
+      plot_options = mix_options(options) do |plot_opts, mp_opts|
+        plot_opts.merge(multiplot: mp_opts.to_h)
+      end
+      terminal = term || (plot_options[:output] ? Terminal.new : own_terminal)
+      multiplot(terminal, plot_options)
+      if plot_options[:output]
+        # guaranteed wait for plotting to finish
+        terminal.close unless term
+        # not guaranteed wait for plotting to finish
+        # work bad with terminals like svg and html
+        sleep 0.01 until File.size?(plot_options[:output])
+      end
+      self
+    end

@@ -1,0 +1,87 @@
+def min_faktor(Mu, Sigma, k, gamma=1):
+
+    D = Mu.shape[0]
+    logS = np.zeros((D - 1,))
+    # mean time first moment
+    MP = np.zeros((D - 1,))
+
+    # precision, second moment
+    P = np.zeros((D - 1,))
+
+    M = np.copy(Mu)
+    V = np.copy(Sigma)
+    b = False
+    d = np.NaN
+    for count in range(50):
+        diff = 0
+        for i in range(D - 1):
+            l = i if  i < k else i + 1
+            try:
+                M, V, P[i], MP[i], logS[i], d = lt_factor(k, l, M, V,
+                                                        MP[i], P[i], gamma)
+            except Exception as e:
+                raise
+
+            if np.isnan(d):
+                break
+            diff += np.abs(d)
+        if np.isnan(d):
+            break
+        if np.abs(diff) < 0.001:
+            b = True
+            break
+    if np.isnan(d):
+        logZ = -np.Infinity
+        yield logZ
+        dlogZdMu = np.zeros((D, 1))
+        yield dlogZdMu
+
+        dlogZdMudMu = np.zeros((D, D))
+        yield dlogZdMudMu
+        dlogZdSigma = np.zeros((int(0.5 * (D * (D + 1))), 1))
+        yield dlogZdSigma
+        mvmin = [Mu[k], Sigma[k, k]]
+        yield mvmin
+    else:
+        # evaluate log Z:
+        C = np.eye(D) / sq2
+        C[k, :] = -1 / sq2
+        C = np.delete(C, k, 1)
+
+        R = np.sqrt(P.T) * C
+        r = np.sum(MP.T * C, 1)
+        mp_not_zero = np.where(MP != 0)
+        mpm = MP[mp_not_zero] * MP[mp_not_zero] / P[mp_not_zero]
+        mpm = sum(mpm)
+
+        s = sum(logS)
+        IRSR = (np.eye(D - 1) + np.dot(np.dot(R.T, Sigma), R))
+        rSr = np.dot(np.dot(r.T, Sigma), r)
+        A = np.dot(R, np.linalg.solve(IRSR, R.T))
+
+        A = 0.5 * (A.T + A)  # ensure symmetry.
+        b = (Mu + np.dot(Sigma, r))
+        Ab = np.dot(A, b)
+        try:
+            cIRSR = np.linalg.cholesky(IRSR)
+        except np.linalg.LinAlgError:
+            try:
+                cIRSR = np.linalg.cholesky(IRSR + 1e-10 * np.eye(IRSR.shape[0]))
+            except np.linalg.LinAlgError:
+                cIRSR = np.linalg.cholesky(IRSR + 1e-6 * np.eye(IRSR.shape[0]))
+        dts = 2 * np.sum(np.log(np.diagonal(cIRSR)))
+        logZ = 0.5 * (rSr - np.dot(b.T, Ab) - dts) + np.dot(Mu.T, r) + s - 0.5 * mpm
+        yield logZ
+        btA = np.dot(b.T, A)
+
+        dlogZdMu = r - Ab
+        yield dlogZdMu
+        dlogZdMudMu = -A
+        yield dlogZdMudMu
+        dlogZdSigma = -A - 2 * np.outer(r, Ab.T) + np.outer(r, r.T)\
+                    + np.outer(btA.T, Ab.T)
+        dlogZdSigma2 = np.zeros_like(dlogZdSigma)
+        np.fill_diagonal(dlogZdSigma2, np.diagonal(dlogZdSigma))
+        dlogZdSigma = 0.5 * (dlogZdSigma + dlogZdSigma.T - dlogZdSigma2)
+        dlogZdSigma = np.rot90(dlogZdSigma, k=2)[np.triu_indices(D)][::-1]
+        yield dlogZdSigma

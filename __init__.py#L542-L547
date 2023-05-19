@@ -1,0 +1,6 @@
+def check_checkbox(self, value):
+    """Check the checkbox with label (recommended), name or id."""
+    check_box = find_field(world.browser, 'checkbox', value)
+    assert check_box, "Cannot find checkbox '{}'.".format(value)
+    if not check_box.is_selected():
+        check_box.click()

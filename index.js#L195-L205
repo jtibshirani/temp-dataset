@@ -1,0 +1,11 @@
+_binomialCoverageInterval: function(distribution, coverageAlpha) {
+        if (distribution.numTrials < 1000) {
+            // don't even bother trying to optimize for small-ish sample sizes
+            return [0, distribution.numTrials];
+        } else {
+            return [
+                Math.floor(distribution.inverseCdf(coverageAlpha / 2)),
+                Math.ceil(distribution.inverseSurvival(coverageAlpha / 2))
+            ];
+        }
+    },

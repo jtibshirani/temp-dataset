@@ -1,0 +1,11 @@
+setup: function() {
+		if (this.observableOrList[onValueSymbol]) {
+			// if we have an observable value, listen to when it changes to get a
+			// new list.
+			canReflect.onValue(this.observableOrList, this.onList, "notify");
+			// listen on the current value (which shoudl be a list) if there is one
+			this.setupList(canReflect.getValue(this.observableOrList));
+		} else {
+			this.setupList(this.observableOrList);
+		}
+	},

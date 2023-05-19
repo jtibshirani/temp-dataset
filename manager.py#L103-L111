@@ -1,0 +1,9 @@
+def get_pid(self, id):
+        f = open(self.config[id]["pidfile"])
+        try:
+            pid = int(f.read().strip())
+        except ValueError:
+            print "Wrong PID format (int %s)" % self.config[id]["pidfile"]
+            sys.exit(1)
+        f.close()
+        return pid

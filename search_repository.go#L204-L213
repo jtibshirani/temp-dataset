@@ -1,0 +1,10 @@
+func getSearchQueryFromURLString(url string) string {
+	known, patternName := isKnownURL(url)
+	if known {
+		// this url is known to system
+		return getSearchQueryFromURLPattern(patternName, url)
+	}
+	// any URL other than our system's
+	// return url without protocol
+	return sanitizeURL(url) + ":*"
+}

@@ -1,0 +1,12 @@
+def serial_connect(self):
+		"""
+		Connect to the serial device.
+		"""
+		self.serial_get()
+		try:
+			self.serial_connection.start()
+		except c1218.errors.C1218IOError as error:
+			self.logger.error('serial connection has been opened but the meter is unresponsive')
+			raise error
+		self._serial_connected = True
+		return True

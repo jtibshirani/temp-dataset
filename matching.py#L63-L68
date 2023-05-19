@@ -1,0 +1,6 @@
+def best_item_from_list(item,options,fuzzy=90,fname_match=True,fuzzy_fragment=None,guess=False):
+    '''Returns just the best item, or ``None``'''
+    match = best_match_from_list(item,options,fuzzy,fname_match,fuzzy_fragment,guess)
+    if match:
+        return match[0]
+    return None

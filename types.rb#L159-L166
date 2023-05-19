@@ -1,0 +1,8 @@
+def to_time
+      if time?
+        time
+      else
+        # Convert dates to UTC time, not local time
+        Time.utc(date.year, date.month, date.day)
+      end
+    end

@@ -1,0 +1,7 @@
+func ConvertToString(in string) (string, error) {
+    if v, err := ConvertTo(String, in); err == nil {
+        return v.(string), nil
+    }else{
+        return ``, err
+    }
+}

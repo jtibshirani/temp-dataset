@@ -1,0 +1,22 @@
+def copy_table_indexes(from, to, rename = {}) #:nodoc:
+      indexes(from).each do |index|
+        name = index.name.downcase
+        if to == "altered_#{from}"
+          name = "temp_#{name}"
+        elsif from == "altered_#{to}"
+          name = name[5..-1]
+        end
+
+        to_column_names = columns(to).map(&:name)
+        columns = index.columns.map {|c| rename[c] || c }.select do |column|
+          to_column_names.include?(column)
+        end
+
+        unless columns.empty?
+          # index name can't be the same
+          opts = { :name => name.gsub(/(_?)(#{from})_/, "\\1#{to}_") }
+          opts[:unique] = true if index.unique
+          add_index(to, columns, opts)
+        end
+      end
+    end

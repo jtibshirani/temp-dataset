@@ -1,0 +1,6 @@
+def write list
+      csv_string = CSV.generate do |csv|
+        csv << list
+      end
+      print csv_string
+    end

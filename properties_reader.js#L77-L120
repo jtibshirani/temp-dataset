@@ -1,0 +1,44 @@
+module.exports = function(grunt) {
+
+  // Please see the Grunt documentation for more information regarding task
+  // creation: http://gruntjs.com/creating-tasks
+
+  grunt.registerMultiTask('properties', 
+    'Reads values from one or more Java style properties into the specified variable', 
+    function() {
+
+        var readFile = function(filename, readOptions) {
+            return grunt.file.exists(filename) && grunt.file.read(filename, readOptions);
+        };
+
+        // Merge task-specific and/or target-specific options with these defaults.
+        if (grunt.config.get(this.target)) {
+            grunt.log.error("Conflict - property, " + this.target + ", already exists in grunt config");
+            return false;
+        }
+
+        var filenames = convertToArray(this.data);
+
+        var parsed = {};
+        for (var i=0; i < filenames.length; i++) {
+
+          var filename = filenames[i];
+          var file = readFile(filename, this.options);
+
+          // Only require the first file ...
+          if (!file && i === 0) {
+              grunt.log.error("Could not read required properties file: " + filename);
+              return false;
+          } else if (!file) {
+              grunt.log.warn("Could not read optional properties file: " + filename);
+          }
+
+          parsed = merge(parsed, convertPropsToJson(file));
+
+       }
+
+       grunt.config.set(this.target, parsed);
+
+    });
+
+};

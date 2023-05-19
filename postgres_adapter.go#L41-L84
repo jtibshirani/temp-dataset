@@ -1,0 +1,44 @@
+func (adapter *PostgresAdapter) Open(dbURL string) (*sql.DB, error) {
+	db, err := sql.Open("postgres", dbURL)
+	if err != nil {
+		adapter.Log.Info("msg", "Error creating database connection", "err", err)
+		return nil, err
+	}
+
+	// if there is a supplied Schema
+	if adapter.Schema != "" {
+		if err = db.Ping(); err != nil {
+			adapter.Log.Info("msg", "Error opening database connection", "err", err)
+			return nil, err
+		}
+
+		var found bool
+
+		query := Cleanf(`SELECT EXISTS (SELECT 1 FROM pg_catalog.pg_namespace n WHERE n.nspname = '%s');`, adapter.Schema)
+		adapter.Log.Info("msg", "FIND SCHEMA", "query", query)
+
+		if err := db.QueryRow(query).Scan(&found); err == nil {
+			if !found {
+				adapter.Log.Warn("msg", "Schema not found")
+			}
+			adapter.Log.Info("msg", "Creating schema")
+
+			query = Cleanf("CREATE SCHEMA %s;", adapter.Schema)
+			adapter.Log.Info("msg", "CREATE SCHEMA", "query", query)
+
+			if _, err = db.Exec(query); err != nil {
+				if adapter.ErrorEquals(err, types.SQLErrorTypeDuplicatedSchema) {
+					adapter.Log.Warn("msg", "Duplicated schema")
+					return db, nil
+				}
+			}
+		} else {
+			adapter.Log.Info("msg", "Error searching schema", "err", err)
+			return nil, err
+		}
+	} else {
+		return nil, fmt.Errorf("no schema supplied")
+	}
+
+	return db, err
+}

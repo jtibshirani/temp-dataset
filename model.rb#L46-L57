@@ -1,0 +1,12 @@
+def optimize
+      # Ensure pending variables and constraints are added
+      update
+
+      # Run the solver and save the status for later
+      iocp = GLPK::IOCP.new
+      GLPK.glp_init_iocp iocp
+      iocp[:presolve] = GLPK::GLP_ON
+      status = GLPK.glp_intopt(@ptr, iocp)
+
+      save_solution status
+    end

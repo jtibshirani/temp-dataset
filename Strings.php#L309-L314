@@ -1,0 +1,6 @@
+public function htmle($type = ENT_COMPAT, $encode = 'UTF-8')
+    {
+        $this->string = htmlentities($this->string, $type, $encode);
+
+        return $this;
+    }

@@ -1,0 +1,6 @@
+def write_csv(filename, T, header = None):
+    with open(filename,'w') as fh:
+        csv_writer = csv.writer(fh, delimiter=',')
+        if header != None:
+            csv_writer.writerow(header)
+        [csv_writer.writerow(T[i]) for i in range(len(T))]

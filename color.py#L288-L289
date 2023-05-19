@@ -1,0 +1,2 @@
+def random_within(self, r):
+		return self.random.randint(int(r[0]), int(r[1]))

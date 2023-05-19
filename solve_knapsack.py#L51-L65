@@ -1,0 +1,15 @@
+def solve_expensive_items_first(capacity, items):
+    taken = [0]*len(items)
+    value = 0
+    weight = 0
+    taken = [0]*len(items)
+    sortedList = sorted(items, key=lambda dens: dens[1], reverse=True)
+    for item in sortedList:
+        #print ('item [' + str(item.index) + '] value = ' + str(item.value) + ', item.weight = ' + str(item.weight) + ' density = ' + str(item.density))
+        if weight + item.weight <= capacity:
+            taken[item.index] = 1
+            value += item.value
+            weight += item.weight
+            #print('Adding [' + str(item.index) + '],  value = ' + str(item.value) + ' wght = ' + str(item.weight) )
+
+    return value, taken

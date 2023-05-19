@@ -1,0 +1,32 @@
+def _from_binary_reparse(cls, binary_stream):
+    """See base class."""
+    ''' Reparse type flags - 4
+            Reparse tag - 4 bits
+            Reserved - 12 bits
+            Reparse type - 2 bits
+        Reparse data length - 2
+        Padding - 2
+    '''
+    #content = cls._REPR.unpack(binary_view[:cls._REPR.size])
+    reparse_tag, data_len = cls._REPR.unpack(binary_stream[:cls._REPR.size])
+
+    #reparse_tag (type, flags) data_len, guid, data
+    reparse_type = ReparseType(reparse_tag & 0x0000FFFF)
+    reparse_flags = ReparseFlags((reparse_tag & 0xF0000000) >> 28)
+    guid = None #guid exists only in third party reparse points
+    if reparse_flags & ReparseFlags.IS_MICROSOFT:#a microsoft tag
+        if reparse_type is ReparseType.SYMLINK:
+            data = SymbolicLink.create_from_binary(binary_stream[cls._REPR.size:])
+        elif reparse_type is ReparseType.MOUNT_POINT:
+            data = JunctionOrMount.create_from_binary(binary_stream[cls._REPR.size:])
+        else:
+            data = binary_stream[cls._REPR.size:].tobytes()
+    else:
+        guid = UUID(bytes_le=binary_stream[cls._REPR.size:cls._REPR.size+16].tobytes())
+        data = binary_stream[cls._REPR.size+16:].tobytes()
+
+    nw_obj = cls((reparse_type, reparse_flags, data_len, guid, data))
+
+    _MOD_LOGGER.debug("Attempted to unpack REPARSE_POINT from \"%s\"\nResult: %s", binary_stream.tobytes(), nw_obj)
+
+    return nw_obj

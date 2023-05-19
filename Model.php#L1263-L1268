@@ -1,0 +1,6 @@
+public static function htmlEncode($content, $doubleEncode = true)
+    {
+        $ci = & get_instance();
+        
+        return htmlspecialchars($content, ENT_QUOTES | ENT_SUBSTITUTE, $ci->config->item('charset') ? $ci->config->item('charset') : 'UTF-8', $doubleEncode);
+    }

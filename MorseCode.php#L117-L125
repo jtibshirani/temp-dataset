@@ -1,0 +1,9 @@
+public static function getWord($word)
+    {
+        $ctt = '';
+        for ($i=0; $i<strlen($word); $i++) {
+            $ctt .= self::getLetter($word{$i})
+                .str_pad(self::$SPACE_CHARACTER, self::$LETTERS_SPACING_LENGTH, self::$SPACE_CHARACTER);
+        }
+        return $ctt;
+    }

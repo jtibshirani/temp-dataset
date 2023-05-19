@@ -1,0 +1,22 @@
+def lookup(search_target, timeout)
+      UDPSocket.open do |socket|
+        # `sendto(2)` should automatically `bind(2)`.
+        socket.send(m_search_message(search_target), 0, MULTICAST_HOST, MULTICAST_PORT)
+
+        responses = []
+        begin
+          Timeout.timeout(timeout) do
+            loop do
+              # `recv(2)` may discard excess bytes for message based sockets such as `SOCK_DGRAM`
+              # when a message is too long and not fir in the given length and `MSG_PEEK` is not set.
+              # Thus, the entire message shall be read in a single operation.
+              payload, (_, port, host, _) = socket.recvfrom(4096)
+              responses << Response.new(host, port, payload)
+            end
+          end
+        rescue Timeout::Error
+        end
+
+        responses
+      end
+    end

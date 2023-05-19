@@ -1,0 +1,22 @@
+function plnorm(meanlog, sdlog, lowerTail, logp) {
+      var pnorm;
+
+      lowerTail = lowerTail !== false;
+      logp = logp === true;
+
+      if (utils.hasNaN(meanlog, sdlog) || sdlog < 0) {
+         return function() { return NaN; };
+      }
+
+      pnorm = normal.pnorm(meanlog, sdlog, lowerTail, logp);
+
+      return function(x) {
+         if (utils.hasNaN(x)) { return NaN; }
+         if (x <= 0) {
+            return lowerTail ? logp ? -Infinity : 0
+                             : logp ? 0 : 1;
+         }
+
+         return pnorm(Math.log(x));
+      };
+   }

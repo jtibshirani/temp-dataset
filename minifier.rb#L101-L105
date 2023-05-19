@@ -1,0 +1,5 @@
+def format_entities html, except={}
+      html = entities.encode(entities.decode(html), :basic)
+      except.each{|name, replace| html.gsub!(/&#{name};/, replace)}
+      html
+    end

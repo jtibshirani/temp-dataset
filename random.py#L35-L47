@@ -1,0 +1,13 @@
+def get_help(event):
+        args = [
+            "",
+            "start end",
+            "option1 {line-break} option2 [{line-break} option 3 ...]"
+        ]
+        description = (
+            "Without arguments, display a random float number in the range \[0, 1).\n\n"
+            "Add two integers separated by a space to get a random number in that range,"
+            " including both endpoints: \[start, end].\n\n"
+            "Put various options, each one in a different line to get one chosen randomly."
+        )
+        return CommandUsageMessage.get_usage_message(event.command, args, description)

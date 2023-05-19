@@ -1,0 +1,17 @@
+public static function getNonEmptyValues(array $values)
+    {
+        /*
+         * No values?
+         * Nothing to do
+         */
+        if (empty($values)) {
+            return null;
+        }
+
+        return array_filter($values, function ($value) {
+            $nonEmptyScalar = is_scalar($value) && '' !== $value;
+            $nonEmptyArray = is_array($value) && !empty($value);
+
+            return $nonEmptyScalar || $nonEmptyArray || is_object($value);
+        });
+    }

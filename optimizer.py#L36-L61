@@ -1,0 +1,26 @@
+def optimize(self, x0, f=None, df=None, f_df=None):
+        """
+        :param x0: initial point for a local optimizer.
+        :param f: function to optimize.
+        :param df: gradient of the function to optimize.
+        :param f_df: returns both the function to optimize and its gradient.
+        """
+        import scipy.optimize
+        if f_df is None and df is not None: f_df = lambda x: float(f(x)), df(x)
+        if f_df is not None:
+            def _f_df(x):
+                return f(x), f_df(x)[1][0]
+        if f_df is None and df is None:
+            res = scipy.optimize.fmin_l_bfgs_b(f, x0=x0, bounds=self.bounds,approx_grad=True, maxiter=self.maxiter)
+        else:
+            res = scipy.optimize.fmin_l_bfgs_b(_f_df, x0=x0, bounds=self.bounds, maxiter=self.maxiter)
+
+        ### --- We check here if the the optimizer moved. If it didn't we report x0 and f(x0) as scipy can return NaNs
+        if res[2]['task'] == b'ABNORMAL_TERMINATION_IN_LNSRCH':
+            result_x  = np.atleast_2d(x0)
+            result_fx =  np.atleast_2d(f(x0))
+        else:
+            result_x = np.atleast_2d(res[0])
+            result_fx = np.atleast_2d(res[1])
+
+        return result_x, result_fx

@@ -1,0 +1,4 @@
+def set_cookie2(request_uri, cookie_header_value)
+      cookie = Cookie.from_set_cookie2 request_uri, cookie_header_value
+      add_cookie cookie
+    end

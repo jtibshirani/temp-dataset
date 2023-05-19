@@ -1,0 +1,11 @@
+def findAPrime(a, b, k):
+    """Return a pseudo prime number roughly between a and b,
+    (could be larger than b). Raise ValueError if cannot find a
+    pseudo prime after 10 * ln(x) + 3 tries. """
+    x = random.randint(a, b)
+    for i in range(0, int(10 * math.log(x) + 3)):
+        if millerRabin(x, k):
+            return x
+        else:
+            x += 1
+    raise ValueError

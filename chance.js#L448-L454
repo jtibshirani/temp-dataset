@@ -1,0 +1,7 @@
+Chance.prototype.pad = function (number, width, pad) {
+        // Default pad to 0 if none provided
+        pad = pad || '0';
+        // Convert number to a string
+        number = number + '';
+        return number.length >= width ? number : new Array(width - number.length + 1).join(pad) + number;
+    };

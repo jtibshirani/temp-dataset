@@ -1,0 +1,7 @@
+def moon_phase(location)
+      response = get('astronomy', location)
+      {
+        age: response['moon_phase']['ageOfMoon'].to_i,
+        illumination: response['moon_phase']['percentIlluminated'].to_i
+      }
+    end

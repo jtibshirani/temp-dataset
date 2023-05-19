@@ -1,0 +1,13 @@
+def error_response(error, request = nil)
+      resp = {
+               'jsonrpc' => JSON_RPC_VERSION,
+               'error'   => error.to_h,
+             }
+      if !!request && request.has_key?('id')
+        resp['id'] = request['id'] 
+      else
+        resp['id'] = nil
+      end
+
+      resp
+    end

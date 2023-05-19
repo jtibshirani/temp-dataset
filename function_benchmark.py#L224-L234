@@ -1,0 +1,11 @@
+def _calc_benchmark_stat(self, f):
+        timer = Timer()
+        i = 0
+        while True:
+            f()
+            i += 1
+            if i >= self.min_run:
+                _, elapsed = timer.lap()
+                if elapsed > self.min_time:
+                    break
+        return BenchmarkStat(elapsed / i, i)

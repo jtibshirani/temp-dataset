@@ -1,0 +1,27 @@
+public function getPreferencesPane()
+    {
+        parent::getPreferencesPane();
+        $group = new XMLElement('fieldset');
+        $group->setAttribute('class', 'settings condensed pickable');
+        $group->setAttribute('id', 'sendmail');
+        $group->appendChild(new XMLElement('legend', __('Email: Sendmail')));
+
+        $div = new XMLElement('div');
+        $div->setAttribute('class', 'two columns');
+
+        $readonly = array('readonly' => 'readonly');
+
+        $label = Widget::Label(__('From Name'));
+        $label->setAttribute('class', 'column');
+        $label->appendChild(Widget::Input('settings[email_sendmail][from_name]', General::sanitize($this->_sender_name), 'text', $readonly));
+        $div->appendChild($label);
+
+        $label = Widget::Label(__('From Email Address'));
+        $label->setAttribute('class', 'column');
+        $label->appendChild(Widget::Input('settings[email_sendmail][from_address]', General::sanitize($this->_sender_email_address), 'text', $readonly));
+        $div->appendChild($label);
+
+        $group->appendChild($div);
+
+        return $group;
+    }

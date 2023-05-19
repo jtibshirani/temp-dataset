@@ -1,0 +1,17 @@
+function observableToPromise(observable) {
+  if (!isObservable(observable)) {
+    return observable;
+  }
+  return new Promise((resolve, reject) => {
+    const subscription = observable.subscribe(
+      v => {
+        resolve(v);
+        subscription.unsubscribe();
+      },
+      reject,
+      () => {
+        reject(new Error('no value resolved'));
+      },
+    );
+  });
+}

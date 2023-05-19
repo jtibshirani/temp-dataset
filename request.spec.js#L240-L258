@@ -1,0 +1,19 @@
+beforeEach(function (done) {
+					completeUrl = "http://localhost:" + portNumber + urlGet;
+
+					getSpy = sinon.spy(function (request, response) {
+						var receivedHeaders = {
+							"Content-Type": request.header("Content-Type"),
+							"Custom-Header": request.header("Custom-Header")
+						};
+						headersSpy(receivedHeaders);
+						response.send(responseData);
+					});
+
+					_libRequestJs2["default"].get.url(completeUrl).header("Content-Type", headers["Content-Type"]).header("Custom-Header", headers["Custom-Header"]).results(function (error, result) {
+						if (result) {
+							responseBodySpy(result.body);
+						}
+						done();
+					});
+				});

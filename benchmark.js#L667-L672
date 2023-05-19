@@ -1,0 +1,6 @@
+.add("4 calls (orientation change, require)", function() {
+    require("./dist/perf-tests/current").process(styles, portrait, Platform);
+    require("./dist/perf-tests/current").process(styles, landscape, Platform);
+    require("./dist/perf-tests/current").process(styles, portrait, Platform);
+    require("./dist/perf-tests/current").process(styles, landscape, Platform);
+  })

@@ -1,0 +1,12 @@
+def assert_checkbox_not_selected(checkbox_name)
+      @web_browser.checkboxes.each { |checkbox|
+				the_element_name = element_name(checkbox)
+        if (the_element_name == checkbox_name) then		
+	 				if is_selenium_element?(checkbox)
+          	perform_assertion {  assert(!checkbox.selected?, "Checkbox #{checkbox_name} is checked unexpectly") }			
+					else
+          	perform_assertion {  assert(!checkbox.set?, "Checkbox #{checkbox_name} is checked unexpectly") }
+					end
+        end
+      }
+    end

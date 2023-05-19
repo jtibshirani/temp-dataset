@@ -1,0 +1,8 @@
+def get_status
+      status = @http.aget(PredictionIO::AsyncRequest.new('/')).get
+      begin
+        status.body
+      rescue
+        status
+      end
+    end

@@ -1,0 +1,12 @@
+function updateConfusionMatrix(confusionMatrix, testLabels, predictedLabels, distinct) {
+
+                for (var i = 0; i < predictedLabels.length; i++) {
+                    const actualIdx = distinct.indexOf(testLabels[i]);
+                    const predictedIdx = distinct.indexOf(predictedLabels[i]);
+                    if (actualIdx < 0 || predictedIdx < 0) {
+                        // eslint-disable-next-line no-console
+                        console.warn(`ignore unknown predicted label ${predictedLabels[i]}`);
+                    }
+                    confusionMatrix[actualIdx][predictedIdx]++;
+                }
+            }

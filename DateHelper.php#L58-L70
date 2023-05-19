@@ -1,0 +1,13 @@
+public function format($date, $format)
+    {
+        if ($date instanceof \DateTimeInterface) {
+            return $date->format($format);
+        } elseif ($date instanceof \DateInterval) {
+            return $date->format($format);
+        } elseif ($date === 'now') {
+            return date($format);
+        } else {
+            $timestamp = (integer)$date;
+            return date($format, $timestamp);
+        }
+    }

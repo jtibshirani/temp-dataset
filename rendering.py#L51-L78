@@ -1,0 +1,28 @@
+def html_to_pdf(content, encoding="utf-8",
+                link_callback=fetch_resources, **kwargs):
+    """
+    Converts html ``content`` into PDF document.
+
+    :param unicode content: html content
+    :returns: PDF content
+    :rtype: :class:`bytes`
+    :raises: :exc:`~easy_pdf.exceptions.PDFRenderingError`
+    """
+    src = BytesIO(content.encode(encoding))
+    dest = BytesIO()
+
+    pdf = pisa.pisaDocument(src, dest, encoding=encoding,
+                            link_callback=link_callback, **kwargs)
+    if pdf.err:
+        logger.error("Error rendering PDF document")
+        for entry in pdf.log:
+            if entry[0] == xhtml2pdf.default.PML_ERROR:
+                logger_x2p.error("line %s, msg: %s, fragment: %s", entry[1], entry[2], entry[3])
+        raise PDFRenderingError("Errors rendering PDF", content=content, log=pdf.log)
+
+    if pdf.warn:
+        for entry in pdf.log:
+            if entry[0] == xhtml2pdf.default.PML_WARNING:
+                logger_x2p.warning("line %s, msg: %s, fragment: %s", entry[1], entry[2], entry[3])
+
+    return dest.getvalue()

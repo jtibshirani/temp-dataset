@@ -1,0 +1,35 @@
+function argSort(vectors, ascending) {
+  if (vectors.length !== ascending.length) {
+    throw new Error('length of "ascending" must match the number of ' +
+      'sort columns');
+  }
+  if (vectors.length === 0) {
+    return null;
+  }
+  var nRow = vectors[0].size();
+  var result = allocArray(nRow);
+  for (var i = 0; i < nRow; i++) {
+    result[i] = i;
+  }
+
+  // Create composite compare function
+  var compareFuncs = ascending.map(function(asc) {
+    return asc ? compare : compareReverse;
+  });
+  var compositeCompare = function(a, b) {
+    var result = 0;
+    for (var i = 0; i < compareFuncs.length; i++) {
+      var aValue = vectors[i].values[a];
+      var bValue = vectors[i].values[b];
+      result = compareFuncs[i](aValue, bValue);
+      if (result !== 0) {
+        return result;
+      }
+    }
+    // Order based on row index as last resort to ensure stable sorting
+    return compare(a, b);
+  };
+
+  result.sort(compositeCompare);
+  return result;
+}

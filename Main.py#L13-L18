@@ -1,0 +1,6 @@
+def func(X, y):
+    from sklearn.linear_model import LinearRegression
+    from sklearn.model_selection import cross_val_score
+    model = LinearRegression()
+    model.fit(X, y)
+    return model.predict(X)

@@ -1,0 +1,19 @@
+def from_file (filename):
+    """Parse cookie data from a text file in HTTP header format.
+
+    @return: list of tuples (headers, scheme, host, path)
+    """
+    entries = []
+    with open(filename) as fd:
+        lines = []
+        for line in fd.readlines():
+            line = line.rstrip()
+            if not line:
+                if lines:
+                    entries.append(from_headers("\r\n".join(lines)))
+                lines = []
+            else:
+                lines.append(line)
+        if lines:
+            entries.append(from_headers("\r\n".join(lines)))
+        return entries

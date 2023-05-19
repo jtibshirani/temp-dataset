@@ -1,0 +1,4 @@
+func (c *countContext) GroupBy(cols *Columns) CountGroupByClause {
+	(*selectContext)(c).GroupBy(cols)
+	return c
+}

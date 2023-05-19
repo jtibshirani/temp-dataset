@@ -1,0 +1,14 @@
+public function getPermutations(array $sourceDataSet, $subsetSize = null)
+    {
+        $combinationMap = $this->_combination->getCombinations($sourceDataSet, $subsetSize);
+        
+        $permutationsMap = [];
+        foreach ($combinationMap as $combination) {
+            $permutationsMap = array_merge(
+                $permutationsMap,
+                $this->_findPermutations($combination)
+            );
+        }
+        
+        return $permutationsMap;
+    }

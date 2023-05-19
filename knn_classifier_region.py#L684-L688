@@ -1,0 +1,5 @@
+def _getAccuracy(self):
+
+    n = self.confusion.shape[0]
+    assert n == self.confusion.shape[1], "Confusion matrix is non-square."
+    return self.confusion[range(n), range(n)].sum(), self.confusion.sum()

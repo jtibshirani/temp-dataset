@@ -1,0 +1,4 @@
+def save(self, filename, metadata={}, **data):
+        super(NumpyFile, self).save(filename, metadata, **data)
+        savefn = numpy.savez_compressed if self.compress else numpy.savez
+        savefn(self._savepath(filename), metadata=metadata, **data)

@@ -1,0 +1,3 @@
+func ViewportArrayvNV(first uint32, count int32, v *float32) {
+	C.glowViewportArrayvNV(gpViewportArrayvNV, (C.GLuint)(first), (C.GLsizei)(count), (*C.GLfloat)(unsafe.Pointer(v)))
+}

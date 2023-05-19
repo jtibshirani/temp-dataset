@@ -1,0 +1,12 @@
+func (p *setProxy) ArrayArray() ([][]interface{}, error) {
+	r := make([][]interface{}, len(p.values))
+	for i, v := range p.values {
+		switch v := v.(type) {
+		case []interface{}:
+			r[i] = v
+		default:
+			return nil, elementTypeError(p, i, Tarray, v)
+		}
+	}
+	return r, nil
+}

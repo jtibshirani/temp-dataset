@@ -1,0 +1,25 @@
+def conn(host=None, user=None, password=None, init_fun=None, reset=False):
+    """
+    Returns a persistent connection object to be shared by multiple modules.
+    If the connection is not yet established or reset=True, a new connection is set up.
+    If connection information is not provided, it is taken from config which takes the
+    information from dj_local_conf.json. If the password is not specified in that file
+    datajoint prompts for the password.
+
+    :param host: hostname
+    :param user: mysql user
+    :param password: mysql password
+    :param init_fun: initialization function
+    :param reset: whether the connection should be reset or not
+    """
+    if not hasattr(conn, 'connection') or reset:
+        host = host if host is not None else config['database.host']
+        user = user if user is not None else config['database.user']
+        password = password if password is not None else config['database.password']
+        if user is None:  # pragma: no cover
+            user = input("Please enter DataJoint username: ")
+        if password is None:  # pragma: no cover
+            password = getpass(prompt="Please enter DataJoint password: ")
+        init_fun = init_fun if init_fun is not None else config['connection.init_function']
+        conn.connection = Connection(host, user, password, init_fun)
+    return conn.connection

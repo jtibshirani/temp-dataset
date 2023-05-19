@@ -1,0 +1,27 @@
+def option_parser
+      @option_parser ||= OptionParser.new do |opts|
+        opts.banner = "Usage: urban_dictionary <word or phrase>"
+        opts.version = UrbanDictionary::VERSION
+
+        opts.on("-r", "--random", "Define a random word") do |r|
+          options[:random] = r
+        end
+
+        opts.on("-n", "--definitions=NUMBER", "Limit output to the first n definitions") do |n|
+          options[:limit] = begin
+            Integer(n)
+          rescue ArgumentError
+            raise OptionParser::InvalidArgument, "#{n} is not a valid number of definitions"
+          end
+        end
+
+        options[:format] = DEFAULT_FORMAT
+        opts.on("-f", "--format=FORMAT", "Output format (plain, json, definition)") do |f|
+          format = f.downcase.to_sym
+          unless UrbanDictionary::Formatter.registered.include?(format)
+            raise OptionParser::InvalidOption, "#{f} is not a valid format"
+          end
+          options[:format] = format
+        end
+      end
+    end

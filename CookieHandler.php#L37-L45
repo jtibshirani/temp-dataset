@@ -1,0 +1,9 @@
+public function &createCookie(string $name)
+    {
+        $cookie = new Cookie();
+        $cookie->setName($name);
+
+        $this->addCookie($cookie);
+
+        return $cookie;
+    }

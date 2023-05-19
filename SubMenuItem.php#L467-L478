@@ -1,0 +1,12 @@
+public function addExcelAction()
+    {
+        $options = array(
+            'class'  => 'excel',
+            //'rel'    => 'external',
+            'target' => null,
+            'title'  => $this->_('Export the current data set to Excel'),
+            //'type'   => 'application/vnd.ms-excel',
+        );
+
+        return $this->addActionButton($this->_('Excel export'), $this->get('privilege') . '.excel', 'excel', $options);
+    }

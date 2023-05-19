@@ -1,0 +1,6 @@
+def extract_substring_positions(text, substr)
+      positions = []
+      scanner = StringScanner.new(text)
+      positions << scanner.pos while scanner.scan(/(.*?)#{substr}/)
+      positions
+    end

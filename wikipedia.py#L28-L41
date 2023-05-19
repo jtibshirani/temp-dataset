@@ -1,0 +1,14 @@
+def compute_bridge_similarity(self, vec1, vec2):
+        EWP = 1 - np.multiply(vec1, vec2)
+
+        # not sure exactly how to sort the EWP vector
+        #EWP = sorted(EWP, reverse=True)
+        EWP = sorted(EWP, reverse=True)
+
+        k = 10
+        EWP = EWP[:k]
+
+        # The paper does not mention using logs but start to get into underflow
+        # issues multiplying so many decimal values
+        lEWP = -1 * np.log(EWP)
+        return 1/np.sum(lEWP)

@@ -1,0 +1,4 @@
+func executableNotExist() bool {
+	_, err := os.Stat(GetExecutablePath())
+	return os.IsNotExist(err)
+}

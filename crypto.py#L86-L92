@@ -1,0 +1,7 @@
+def encrypt(cls, data, key, iv_data):
+        validate_key_size(key, cls.key_size, "AES")
+
+        iv, ctr = iv_data
+        ciphertext = Crypto_AES.new(key, Crypto_AES.MODE_CTR,
+                                    counter=ctr).encrypt(data)
+        return iv + ciphertext

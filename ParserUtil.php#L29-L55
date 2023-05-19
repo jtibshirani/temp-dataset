@@ -1,0 +1,27 @@
+static function getHTMLTitle($website, $page = null)
+    {
+        if(self::isSameHost($website)){
+            $urlParts = parse_url($website);
+            if(isset($urlParts['path'])){
+                return $urlParts['path'];
+            } else {
+                return '/';
+            }
+        }
+
+        if($page == null){
+            $page = $website;
+        }
+        // Grab the HTML
+        $client = new Client([
+            'base_uri' => $website,
+        ]);
+        try {
+            $response = $client->get($page);
+        } catch (\Exception $e) {
+            return $website;
+        }
+        // Crawl the DOM tree
+        $crawler = new Crawler($response->getBody()->getContents());
+        return $crawler->filter('title')->first()->text();
+    }

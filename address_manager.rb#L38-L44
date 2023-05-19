@@ -1,0 +1,7 @@
+def first_available_address
+      ip = IPAddr.new(address_range).to_range.detect do |ip|
+        !allocated_addresses.include?(ip.to_s)
+      end
+      return ip.to_s if ip
+      raise AddressRangeExhausted, "No more addresses available in range #{address_range}"
+    end

@@ -1,0 +1,7 @@
+func (p chrPicker) pick() string {
+	if len(p) < 1 {
+		return ""
+	}
+	idx := rand.Intn(len(p))
+	return p[idx]
+}

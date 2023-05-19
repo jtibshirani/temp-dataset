@@ -1,0 +1,3 @@
+func FuzzySleep(d, fuzz time.Duration) {
+	time.Sleep(FuzzyDuration(d, fuzz))
+}

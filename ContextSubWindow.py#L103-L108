@@ -1,0 +1,6 @@
+def copy_request_to_clipboard(self):
+        txt = " ".join(self.context_model.request)
+        clipboard = app.clipboard()
+        clipboard.setText(txt)
+        with app.status("Copied request to clipboard"):
+            pass

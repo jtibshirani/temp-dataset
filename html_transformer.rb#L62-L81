@@ -1,0 +1,20 @@
+def replace_uris(html, &block)
+      block or raise ArgumentError, 'block must be given'
+
+      transform(html) { |doc|
+        doc.xpath(URI_ELEMENTS_XPATH).each { |element|
+          uri_attrs = URI_ATTRIBUTES[element.name] or next
+          uri_attrs.each { |name, format|
+            attr = element.attribute(name) or next
+            case format
+            when SINGLE
+              attr.value = block.call(attr.value.strip)
+            when MULTIPLE
+              attr.value = attr.value.gsub(/(\S+)/) { block.call($1) }
+            when COMMA_SEPARATED, SRCSET
+              attr.value = attr.value.gsub(/((?:\A|,)\s*)(\S+)/) { $1 + block.call($2) }
+            end
+          }
+        }
+      }
+    end

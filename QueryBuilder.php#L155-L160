@@ -1,0 +1,6 @@
+private function getFormattedDate(String $date, String $dbDateFormat)
+    {
+        $date = new Carbon($date);
+
+        return $date->format($dbDateFormat);
+    }

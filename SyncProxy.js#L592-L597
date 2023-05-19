@@ -1,0 +1,6 @@
+readConfig_CSV: function(config,callback,scope) {
+		this.readConfig(Ext.data.CSV,'csv',{},{},function(csv){
+			this.csv= csv;
+			callback.call(scope);
+		},this);
+	},

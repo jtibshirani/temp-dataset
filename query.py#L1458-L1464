@@ -1,0 +1,7 @@
+def process_id(self):
+        ret = ""
+        if thread:
+            f = getattr(os, 'getpid', None)
+            if f:
+                ret = str(f())
+        return ret

@@ -1,0 +1,23 @@
+public function setEnv($properties)
+    {
+        $envPath = app()->environmentFilePath();
+
+        $contents = File::get($envPath);
+        if(!$contents) {
+            throw new \Exception('Could not read env file');
+        }
+
+        foreach($properties as $key => $value){
+            // Env value must be set so the already loaded file reflect changes
+            $this->setEnvValue($key, $value);
+
+            // Change content
+            $contents = preg_replace('/' . $key . '=(.*)/', $key . '=' . $value, $contents);
+        }
+
+        if (File::put($envPath, $contents) === false) {
+            throw new \Exception('Could not write env file');
+        }
+
+        return true;
+    }

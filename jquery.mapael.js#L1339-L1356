@@ -1,0 +1,18 @@
+setPlotCoords: function(plot) {
+            var self = this;
+
+            if (plot.options.x !== undefined && plot.options.y !== undefined) {
+                plot.coords = {
+                    x: plot.options.x,
+                    y: plot.options.y
+                };
+            } else if (plot.options.plotsOn !== undefined && self.areas[plot.options.plotsOn] !== undefined) {
+                var areaBBox = self.areas[plot.options.plotsOn].mapElem.getBBox();
+                plot.coords = {
+                    x: areaBBox.cx,
+                    y: areaBBox.cy
+                };
+            } else {
+                plot.coords = self.mapConf.getCoords(plot.options.latitude, plot.options.longitude);
+            }
+        },

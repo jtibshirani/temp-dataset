@@ -1,0 +1,14 @@
+function getActualLineIndentText(line) {
+            let actualText = actualLineIndentTexts.get(line)
+            if (actualText === undefined) {
+                const lineText = getLineText(line)
+                const index = lineText.search(/\S/u)
+                if (index >= 0) {
+                    actualText = lineText.slice(0, index)
+                } else {
+                    actualText = lineText
+                }
+                actualLineIndentTexts.set(line, actualText)
+            }
+            return actualText
+        }

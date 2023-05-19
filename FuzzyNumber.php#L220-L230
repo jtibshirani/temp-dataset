@@ -1,0 +1,11 @@
+protected static function getKey(array $fuzzyNumbers, $K)
+    {
+        $R = [];
+        if (self::checkIfMassActionable($fuzzyNumbers, 2)) {
+            foreach ($fuzzyNumbers as $fuzzyNumber) {
+                array_push($R, $fuzzyNumber->$K());
+            }
+        }
+
+        return $R;
+    }

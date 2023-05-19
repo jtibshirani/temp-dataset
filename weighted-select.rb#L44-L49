@@ -1,0 +1,6 @@
+def extract_item
+      weight = Random.rand(@total_weight)
+      @weights.each do |range, item|
+        return item if range === weight
+      end
+    end

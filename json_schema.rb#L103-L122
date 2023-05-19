@@ -1,0 +1,20 @@
+def add_link_stats_to_json(json)
+      nodes_json = JSON.cd(json, %w(nodes))
+
+      @node_link_src_stats.each_pair do |type, hash|
+        JSON.cd(nodes_json, [type])['src_stats'] = hash.to_json
+      end
+
+      @node_link_dst_stats.each_pair do |type, hash|
+        JSON.cd(nodes_json, [type])['dst_stats'] = hash.to_json
+      end
+
+      edges_json = JSON.cd(json, %w(connections))
+      @edge_link_src_stats.each_pair do |type, hash|
+        JSON.cd(edges_json, [type])['src_stats'] = hash_to_json_array('to_dst', hash)
+      end
+
+      @edge_link_dst_stats.each_pair do |type, hash|
+        JSON.cd(edges_json, [type])['dst_stats'] = hash_to_json_array('from_src', hash)
+      end
+    end

@@ -1,0 +1,10 @@
+func (inliner *Inliner) parseHTML() error {
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(inliner.html))
+	if err != nil {
+		return err
+	}
+
+	inliner.doc = doc
+
+	return nil
+}

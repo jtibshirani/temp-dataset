@@ -1,0 +1,17 @@
+def copy(file,target)
+      begin
+        file_path = File.join(target,file.split('/').last)
+        if File.exist?(file_path)
+          #0 => Aynı Dosyadan Var
+          result = %w(false 0)
+        else
+          #Kopyalama İşlemini Gerçekleştir
+          FileUtils.cp_r(file,target)
+          thumbs({:file=>file, :target=>target, :type=>:copy})
+          result = %w(true)
+        end
+      rescue Exception => e
+        result =  ['false', '-1',e.to_s]
+      end
+      result
+    end

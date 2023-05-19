@@ -1,0 +1,35 @@
+def _plot_by_priority(self, priority, fmtos, initializing=False):
+        def update(fmto):
+            other_fmto = self._shared.get(fmto.key)
+            if other_fmto:
+                self.logger.debug("%s is shared with %s", fmto.key,
+                                  other_fmto.plotter.logger.name)
+                other_fmto.share(fmto, initializing=initializing)
+            # but if not, share them
+            else:
+                if initializing:
+                    self.logger.debug("Initializing %s", fmto.key)
+                    fmto.initialize_plot(fmto.value)
+                else:
+                    self.logger.debug("Updating %s", fmto.key)
+                    fmto.update(fmto.value)
+            try:
+                fmto.lock.release()
+            except RuntimeError:
+                pass
+
+        self._initializing = initializing
+
+        self.logger.debug(
+            "%s formatoptions with priority %i",
+            "Initializing" if initializing else "Updating", priority)
+
+        if priority >= START or priority == END:
+            for fmto in fmtos:
+                update(fmto)
+        elif priority == BEFOREPLOTTING:
+            for fmto in fmtos:
+                update(fmto)
+            self._make_plot()
+
+        self._initializing = False

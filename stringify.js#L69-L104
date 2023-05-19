@@ -1,0 +1,36 @@
+function stringifyString( v , runtime )
+{
+	var i = 0 , l = v.length , c ;
+	
+	// Faster on big string than stringifyStringLookup(), also big string are more likely to have at least one bad char
+	if ( l >= 200 ) { return stringifyStringRegex( v , runtime ) ; }
+	
+	// Most string are left untouched, so it's worth checking first if something must be changed.
+	// Gain 33% of perf on the whole stringify().
+	//*
+	for ( ; i < l ; i ++ )
+	{
+		c = v.charCodeAt( i ) ;
+		
+		if (
+			c <= 0x1f ||	// control chars
+			c === 0x5c ||	// backslash
+			c === 0x22		// double quote
+		)
+		{
+			if ( l > 100 )
+			{
+				stringifyStringLookup( v , runtime ) ;
+			}
+			else
+			{
+				stringifyStringRegex( v , runtime ) ;
+			}
+			
+			return ;
+		}
+	}
+	//*/
+	
+	runtime.str += '"' + v + '"' ;
+}

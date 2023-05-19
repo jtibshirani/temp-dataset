@@ -1,0 +1,52 @@
+def heatmap(dm, partition=None, cmap=CM.Blues, fontsize=10):
+    """ heatmap(dm, partition=None, cmap=CM.Blues, fontsize=10)
+    
+    Produce a 2D plot of the distance matrix, with values encoded by
+    coloured cells.
+
+    Args:
+        partition: treeCl.Partition object - if supplied, will reorder
+                   rows and columns of the distance matrix to reflect
+                   the groups defined by the partition
+        cmap: matplotlib colourmap object  - the colour palette to use
+        fontsize: int or None - sets the size of the locus lab
+
+    Returns:
+        matplotlib plottable object
+    """
+    assert isinstance(dm, DistanceMatrix)
+    datamax = float(np.abs(dm.values).max())
+    length = dm.shape[0]
+
+    if partition:
+        sorting = np.array(flatten_list(partition.get_membership()))
+        new_dm = dm.reorder(dm.df.columns[sorting])
+    else:
+        new_dm = dm
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    
+    ax.xaxis.tick_top()
+    ax.grid(False)
+
+    tick_positions = np.array(list(range(length))) + 0.5
+    if fontsize is not None:
+        ax.set_yticks(tick_positions)
+        ax.set_xticks(tick_positions)
+        ax.set_xticklabels(new_dm.df.columns, rotation=90, fontsize=fontsize, ha='center')
+        ax.set_yticklabels(new_dm.df.index, fontsize=fontsize, va='center')
+
+    cbar_ticks_at = [0, 0.5 * datamax, datamax]
+    
+    cax = ax.imshow(
+        new_dm.values,
+        interpolation='nearest',
+        extent=[0., length, length, 0.],
+        vmin=0,
+        vmax=datamax,
+        cmap=cmap,
+    )
+    cbar = fig.colorbar(cax, ticks=cbar_ticks_at, format='%1.2g')
+    cbar.set_label('Distance')
+    return fig

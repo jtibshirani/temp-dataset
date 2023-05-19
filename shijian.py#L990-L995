@@ -1,0 +1,6 @@
+def unique_list_elements(x):
+    unique_elements = []
+    for element in x:
+        if element not in unique_elements:
+            unique_elements.append(element)
+    return unique_elements

@@ -1,0 +1,6 @@
+def underscore_key(key)
+      k = key.to_s
+      k = k.gsub(%r{(#{pluralize_special_cases.join("|")})}, "\\1s")
+      k = underscore(k)
+      k.gsub(%r{^id_([a-zA-Z_]+?)(s\b|\b)$}, "\\1_id\\2")
+    end

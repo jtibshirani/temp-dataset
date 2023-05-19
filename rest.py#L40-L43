@@ -1,0 +1,4 @@
+def status_code(self):
+        http_error = self._http_error
+        if http_error is not None and hasattr(http_error, 'response'):
+            return http_error.response.status_code

@@ -1,0 +1,13 @@
+def distribution(roi=nil)
+      raise ArgumentError, "Invalid argument 'roi'. Expected ROI, got #{roi.class}." if roi && !roi.is_a?(ROI)
+      raise ArgumentError, "Invalid argument 'roi'. The specified ROI does not have the same StructureSet parent as this DoseVolume." if roi && roi.struct != @dose_series.plan.struct
+      if roi
+        # Extract a binary volume from the ROI, based on this DoseVolume:
+        bin_vol = roi.bin_volume(self)
+      else
+        # Create a binary volume which marks the entire dose volume:
+        bin_vol = BinVolume.from_volume(self)
+      end
+      # Create a DoseDistribution from the BinVolume:
+      dose_distribution = DoseDistribution.create(bin_vol)
+    end

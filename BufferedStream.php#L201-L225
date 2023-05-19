@@ -1,0 +1,25 @@
+public function read($length)
+    {
+        if (null === $this->resource) {
+            throw new \RuntimeException('Cannot read on a detached stream');
+        }
+
+        $read = '';
+
+        // First read from the resource
+        if (ftell($this->resource) !== $this->written) {
+            $read = fread($this->resource, $length);
+        }
+
+        $bytesRead = strlen($read);
+
+        if ($bytesRead < $length) {
+            $streamRead = $this->stream->read($length - $bytesRead);
+
+            // Write on the underlying stream what we read
+            $this->written += fwrite($this->resource, $streamRead);
+            $read .= $streamRead;
+        }
+
+        return $read;
+    }

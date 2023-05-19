@@ -1,0 +1,37 @@
+def _partition_keys_for_xml(self, o):
+        """Breaks o into four content type by key syntax:
+            attrib keys (start with '@'),
+            text (value associated with the '$' or None),
+            child element keys (all others)
+            meta element
+        """
+        ak = {}
+        tk = None
+        ck = {}
+        mc = {}
+        # _LOG.debug('o = {o}'.format(o=o))
+        for k, v in o.items():
+            if k.startswith('@'):
+                if k == '@xmlns':
+                    if '$' in v:
+                        ak['xmlns'] = v['$']
+                    for nsk, nsv in v.items():
+                        if nsk != '$':
+                            ak['xmlns:' + nsk] = nsv
+                else:
+                    s = k[1:]
+                    if isinstance(v, bool):
+                        v = u'true' if v else u'false'
+                    ak[s] = UNICODE(v)
+            elif k == '$':
+                tk = v
+            elif k.startswith('^') and (not self._migrating_from_bf):
+                s = k[1:]
+                val = _convert_hbf_meta_val_for_xml(s, v)
+                _add_value_to_dict_bf(mc, s, val)
+            elif (k == u'meta') and self._migrating_from_bf:
+                s, val = _convert_bf_meta_val_for_xml(v)
+                _add_value_to_dict_bf(mc, s, val)
+            else:
+                ck[k] = v
+        return ak, tk, ck, mc

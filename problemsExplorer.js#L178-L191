@@ -1,0 +1,14 @@
+problems.forEach(function(problem) {
+			//TODO: We may want to ask the validator always return line number later
+			if(!textModel) {//lazy creation of textModel
+				textModel = new mTextModel.TextModel(textContent);
+			}
+			if(typeof problem.line === "number") {
+				var lineIndex = problem.line - 1;
+				var lineStart = textModel.getLineStart(lineIndex);
+				problem.start = lineStart + problem.start - 1;
+				problem.end = lineStart + problem.end - 1;
+			} else {
+				problem.line = textModel.getLineAtOffset(problem.start) + 1;
+			}
+		});

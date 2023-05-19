@@ -1,0 +1,8 @@
+def dec2str(n):
+    """
+    decimal number to string.
+    """
+    s = hex(int(n))[2:].rstrip('L')
+    if len(s) % 2 != 0:
+        s = '0' + s
+    return hex2str(s)

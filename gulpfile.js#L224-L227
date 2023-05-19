@@ -1,0 +1,4 @@
+function prettifyJson(str) {
+    var json = JSON.parse(str);
+    return JSON.stringify(json, null, 2);
+}

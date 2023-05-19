@@ -1,0 +1,25 @@
+def parse_date(self, item, field_name, source_name):
+        """
+        Converts the date in the format: Thu 03.
+
+        As only the day is provided, tries to find the best match
+        based on the current date, considering that dates are on
+        the past.
+        """
+        # Get the current date
+        now = datetime.now().date()
+        # Get the date from the source
+        val = self.get_value(item, source_name)
+        week_day, day = val.split()
+        day = int(day)
+        # If the current date is minor than the item date
+        # go back one month
+        if now.day < day:
+            if now.month == 1:
+                now = now.replace(month=12, year=now.year-1)
+            else:
+                now = now.replace(month=now.month-1)
+        # Finally, replace the source day in the current date
+        # and return
+        now = now.replace(day=day)
+        return now

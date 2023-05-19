@@ -1,0 +1,3 @@
+def get_current(hour,minute)
+      PDate.min(ANY_DATE.year,ANY_DATE.month,CURRENT,hour,minute)
+  end

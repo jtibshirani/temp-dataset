@@ -1,0 +1,24 @@
+def timer(description='Operation', log=None):
+    """
+    Simple context manager which logs (if log is provided)
+    or prints the time taken in seconds for the block to complete.
+
+    >>> with timer():
+    ...    sleep(0.1)               # doctest:+ELLIPSIS
+    Operation took 0.1... seconds
+
+    >>> with timer('Sleeping'):
+    ...    sleep(0.2)               # doctest:+ELLIPSIS
+    Sleeping took 0.2... seconds
+
+    >>> with timer(description='Doing', log=PrintingLogger()):
+    ...    sleep(0.3)               # doctest:+ELLIPSIS
+    Doing took 0.3... seconds
+
+    """
+
+    start = time()
+    yield
+    elapsed = time() - start
+    message = '%s took %s seconds' % (description, elapsed)
+    (print if log is None else log.info)(message)

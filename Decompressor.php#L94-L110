@@ -1,0 +1,17 @@
+public static function ungzip( $content )
+	{
+		if( function_exists( 'gzdecode' ) )															//  if PHP method has been released
+			$content	= @gzdecode( $content );													//  use it to decompress the data
+		else																						//  otherwise: own implementation
+		{
+			$tmp	= tempnam( '/tmp', 'CMC' );														//  create temporary file
+			@file_put_contents( $tmp, $content );													//  store gzipped data
+			ob_start();																				//  open output buffer
+			readgzfile( $tmp );																		//  read the gzip file to std output
+			@unlink( $tmp );
+			$content	= ob_get_clean();															//  get decompressed data from output buffer
+		}
+		if( FALSE !== $content )																	//  gzencode could decompress
+			return $content;																			//  return decompressed data
+		throw new RuntimeException( 'Data not decompressable with gzdecode' );						//  throw exception
+	}

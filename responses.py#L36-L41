@@ -1,0 +1,6 @@
+def get_table(self):
+        database_name = self.parameters.get('DatabaseName')
+        table_name = self.parameters.get('Name')
+        table = self.glue_backend.get_table(database_name, table_name)
+
+        return json.dumps({'Table': table.as_dict()})

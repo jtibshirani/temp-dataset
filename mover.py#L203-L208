@@ -1,0 +1,6 @@
+def get_ip(self):
+        if self._ip is not None:
+            ret = self._ip
+        else:
+            ret = self.ip_addr
+        return ret

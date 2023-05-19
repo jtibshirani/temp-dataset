@@ -1,0 +1,17 @@
+public static function offsetToUtc(DateTime $value) : DateTime
+    {
+        $result = $value;
+
+        $dtz = $value->getTimezone();
+        if ($dtz->getName() === 'UTC') {
+            return $result;
+        }
+
+        $epoch = time();
+        $transitions = $dtz->getTransitions($epoch, $epoch);
+
+        $offset = $transitions[0]['offset'];
+        $result = $result->modify("-$offset seconds");
+
+        return $result;
+    }

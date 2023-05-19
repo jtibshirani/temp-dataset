@@ -1,0 +1,6 @@
+def aes_encrypt(key, data, mode='ECB', iv=None):
+    aes = AES()
+    aes.mode = mode
+    aes.iv = iv
+    aes.key = key
+    return aes.encrypt(data)

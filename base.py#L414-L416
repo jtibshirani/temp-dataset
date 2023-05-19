@@ -1,0 +1,3 @@
+def distinct(self, *args, **kwargs):
+        return CursorWrapper(
+            self.cursor.distinct(*args, **kwargs), self.instance)

@@ -1,0 +1,13 @@
+public static function parseJson($path)
+    {
+        if (true===@file_exists($path)) {
+            $ctt = file_get_contents($path);
+            if ($ctt!==false) {
+                $data = json_decode($ctt, true);
+                if ($data && !empty($data)) {
+                    return $data;
+                }
+            }
+        }
+        return false;
+    }

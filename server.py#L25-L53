@@ -1,0 +1,29 @@
+def maps_json():
+    """
+    Generates a json object which serves as bridge between
+    the web interface and the map source collection.
+
+    All attributes relevant for openlayers are converted into
+    JSON and served through this route.
+
+    Returns:
+        Response: All map sources as JSON object.
+    """
+    map_sources = {
+        id: {
+                "id": map_source.id,
+                "name": map_source.name,
+                "folder": map_source.folder,
+                "min_zoom": map_source.min_zoom,
+                "max_zoom": map_source.max_zoom,
+                "layers": [
+                    {
+                        "min_zoom": layer.min_zoom,
+                        "max_zoom": layer.max_zoom,
+                        "tile_url": layer.tile_url.replace("$", ""),
+                    } for layer in map_source.layers
+                    ]
+
+            } for id, map_source in app.config["mapsources"].items()
+        }
+    return jsonify(map_sources)

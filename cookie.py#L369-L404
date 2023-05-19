@@ -1,0 +1,36 @@
+def append_cookie(self, cookie, name, payload, typ, domain=None, path=None,
+                      timestamp="", max_age=0):
+        """
+        Adds a cookie to a SimpleCookie instance
+
+        :param cookie:
+        :param name:
+        :param payload:
+        :param typ:
+        :param domain:
+        :param path:
+        :param timestamp:
+        :param max_age:
+        :return:
+        """
+        timestamp = str(int(time.time()))
+
+        # create cookie payload
+        try:
+            _payload = "::".join([payload, timestamp, typ])
+        except TypeError:
+            _payload = "::".join([payload[0], timestamp, typ])
+
+        content = make_cookie_content(name, _payload, self.sign_key, domain=domain,
+                                      path=path, timestamp=timestamp,
+                                      enc_key=self.enc_key, max_age=max_age,
+                                      sign_alg=self.sign_alg)
+
+        for name, args in content.items():
+            cookie[name] = args['value']
+            for key, value in args.items():
+                if key == 'value':
+                    continue
+                cookie[name][key] = value
+
+        return cookie

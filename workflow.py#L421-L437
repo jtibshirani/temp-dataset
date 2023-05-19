@@ -1,0 +1,17 @@
+def _create_variable(orig_v, step, variables):
+    """Create a new output variable, potentially over-writing existing or creating new.
+    """
+    # get current variable, and convert to be the output of our process step
+    try:
+        v = _get_variable(orig_v["id"], variables)
+    except ValueError:
+        v = copy.deepcopy(orig_v)
+        if not isinstance(v["id"], six.string_types):
+            v["id"] = _get_string_vid(v["id"])
+    for key, val in orig_v.items():
+        if key not in ["id", "type"]:
+            v[key] = val
+    if orig_v.get("type") != "null":
+        v["type"] = orig_v["type"]
+    v["id"] = "%s/%s" % (step.name, get_base_id(v["id"]))
+    return v

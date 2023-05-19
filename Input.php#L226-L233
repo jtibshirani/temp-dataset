@@ -1,0 +1,8 @@
+public function cookie(Closure $callback = null)
+    {
+        if ($callback instanceof CookieInterface) {
+            return Cookie::create($callback);
+        }
+
+        return Cookie::create();
+    }

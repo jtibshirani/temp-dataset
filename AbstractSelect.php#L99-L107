@@ -1,0 +1,9 @@
+public function setReadonly($readonly)
+    {
+        if ($readonly) {
+            $this->setAttribute('readonly', 'readonly');
+        } else {
+            $this->removeAttribute('readonly');
+        }
+        return parent::setReadonly($readonly);
+    }

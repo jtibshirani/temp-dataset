@@ -1,0 +1,11 @@
+def add_sort_option(options, field, direction, prepend = false)
+      if driver == :mongo
+        sorting = (options[:sort] || []).dup
+        sort_params = [field, direction]
+        prepend ? sorting.unshift(sort_params) : sorting.push(sort_params)
+      else
+        sorting = (options[:sort] || {}).dup
+        prepend ? sorting = { field => direction }.merge(sorting) : sorting[field] = direction
+      end
+      options.store(:sort, sorting)
+    end

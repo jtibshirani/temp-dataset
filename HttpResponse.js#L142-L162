@@ -1,0 +1,21 @@
+HttpResponse.prototype.addCookie = function (name, value, expires, http_only, secure, domain, path) {
+    var cookie = undefined;
+    
+    if(typeof name === 'object') {
+        cookie = [name.name + '=' + name.value];
+        if(name.expires != undefined) cookie.push('Expires=' + name.expires);
+        if(name.http_only) cookie.push('HttpOnly');
+        if(name.secure) cookie.push('Secure');
+        if(name.domain != undefined) cookie.push('Domain=' + name.domain);
+        if(name.path != undefined) cookie.push('Path=' + name.path);
+    } else {
+        cookie = [name + '=' + value];
+        if(expires != undefined) cookie.push('Expires=' + expires);
+        if(http_only) cookie.push('HttpOnly');
+        if(secure) cookie.push('Secure');
+        if(domain != undefined) cookie.push('Domain=' + domain);
+        if(path != undefined) cookie.push('Path=' + path);  
+    }
+    
+    return this.appendHeader('Set-Cookie', cookie.join(';'));
+};

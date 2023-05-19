@@ -1,0 +1,6 @@
+def save_csv(self, csv_location):  # type: (str) -> None
+        """ Save the csv to a file """
+        with open(csv_location, 'w') as csv_handle:
+            writer = csv.writer(csv_handle)
+            for row in self.csv_data:
+                writer.writerow(row)

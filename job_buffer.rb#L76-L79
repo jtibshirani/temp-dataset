@@ -1,0 +1,4 @@
+def shift(priority = nil)
+      queue = priority_queues.fetch(priority) { raise Error, "not a permitted priority! #{priority}" }
+      queue.pop
+    end

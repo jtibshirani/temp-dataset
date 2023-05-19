@@ -1,0 +1,12 @@
+def convert_string_to_number(value):
+    """
+    Convert strings to numbers
+    """
+    if value is None:
+        return 1
+    if isinstance(value, int):
+        return value
+    if value.isdigit():
+        return int(value)
+    num_list = map(lambda s: NUMBERS[s], re.findall(numbers + '+', value.lower()))
+    return sum(num_list)

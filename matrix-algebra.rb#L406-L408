@@ -1,0 +1,3 @@
+def matrix(m = rsize, n = csize)
+    self.class.matrix(m, n){|i, j| yield i, j}
+  end

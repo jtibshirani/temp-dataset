@@ -1,0 +1,9 @@
+def read_file(fs, filename)
+      if fs.fileExists?(filename)
+        file_content = ""
+        fs.fileOpen(filename) { |fo| file_content = fo.read }
+        unless file_content.nil?
+          file_content.each_line { |line| yield(line.chomp) }
+        end
+      end
+    end

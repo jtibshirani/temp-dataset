@@ -1,0 +1,5 @@
+function prettyPrint(result) {
+  // Copy the result so we can mess with it
+  result = JSON.parse(JSON.stringify(result));
+  return result.errors.map(prettyPrintError).join("\n\n");
+}

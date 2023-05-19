@@ -1,0 +1,6 @@
+def get_parents(self, node):
+        parent = self.parents.get(node)
+        if parent == None:
+            return set()
+        else:
+            return {parent}

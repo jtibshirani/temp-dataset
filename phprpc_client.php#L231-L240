@@ -1,0 +1,10 @@
+function setEncryptMode($encryptMode) {
+        if (($encryptMode >= 0) && ($encryptMode <= 3)) {
+            $this->_encryptMode = (int)($encryptMode);
+            return true;
+        }
+        else {
+            $this->_encryptMode = 0;
+            return false;
+        }
+    }

@@ -1,0 +1,10 @@
+def __set_html(self, html=None):
+        """
+        Sets the html content in the View using given body.
+
+        :param html: Html content.
+        :type html: unicode
+        """
+
+        self.__html = self.__get_html(html)
+        self.__view.setHtml(self.__html)

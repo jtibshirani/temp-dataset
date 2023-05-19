@@ -1,0 +1,14 @@
+function Rest(httpClient, endpoint, useTraditionalUriTemplates) {
+    
+
+    this.defaults = {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    };
+
+    this.client = httpClient;
+    this.endpoint = endpoint;
+    this.useTraditionalUriTemplates = !!useTraditionalUriTemplates;
+  }

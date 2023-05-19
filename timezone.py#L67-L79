@@ -1,0 +1,13 @@
+def utc_epoch():
+    """
+    Gets the epoch in the users timezone
+    :return:
+    """
+
+    # pendulum utcnow() is not used as that sets a TimezoneInfo object
+    # instead of a Timezone. This is not pickable and also creates issues
+    # when using replace()
+    d = dt.datetime(1970, 1, 1)
+    d = d.replace(tzinfo=utc)
+
+    return d

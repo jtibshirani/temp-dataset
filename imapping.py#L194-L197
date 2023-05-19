@@ -1,0 +1,4 @@
+def lower(self):
+        new_string = IString(self._irc_lower(self))
+        new_string.set_std(self._std)
+        return new_string

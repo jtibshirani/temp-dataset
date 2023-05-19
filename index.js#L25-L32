@@ -1,0 +1,8 @@
+(function () {
+	for (var i in htmlEntities) {
+		var ent = String.fromCharCode(htmlEntities[i]);
+		htmlEntitiesMap[ent] = i;
+		htmlEntitiesRegExp += '|' + ent;
+	}
+	htmlEntitiesRegExp = new RegExp(htmlEntitiesRegExp.substr(1), 'g');
+})();

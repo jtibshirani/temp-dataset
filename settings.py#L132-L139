@@ -1,0 +1,8 @@
+def _getEnumValues(self, data):
+        """ Returns a list of dictionary of valis value for this setting. """
+        enumstr = data.attrib.get('enumValues')
+        if not enumstr:
+            return None
+        if ':' in enumstr:
+            return {self._cast(k): v for k, v in [kv.split(':') for kv in enumstr.split('|')]}
+        return enumstr.split('|')

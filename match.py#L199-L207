@@ -1,0 +1,9 @@
+def _find(self, node):
+        root = node
+        while root in self.parents:
+            root = self.parents[root]
+        while node in self.parents:
+            prev_node = node
+            node = self.parents[node]
+            self.parents[prev_node] = root
+        return root

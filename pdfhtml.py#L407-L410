@@ -1,0 +1,4 @@
+def _parsehtml(self):
+        parser = PDFHTMLParser()
+        parser.feed(self.htmltext)
+        self.commandlist = parser.get_commandlist()

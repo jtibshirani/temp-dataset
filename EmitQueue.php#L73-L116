@@ -1,0 +1,44 @@
+public function push($value): \Generator
+    {
+        while ($this->busy) {
+            if (null === $this->emitting) {
+                $this->emitting = new Delayed();
+            }
+
+            yield $this->emitting; // Prevent simultaneous emit.
+        }
+
+        $this->busy = true;
+
+        try {
+            if ($value instanceof Observable) {
+                if ($value === $this->observable) {
+                    throw new CircularEmitError('Cannot emit an observable within itself.');
+                }
+
+                $iterator = $value->getIterator();
+
+                while (yield from $iterator->isValid()) {
+                    yield $this->emit($iterator->getCurrent());
+                }
+
+                return $iterator->getReturn();
+            }
+
+            $value = yield $value; // Get resolution value of $value.
+
+            yield $this->emit($value);
+        } catch (\Throwable $exception) {
+            $this->fail($exception);
+            throw $exception;
+        } finally {
+            $this->busy = false;
+            if (null !== $this->emitting) {
+                $emitting = $this->emitting;
+                $this->emitting = null;
+                $emitting->resolve();
+            }
+        }
+
+        return $value;
+    }

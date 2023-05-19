@@ -1,0 +1,3 @@
+def _empty_stats(self):
+        return np.array([0.,np.zeros_like(self.mu_0),np.zeros_like(self.mu_0)],
+                dtype=np.object)

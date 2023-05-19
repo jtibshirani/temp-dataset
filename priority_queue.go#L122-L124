@@ -1,0 +1,3 @@
+func (pq *PriorityQueue) EnqueueString(priority uint8, value string) (*PriorityItem, error) {
+	return pq.Enqueue(priority, []byte(value))
+}

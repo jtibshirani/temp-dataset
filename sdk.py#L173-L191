@@ -1,0 +1,19 @@
+def extract_zip(zip_file_path):
+    """
+    Returns:
+        dict: Dict[str, DataFrame]
+    """
+    dfs = {}
+    with zipfile.ZipFile(zip_file_path, mode='r') as z_file:
+        names = z_file.namelist()
+        for name in names:
+            content = z_file.read(name)
+            _, tmp_file_path = tempfile.mkstemp()
+            try:
+                with open(tmp_file_path, 'wb') as tmp_file:
+                    tmp_file.write(content)
+
+                dfs[name] = joblib.load(tmp_file_path)
+            finally:
+                shutil.rmtree(tmp_file_path, ignore_errors=True)
+    return dfs

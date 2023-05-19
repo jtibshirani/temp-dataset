@@ -1,0 +1,18 @@
+public function chopWithRegex($regex, $submatchIndex = 0, $regexFlags = '')
+    {
+        $regex = $regex . 'ui' . $regexFlags; // unicode + case-insensitive
+        preg_match($regex, $this->str, $m);
+        $subset = (isset($m[$submatchIndex])) ? $m[$submatchIndex] : '';
+
+        if ($subset) {
+            $this->str = preg_replace($regex, ' ', $this->str, -1, $numReplacements);
+            if ($numReplacements > 1) {
+                throw new Exception('The regex being used to find the name has multiple matches.');
+            }
+            $this->norm();
+
+            return $subset;
+        } else {
+            return '';
+        }
+    }

@@ -1,0 +1,22 @@
+private function toDecimal(string $bytes) : string
+    {
+        $result = '0';
+        $power = '1';
+
+        for ($i = \strlen($bytes) - 1; $i >= 0; $i--) {
+            $index = \ord($bytes[$i]);
+
+            if ($index !== 0) {
+                $result = $this->add($result, ($index === 1)
+                    ? $power
+                    : $this->mul($power, (string) $index)
+                );
+            }
+
+            if ($i !== 0) {
+                $power = $this->mul($power, '256');
+            }
+        }
+
+        return $result;
+    }

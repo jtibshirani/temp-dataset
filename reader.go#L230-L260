@@ -1,0 +1,31 @@
+func (mr *mlReader) readTextNode() error {
+	var buf bytes.Buffer
+	for {
+		r, rc, err := mr.readRune()
+		switch {
+		case err != nil:
+			return err
+		case rc == rcEOF:
+			return errors.New(ErrReader, errorMessages, "unexpected end of file while reading a text node")
+		case rc == rcOpen || rc == rcClose:
+			mr.index--
+			mr.reader.UnreadRune()
+			return mr.builder.TextNode(buf.String())
+		case rc == rcEscape:
+			r, rc, err = mr.readRune()
+			switch {
+			case err != nil:
+				return err
+			case rc == rcEOF:
+				return errors.New(ErrReader, errorMessages, "unexpected end of file while reading a text node")
+			case rc == rcOpen || rc == rcClose || rc == rcEscape:
+				buf.WriteRune(r)
+			default:
+				msg := fmt.Sprintf("invalid character after escaping at index %d", mr.index)
+				return errors.New(ErrReader, errorMessages, msg)
+			}
+		default:
+			buf.WriteRune(r)
+		}
+	}
+}

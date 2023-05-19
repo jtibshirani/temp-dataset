@@ -1,0 +1,16 @@
+def master_distribution_point(refresh = false)
+      @master_distribution_point = nil if refresh
+      return @master_distribution_point if @master_distribution_point
+
+      all_dps = JSS::DistributionPoint.all refresh, api: self
+
+      @master_distribution_point =
+        case all_dps.size
+        when 0
+          raise JSS::NoSuchItemError, 'No distribution points defined'
+        when 1
+          JSS::DistributionPoint.fetch id: all_dps.first[:id], api: self
+        else
+          JSS::DistributionPoint.fetch id: :master, api: self
+        end
+    end

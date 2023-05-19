@@ -1,0 +1,13 @@
+public function setAttributes($attrib = array()) 
+    {
+        
+        $tmpAttrib = '';
+        
+        if(is_array($attrib)) {
+            foreach($attrib as $attrKey => $attrVal) {
+                $tmpAttrib .= $attrKey . '="' . $attrVal . '" ';
+            }
+        }
+        
+        $this->_attributes = $tmpAttrib;
+    }

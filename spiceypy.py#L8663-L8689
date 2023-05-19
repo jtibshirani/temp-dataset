@@ -1,0 +1,27 @@
+def mxmg(m1, m2, nrow1, ncol1, ncol2):
+    """
+    Multiply two double precision matrices of arbitrary size.
+
+    http://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mxmg_c.html
+
+    :param m1: nrow1 X ncol1 double precision matrix.
+    :type m1: NxM-Element Array of floats
+    :param m2: ncol1 X ncol2 double precision matrix.
+    :type m2: NxM-Element Array of floats
+    :param nrow1: Row dimension of m1
+    :type nrow1: int
+    :param ncol1: Column dimension of m1 and row dimension of m2.
+    :type ncol1: int
+    :param ncol2: Column dimension of m2
+    :type ncol2: int
+    :return: nrow1 X ncol2 double precision matrix.
+    :rtype: NxM-Element Array of floats
+    """
+    m1 = stypes.toDoubleMatrix(m1)
+    m2 = stypes.toDoubleMatrix(m2)
+    mout = stypes.emptyDoubleMatrix(x=ncol2, y=nrow1)
+    nrow1 = ctypes.c_int(nrow1)
+    ncol1 = ctypes.c_int(ncol1)
+    ncol2 = ctypes.c_int(ncol2)
+    libspice.mxmg_c(m1, m2, nrow1, ncol1, ncol2, mout)
+    return stypes.cMatrixToNumpy(mout)

@@ -1,0 +1,16 @@
+function colorLuminance(hex, lum){
+    // validate hex string
+    hex = String(hex).replace(/[^0-9a-f]/gi, '');
+
+    if (hex.length == 3)
+      hex = hex.replace(/./g, '$&$&');
+
+    if (!lum)
+      lum = 0;
+
+    // convert to decimal and change luminosity
+    return '#' + hex.replace(/../g, function(m){
+      var val = parseInt(m, 16) * (1 + lum);
+      return hex2(Math.round(basis.number.fit(val, 0, 255)));
+    });
+  }

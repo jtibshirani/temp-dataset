@@ -1,0 +1,8 @@
+def read_array(self):
+        array_length = unpack('>I', self.input.read(4))[0]
+        array_data = AMQPReader(self.input.read(array_length))
+        result = []
+        while array_data.input.tell() < array_length:
+            val = array_data.read_item()
+            result.append(val)
+        return result

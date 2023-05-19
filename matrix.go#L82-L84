@@ -1,0 +1,3 @@
+func (a Matrix) Rotate(angle float64) Matrix {
+	return Rotate(angle).Multiply(a)
+}

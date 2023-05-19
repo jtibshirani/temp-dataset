@@ -1,0 +1,5 @@
+def nat_cmp(a, b):
+    convert = lambda text: int(text) if text.isdigit() else text # lambda function to convert text to int if number present
+    alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ] # split string to piecewise strings and string numbers
+    #return cmp(alphanum_key(a), alphanum_key(b)) # use internal cmp to compare piecewise strings and numbers
+    return (alphanum_key(a) > alphanum_key(b))-(alphanum_key(a) < alphanum_key(b))

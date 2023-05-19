@@ -1,0 +1,11 @@
+def strip_url_params3(url, strip=None):
+    if not strip: strip = []
+    
+    parse = urllib.parse.urlparse(url)
+    query = urllib.parse.parse_qs(parse.query)
+    
+    query = {k: v[0] for k, v in query.items() if k not in strip}
+    query = urllib.parse.urlencode(query)
+    new = parse._replace(query=query)
+    
+    return new.geturl()

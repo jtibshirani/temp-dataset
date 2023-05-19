@@ -1,0 +1,16 @@
+func (a Int32Array) EqualWithoutOrder(b Int32Array) bool {
+	if len(a) != len(b) {
+		return false
+	}
+
+	sort.Sort(a)
+	sort.Sort(b)
+
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+
+	return true
+}

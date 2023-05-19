@@ -1,0 +1,11 @@
+def _read_properties():
+    init_path = os.path.abspath(os.path.join("uploadhaddocks", "__init__.py"))
+    regex = re.compile("^\\s*__(?P<key>.*)__\\s*=\\s*\"(?P<value>.*)\"\\s*$")
+    with open(init_path, "rt") as f:
+        props = {}
+        for line in f.readlines():
+            m = regex.match(line)
+            if m is not None:
+                props[m.group("key")] = m.group("value")
+
+    return props

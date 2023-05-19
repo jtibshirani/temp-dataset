@@ -1,0 +1,6 @@
+fs.stat(cwd, function(err, stats) {
+			if (err || !stats.isDirectory()) {
+				cwd = file.workspaceDir || userWorkspaceDir;
+			}
+			callback(cwd);
+		});

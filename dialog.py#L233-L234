@@ -1,0 +1,2 @@
+def get_checkbox_state_by_name(self, checkbox_text):
+        return [checkbox.get_active() for checkbox in self.checkboxes if checkbox.get_label() == checkbox_text]

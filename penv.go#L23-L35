@@ -1,0 +1,13 @@
+func uniquei(arr []string) []string {
+	u := make([]string, 0, len(arr))
+	h := map[string]struct{}{}
+	for _, str := range arr {
+		stri := strings.ToLower(str)
+		if _, ok := h[stri]; ok {
+			continue
+		}
+		h[stri] = struct{}{}
+		u = append(u, str)
+	}
+	return u
+}

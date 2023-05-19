@@ -1,0 +1,8 @@
+def read(self):
+        with gzip.GzipFile(self.path, compresslevel=self.compresslevel) as gz_file:
+            gz_file.read1 = gz_file.read
+            with io.TextIOWrapper(gz_file,
+                                  encoding=self.encoding,
+                                  errors=self.errors,
+                                  newline=self.newline) as file_content:
+                return file_content.read()

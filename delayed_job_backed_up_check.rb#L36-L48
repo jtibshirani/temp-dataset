@@ -1,0 +1,13 @@
+def size
+      if defined?(::Delayed::Backend::Mongoid::Job) && Delayed::Worker.backend == Delayed::Backend::Mongoid::Job
+        query = greater_than_priority ? Delayed::Job.gte(priority: priority) : Delayed::Job.lte(priority: priority)
+      else
+        operator = greater_than_priority ? ">=" : "<="
+        query = Delayed::Job.where("priority #{operator} ?", priority)
+      end
+      opts = {}
+      opts[:queue] = queue if queue
+      opts[:locked_at] = nil unless include_locked
+      opts[:last_error] = nil unless include_errored
+      query.where(opts).count
+    end

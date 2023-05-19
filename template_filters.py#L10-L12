@@ -1,0 +1,3 @@
+def dateformat(value, format='%-d %B %Y'):
+    new_date = parser.parse(value, dayfirst=True)
+    return new_date.strftime(format)

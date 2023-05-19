@@ -1,0 +1,15 @@
+function median(array) {
+  var length = array.length;
+
+  if (length === 0) {
+    throw new RangeError("Error");
+  }
+
+  array.sort(function(a, b) {
+    return a - b;
+  });
+
+  var middle = Math.floor(length / 2);
+
+  return length % 2 ? array[middle] : (array[middle] + array[middle - 1]) / 2;
+}

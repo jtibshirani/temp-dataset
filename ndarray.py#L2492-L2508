@@ -1,0 +1,17 @@
+def distinct(self):
+        """Return sets of indices for each distinct haplotype."""
+
+        # setup collection
+        d = collections.defaultdict(set)
+
+        # iterate over haplotypes
+        for i in range(self.shape[1]):
+
+            # hash the haplotype
+            k = hash(self.values[:, i].tobytes())
+
+            # collect
+            d[k].add(i)
+
+        # extract sets, sorted by most common
+        return sorted(d.values(), key=len, reverse=True)

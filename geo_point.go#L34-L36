@@ -1,0 +1,3 @@
+func GeoPointFromLatLon(lat, lon float64) *GeoPoint {
+	return &GeoPoint{Lat: lat, Lon: lon}
+}

@@ -1,0 +1,3 @@
+func encodeState(values url.Values) string {
+	return base64.URLEncoding.EncodeToString([]byte(values.Encode()))
+}

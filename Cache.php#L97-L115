@@ -1,0 +1,19 @@
+public static function extractDataWithFormat($data = null, $transform = Cache::TEXT)
+    {
+        Logger::log('Extracting data from cache');
+        switch ($transform) {
+            case self::JSON:
+                $data = json_decode($data, true);
+                break;
+            case self::JSONGZ:
+                $data = self::extractDataWithFormat($data, self::GZIP);
+                $data = self::extractDataWithFormat($data, self::JSON);
+                break;
+            case self::GZIP:
+                if (null !== $data && function_exists('gzuncompress')) {
+                    $data = @gzuncompress($data ?: '');
+                }
+                break;
+        }
+        return $data;
+    }

@@ -1,0 +1,15 @@
+def load_text_lines()
+      if @data["TextLine"]
+        if @data["TextLine"].class == Array
+          line_array=@data["TextLine"]
+          line_array.each_with_index {|text_line,index |
+            @text_lines[text_line["@id"]]=Text_Line.new(index,text_line)
+          }
+        end
+
+        if @data["TextLine"].class == Hash
+          text_line=@data["TextLine"]
+          @text_lines[text_line["@id"]]=Text_Line.new(0,text_line)
+        end
+      end
+    end

@@ -1,0 +1,28 @@
+def linear_regression(self):
+        """ Linear Regression.
+
+        This function runs linear regression and stores the, 
+        1. Model
+        2. Model name 
+        3. Mean score of cross validation
+        4. Metrics
+
+        """
+
+        model = LinearRegression()
+        scores = []
+
+        kfold = KFold(n_splits=self.cv, shuffle=True, random_state=42)
+        for i, (train, test) in enumerate(kfold.split(self.baseline_in, self.baseline_out)):
+            model.fit(self.baseline_in.iloc[train], self.baseline_out.iloc[train])
+            scores.append(model.score(self.baseline_in.iloc[test], self.baseline_out.iloc[test]))
+
+        mean_score = sum(scores) / len(scores)
+        
+        self.models.append(model)
+        self.model_names.append('Linear Regression')
+        self.max_scores.append(mean_score)
+
+        self.metrics['Linear Regression'] = {}
+        self.metrics['Linear Regression']['R2'] = mean_score
+        self.metrics['Linear Regression']['Adj R2'] = self.adj_r2(mean_score, self.baseline_in.shape[0], self.baseline_in.shape[1])

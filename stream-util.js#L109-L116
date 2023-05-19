@@ -1,0 +1,8 @@
+function deserializeInfo(data) {
+    try {
+        var obj = JSON.parse(data);
+        return new Info(obj);
+    } catch(err) {
+        throw new DeserializationError('Could not parse data');
+    }
+}

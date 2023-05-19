@@ -1,0 +1,11 @@
+def get_date(date_string):
+    d=None
+    try:
+        d=datetime.datetime.strptime(date_string, "%d %B %Y").date()
+    except:
+        d=datetime.datetime.strptime(date_string, "%Y-%m-%d").date()
+
+    if d:
+        return d.strftime("%Y-%m-%d")
+    else:
+        return date_string

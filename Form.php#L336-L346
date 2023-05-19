@@ -1,0 +1,11 @@
+public static function autoComplete($label, $name, AutoComplete $ac, $value = '', $id = NULL, $options = array()) {
+    list ($label,$name,$id) = self::expand($label,$name,$id);
+    
+    $text = self::text($label, $name, $value, $id)
+        ->addClass('autocomplete')
+    ;
+    
+    $widget = $ac->attach($text);
+    
+    return $widget;
+  }

@@ -1,0 +1,6 @@
+function getDailyReset (date) {
+  date = date ? new Date(date) : new Date()
+
+  date = new Date(date.getTime() + DAY_MS)
+  return getDateAtTime(date, '00:00:00')
+}

@@ -1,0 +1,18 @@
+function loadCsvFile (csvFilePath)
+{
+    var csvData = [];
+    return new Promise(function (resolve, reject) {
+        csv.fromPath(
+            csvFilePath,
+            {
+                headers: true
+            }
+        )
+            .on('data', function (row) {
+                csvData.push(row);
+            })
+            .on('end', function () {
+                resolve(csvData);
+            });
+    });
+}

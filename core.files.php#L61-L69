@@ -1,0 +1,9 @@
+public static function unzip($zipFile, $to)
+    {
+        set_time_limit(120);
+        $zip = new Zip();
+        if (files::checkDir($to) !== false) {
+	        return ($zip->unzip_file($zipFile, $to) === true);
+        }
+        return false;
+    }

@@ -1,0 +1,11 @@
+def date(self):
+        """
+        Getter/setter for the date member.
+
+        The setter can take a string or a :meth:`datetime.datetime` and will do the
+        appropriate transformation.
+
+        """
+        if self._date:
+            return self._date
+        return datetime.datetime.now().strftime('%Y-%m-%d')

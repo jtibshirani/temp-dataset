@@ -1,0 +1,13 @@
+public function getHeaders()
+    {
+        $headerLines = [];
+        foreach ($this->response->getHeaders() as $name => $lines)
+        {
+            foreach ($lines as $line)
+            {
+                $headerLines[] = "$name: $line";
+            }
+        }
+
+        return HeaderBag::fromHeaderLines($headerLines);
+    }

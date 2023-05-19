@@ -1,0 +1,3 @@
+def yyyymmdd(self, auto=None, datetime=None, timezone=None, timestamp=None, ms=False, concat=''):
+        datetime = self.convert(auto=auto, datetime=datetime, timezone=timezone, timestamp=timestamp, ms=ms)
+        return '%04d%s%02d%s%02d' % (datetime.year, concat, datetime.month, concat, datetime.day)

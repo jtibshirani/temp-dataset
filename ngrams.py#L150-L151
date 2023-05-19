@@ -1,0 +1,2 @@
+def word_similarity(s1, s2, n=3):
+    return __similarity(s1, s2, word_ngrams, n=n)

@@ -1,0 +1,6 @@
+func Reverse(arg interface{}) Value {
+	if val, ok := arg.(Value); ok {
+		return val.Reverse()
+	}
+	return value{value: arg, color: ReverseFm}
+}

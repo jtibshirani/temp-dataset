@@ -1,0 +1,20 @@
+def create_textedit(self, text, option, default=NoDefault,
+                        tip=None, restart=False):
+        label = QLabel(text)
+        label.setWordWrap(True)
+        edit = QPlainTextEdit()
+        edit.setWordWrapMode(QTextOption.WordWrap)
+        layout = QVBoxLayout()
+        layout.addWidget(label)
+        layout.addWidget(edit)
+        layout.setContentsMargins(0, 0, 0, 0)
+        if tip:
+            edit.setToolTip(tip)
+        self.textedits[edit] = (option, default)
+        widget = QWidget(self)
+        widget.label = label
+        widget.textbox = edit
+        widget.setLayout(layout)
+        edit.restart_required = restart
+        edit.label_text = text
+        return widget

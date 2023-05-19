@@ -1,0 +1,40 @@
+def timer(fn, miniter=3, minwall=3.0):
+    """Runs fn() multiple times and returns the results.
+
+    Runs for at least ``miniter`` iterations and ``minwall`` wall time.
+    """
+
+    results = []
+    count = 0
+
+    # Ideally a monotonic clock, but doesn't matter too much.
+    wall_begin = time.time()
+
+    while True:
+        wstart = time.time()
+        start = os.times()
+        fn()
+        end = os.times()
+        wend = time.time()
+        count += 1
+
+        user = end[0] - start[0]
+        system = end[1] - start[1]
+        cpu = user + system
+        wall = wend - wstart
+
+        results.append((cpu, user, system, wall))
+
+        # Ensure we run at least ``miniter`` times.
+        if count < miniter:
+            continue
+
+        # And for ``minwall`` seconds.
+        elapsed = wend - wall_begin
+
+        if elapsed < minwall:
+            continue
+
+        break
+
+    return results

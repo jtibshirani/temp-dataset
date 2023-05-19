@@ -1,0 +1,6 @@
+formatters.formatForRestkin([[trace, annotations]], function(err, json) {
+        self.destination.write('--- Trace ---\n');
+        // pretty print the json
+        self.destination.write(json);
+        self.destination.write('\n');
+      });

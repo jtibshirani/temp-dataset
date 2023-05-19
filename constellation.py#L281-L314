@@ -1,0 +1,34 @@
+def plot(self, sizescale=10, color=None, alpha=0.5, label=None, edgecolor='none', **kw):
+        '''
+        Plot the ra and dec of the coordinates,
+        at a given epoch, scaled by their magnitude.
+
+        (This does *not* create a new empty figure.)
+
+        Parameters
+        ----------
+        sizescale : (optional) float
+            The marker size for scatter for a star at the magnitudelimit.
+        color : (optional) any valid color
+            The color to plot (but there is a default for this catalog.)
+        **kw : dict
+            Additional keywords will be passed on to plt.scatter.
+
+        Returns
+        -------
+
+        plotted : outputs from the plots
+        '''
+        # calculate the sizes of the stars (logarithmic with brightness?)
+        size = np.maximum(sizescale*(1 + self.magnitudelimit - self.magnitude), 1)
+
+        # make a scatter plot of the RA + Dec
+        scatter = plt.scatter(self.ra, self.dec,
+                                    s=size,
+                                    color=color or self.color,
+                                    label=label or '{} ({:.1f})'.format(self.name, self.epoch),
+                                    alpha=alpha,
+                                    edgecolor=edgecolor,
+                                    **kw)
+
+        return scatter

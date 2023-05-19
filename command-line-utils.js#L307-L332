@@ -1,0 +1,26 @@
+this.commandLineArguments.forEach(function(arg) {
+        if(arg.type === CommandLineArgumentTypes.KEYVALUE) {
+            if(keyValues[arg.argumentName] !== undefined) {
+                command[arg.propertyName] = keyValues[arg.argumentName];
+            } else if (keyValues[arg.alias] !== undefined) {
+                command[arg.propertyName] = keyValues[arg.alias];
+            }
+        } else if(arg.type === CommandLineArgumentTypes.VALUE) {
+            if(values.length > valueIndex) {
+                command[arg.propertyName] = values[valueIndex];
+                valueIndex++;
+            }
+        } else {
+            throw new Error('Invalid command line argument type');
+        }
+
+        //Set the default value if avaiable
+        if(command[arg.propertyName] === undefined && arg.defaultValue !== undefined) {
+            command[arg.propertyName] = arg.defaultValue;
+        }
+
+        //Parse data to the correct data type
+        if(command[arg.propertyName] !== undefined) {
+            command[arg.propertyName] = _parseDataType(command[arg.propertyName], arg.dataType);
+        }
+    });

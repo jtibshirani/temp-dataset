@@ -1,0 +1,15 @@
+function __deserializeObject(buffer, start, options) {
+	let dataView = new DataView(buffer);
+	let length = dataView.getUint32(start, true);
+	start += 4;
+	let end = start + length;
+	let data = {};
+	while (start < end) {
+		let subType, subKey, subData;
+		({ anchor: start, value: subType } = __deserializeType(buffer, start, options));
+		({ anchor: start, value: subKey } = __deserializeShortString(buffer, start, options));
+		({ anchor: start, value: subData } = __deserializeData(subType, buffer, start, options));
+		data[subKey] = subData;
+	}
+	return { anchor: end, value: data };
+}

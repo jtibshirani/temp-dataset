@@ -1,0 +1,6 @@
+def randnum_min(self, randnum: int) -> None:
+        if not isinstance(randnum, int):
+            raise TypeError('randnum_min can only be int')
+        if randnum < 0:
+            raise ValueError('randnum_min should be greater than 0')
+        self._randnum_min = randnum

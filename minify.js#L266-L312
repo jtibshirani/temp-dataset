@@ -1,0 +1,47 @@
+, permutations: function permutation(collection, order) {
+      var permutations = []
+        , combinations = []
+        , seen = [];
+
+      /**
+       * Full iterator for the permutations
+       *
+       * @param {Array} source
+       * @returns {Array} permutations
+       * @api private
+       */
+      function full(source) {
+        for (var i = 0, item; i < source.length; i++) {
+          item = source.splice(i, 1)[0];
+          seen.push(item);
+
+          if (source.length === 0) permutations.push(seen.slice());
+          full(source);
+
+          source.splice(i, 0, item);
+          seen.pop();
+        }
+
+        return permutations;
+      }
+
+      /**
+       * Fast iterator for the combinations
+       *
+       * @param {Array} source
+       * @returns {Array} combinations
+       * @api private
+       */
+      function fast(source) {
+        var i = source.length;
+
+        while (i--) {
+          combinations.push(source.slice(0, i + 1));
+          if (i === 1) fast(source.slice(i));
+        }
+
+        return combinations;
+      }
+
+      return !order ? fast(collection) : fast(collection).concat(full(collection));
+    }

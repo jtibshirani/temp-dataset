@@ -1,0 +1,18 @@
+def _table_union(left, right, distinct=False):
+    """
+    Form the table set union of two table expressions having identical
+    schemas.
+
+    Parameters
+    ----------
+    right : TableExpr
+    distinct : boolean, default False
+        Only union distinct rows not occurring in the calling table (this
+        can be very expensive, be careful)
+
+    Returns
+    -------
+    union : TableExpr
+    """
+    op = ops.Union(left, right, distinct=distinct)
+    return op.to_expr()

@@ -1,0 +1,6 @@
+def label_w_small(method, options = {})
+      text = options.delete(:text) || method.to_s.humanize
+      small_text = options.delete(:small_text)
+      label(method, text, options) +
+          (small_text ? " <small>(#{CGI::escape_html small_text})</small>" : '').html_safe
+    end

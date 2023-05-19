@@ -1,0 +1,17 @@
+async function exec(executablePath, cwd, opts = {}) {
+
+  DEBUG && console.debug(`executing ${executablePath} from ${cwd}`);
+
+  if (!exists(executablePath)) {
+    throw new Error(`ENOENT: could not find ${executablePath}`);
+  }
+
+  const subprocess = execa(executablePath, {
+    cwd,
+    detached: true,
+    stdio: 'ignore',
+    ...opts
+  });
+
+  subprocess.unref();
+}

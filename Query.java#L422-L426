@@ -1,0 +1,5 @@
+public Query aroundLatitudeLongitude(float latitude, float longitude, int radius) {
+    aroundLatLong = "aroundLatLng=" + latitude + "," + longitude;
+    aroundRadius = radius;
+    return this;
+  }

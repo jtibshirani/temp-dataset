@@ -1,0 +1,8 @@
+def update(value)
+      raise RuntimeError, "Observable crashed: #{@value}" if crashed?
+      raise ArgumentError, "Update with nil value" if value.nil?
+
+      debug { "update: #{value}" }
+
+      set_and_notify(value)
+    end

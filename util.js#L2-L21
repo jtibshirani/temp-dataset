@@ -1,0 +1,20 @@
+combinePermissions: function combinePermissions(permissions1, permissions2) {
+		if (!Array.isArray(permissions1) && !Array.isArray(permissions2)) {
+			return [];
+		} else if (!Array.isArray(permissions1)) {
+			return permissions2.slice();
+		} else if (!Array.isArray(permissions2)) {
+			return permissions1.slice();
+		}
+
+		const permissionMasks = [];
+		//combine all the permission masks across the user's roles
+		const maxIndex = permissions1.length > permissions2.length ? permissions1.length : permissions2.length;
+		for (let i = 0; i < maxIndex; i++) {
+			let mask = permissions1[i] || 0;
+			mask |= permissions2[i] || 0;
+			permissionMasks[i] = mask;
+		}
+
+		return permissionMasks;
+	},

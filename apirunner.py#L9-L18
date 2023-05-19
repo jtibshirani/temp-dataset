@@ -1,0 +1,10 @@
+def parse_cmdln_args():
+    parser = argparse.ArgumentParser(description='Process command line args')
+    parser.add_argument('--log', help='log help', default='INFO')
+    parser.add_argument(
+        '--tc', help='tc help')
+    parser.add_argument(
+        '--ts', help='ts help')
+
+    args = parser.parse_args()
+    return (args.log.upper(), args.tc, args.ts)

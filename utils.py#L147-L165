@@ -1,0 +1,19 @@
+def epoch_to_human_time(epoch_time):
+    """Converts an epoch timestamp to human readable time.
+
+    This essentially converts an output of get_current_epoch_time to an output
+    of get_current_human_time
+
+    Args:
+        epoch_time: An integer representing an epoch timestamp in milliseconds.
+
+    Returns:
+        A time string representing the input time.
+        None if input param is invalid.
+    """
+    if isinstance(epoch_time, int):
+        try:
+            d = datetime.datetime.fromtimestamp(epoch_time / 1000)
+            return d.strftime("%m-%d-%Y %H:%M:%S ")
+        except ValueError:
+            return None

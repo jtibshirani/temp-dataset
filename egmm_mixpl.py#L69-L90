@@ -1,0 +1,22 @@
+def Dictionarize(rankings, m):
+    rankcnt = {}
+    #print("1",rankings[1])
+    for ranking in rankings:
+        #print("2",ranking)
+        flag = 0
+        l = len(ranking)
+        if len(set(ranking)) < l:
+            print("Orders with duplicate alternatives are ignored!")
+            continue
+        for i in range(l):
+            if ranking[i] >= m or ranking[i] < 0:
+                flag = 1
+        if flag == 1:
+            print("Alternative index out of range! Ranking ignored!")
+            continue
+        key = rank2str(ranking)
+        if key in rankcnt:
+            rankcnt[key] += 1
+        else:
+            rankcnt[key] = 1
+    return rankcnt

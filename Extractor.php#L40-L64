@@ -1,0 +1,25 @@
+private static function extract_zip( $zipfile, $dest ) {
+		if ( ! class_exists( 'ZipArchive' ) ) {
+			throw new \Exception( 'Extracting a zip file requires ZipArchive.' );
+		}
+		$zip = new ZipArchive();
+		$res = $zip->open( $zipfile );
+		if ( true === $res ) {
+			$tempdir = implode(
+				DIRECTORY_SEPARATOR,
+				array(
+					dirname( $zipfile ),
+					Utils\basename( $zipfile, '.zip' ),
+					$zip->getNameIndex( 0 ),
+				)
+			);
+
+			$zip->extractTo( dirname( $tempdir ) );
+			$zip->close();
+
+			self::copy_overwrite_files( $tempdir, $dest );
+			self::rmdir( dirname( $tempdir ) );
+		} else {
+			throw new \Exception( sprintf( "ZipArchive failed to unzip '%s': %s.", $zipfile, self::zip_error_msg( $res ) ) );
+		}
+	}

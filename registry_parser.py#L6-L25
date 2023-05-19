@@ -1,0 +1,20 @@
+def parse_file(file):
+    """
+    Take an open file containing the IANA subtag registry, and yield a
+    dictionary of information for each subtag it describes.
+    """
+    lines = []
+    for line in file:
+        line = line.rstrip('\n')
+        if line == '%%':
+            # This is a separator between items. Parse the data we've
+            # collected and yield the result.
+            yield from parse_item(lines)
+            lines.clear()
+        elif line.startswith('  '):
+            # This is a continuation line. Concatenate it to the previous
+            # line, including one of the spaces.
+            lines[-1] += line[1:]
+        else:
+            lines.append(line)
+    yield from parse_item(lines)

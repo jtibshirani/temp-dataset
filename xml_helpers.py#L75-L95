@@ -1,0 +1,21 @@
+def xml_to_root(xml: Union[str, IO]) -> ElementTree.Element:
+    """Parse XML into an ElemeTree object.
+
+    Parameters
+    ----------
+    xml : str or file-like object
+        A filename, file object or string version of xml can be passed.
+
+    Returns
+    -------
+    Elementree.Element
+
+    """
+    if isinstance(xml, str):
+        if '<' in xml:
+            return ElementTree.fromstring(xml)
+        else:
+            with open(xml) as fh:
+                xml_to_root(fh)
+    tree = ElementTree.parse(xml)
+    return tree.getroot()

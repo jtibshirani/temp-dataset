@@ -1,0 +1,19 @@
+def enum(name, value = nil)
+      raise ArgumentError, 'name is required for an enumeration' if name.nil?
+
+      normalized_name = _normalize name
+      if self[normalized_name]
+        raise ArgumentError, "an enumeration value for #{normalized_name} has " \
+          "already been defined in #{self.name}."
+      else
+        value = normalized_name.to_s unless value
+        if find_by_value value
+          raise ArgumentError, "duplicate associated value `#{value}` for enumeration" \
+            "with name `#{name}`"
+        end
+        _define_instance_accessor_for normalized_name
+        _enumeration_values[normalized_name] = new(normalized_name, value)
+
+        const_set normalized_name.to_s.upcase, _enumeration_values[normalized_name]
+      end
+    end

@@ -1,0 +1,5 @@
+def set_workdir(self, workdir, chroot=False):
+        """Set the working directory of the task."""
+        super().set_workdir(workdir, chroot=chroot)
+        # Small hack: the log file of optics is actually the main output file.
+        self.output_file = self.log_file

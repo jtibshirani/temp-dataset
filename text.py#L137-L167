@@ -1,0 +1,31 @@
+def diff(s1, s2):
+    """
+    Return a normalised Levenshtein distance between two strings.
+
+    Distance is normalised by dividing the Levenshtein distance of the
+    two strings by the max(len(s1), len(s2)).
+
+    Examples:
+
+        >>> text.diff("foo", "foo")
+        0
+
+        >>> text.diff("foo", "fooo")
+        1
+
+        >>> text.diff("foo", "")
+        1
+
+        >>> text.diff("1234", "1 34")
+        1
+
+    Arguments:
+
+        s1 (str): Argument A.
+        s2 (str): Argument B.
+
+    Returns:
+
+        float: Normalised distance between the two strings.
+    """
+    return levenshtein(s1, s2) / max(len(s1), len(s2))

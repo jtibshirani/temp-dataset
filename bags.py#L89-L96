@@ -1,0 +1,8 @@
+def _set_count(self, elem, count):
+		if count < 0:
+			raise ValueError
+		self._size += count - self.count(elem)
+		if count == 0:
+			self._dict.pop(elem, None)
+		else:
+			self._dict[elem] = count

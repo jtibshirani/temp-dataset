@@ -1,0 +1,10 @@
+def connect(self):
+        future = super(RecordQueryConnection, self).connect()
+
+        origin_query = self._connection.query
+        def query(sql, unbuffered=False):
+            self._last_query_sql = sql
+            return origin_query(sql, unbuffered)
+        self._connection.query = query
+
+        return future

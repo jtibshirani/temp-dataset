@@ -1,0 +1,10 @@
+def inttoDER(a):
+    '''
+    Format an int/long to DER hex format
+    '''
+
+    o = dechex(a,1)
+    if int(o[:2],16) > 127:
+        o = '00' + o
+    olen = dechex(len(o)//2,1)
+    return '02' + olen + o

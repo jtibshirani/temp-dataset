@@ -1,0 +1,27 @@
+fs.read(this._fileBufferState.readFd, readBuffer, 0, size, seekPosition, function(err, bytesRead, readBuffer) {
+		self._fileBufferState.fileReading = false;
+		if (err) return self.emit(err);
+		if (bytesRead < 1) {
+			// EOF; no more data to read for now
+			if (self._fileBufferState.readFd) {
+				fs.close(self._fileBufferState.readFd, function() {});
+				self._fileBufferState.readFd = null;
+			}
+			if (self._fileBufferState.totalRead >= self._fileBufferState.totalWritten && self._fileBufferState.writeEof) {
+				// Read everything
+				self.push(null);
+				self._cleanup();
+			} else if (self._fileBufferState.totalRead < self._fileBufferState.totalWritten) {
+				// We got an EOF but we've written more than we've read ?
+				throw new Error('Unexpected EOF reading buffer file');
+			}
+		} else {
+			self._fileBufferState.totalRead += bytesRead;
+			var pushMore = self.push(readBuffer.slice(0, bytesRead));
+			if (pushMore) {
+				self._readMoreData((!wantedSize || bytesRead >= wantedSize) ? null : (wantedSize - bytesRead));
+			} else {
+				self._fileBufferState.waitingForRead = true;
+			}
+		}
+	});

@@ -1,0 +1,8 @@
+func findAncestor(x tree.Node, p *pathexpr.PathExpr, ret *[]tree.Node) {
+	if x.GetNodeType() == tree.NtRoot {
+		return
+	}
+
+	addNode(x.GetParent(), p, ret)
+	findAncestor(x.GetParent(), p, ret)
+}

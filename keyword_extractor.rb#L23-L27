@@ -1,0 +1,5 @@
+def extract_keywords
+      words = @tweet.downcase.gsub(/[^\s\w\-']/, '').split
+      words = words.uniq - STOPWORDS
+      words.select { |w| w.length > 2 || TWO_LETTERS.include?(w) }
+    end

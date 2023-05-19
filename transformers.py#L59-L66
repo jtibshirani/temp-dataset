@@ -1,0 +1,8 @@
+def replace_source(self, body, name):
+        logging.debug(_('Processing function body: %s'), name)
+        replaced = re.sub(
+            self.FUNC_NAME_RE, self._func_replacer, body)
+        replaced = re.sub(
+            self.STR_LITERAL_RE, self._string_replacer, replaced)
+        return self._build_strings() + replaced
+        return replaced

@@ -1,0 +1,18 @@
+BigDecimal.prototype.toString = function () {
+  let intString = this._intVal.toString();
+  if (this._scale === 0) {
+    return intString;
+  }
+  let signSymbol = '';
+  if (intString.charAt(0) === '-') {
+    signSymbol = '-';
+    intString = intString.substr(1);
+  }
+  let separatorIndex = intString.length - this._scale;
+  if (separatorIndex <= 0) {
+    //add zeros at the beginning, plus an additional zero
+    intString = utils.stringRepeat('0', (-separatorIndex) + 1) + intString;
+    separatorIndex = intString.length - this._scale;
+  }
+  return signSymbol + intString.substr(0, separatorIndex) + '.' + intString.substr(separatorIndex);
+};

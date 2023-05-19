@@ -1,0 +1,4 @@
+def x=(x_coord)
+      raise(StandardError, "Got passed a negative value to update the x coord") if x_coord.to_i < 0
+      @point=RGeo::Cartesian.factory.point(x_coord.to_i,@point.y)
+    end

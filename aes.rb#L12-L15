@@ -1,0 +1,4 @@
+def decipher_ecb(key,input,strip_padding: true)
+      plain = decipher_ecb_blockwise(CryptBuffer(key),CryptBuffer(input).chunks_of(@block_size_bytes)).to_crypt_buffer
+      strip_padding ? plain.strip_padding : plain
+    end

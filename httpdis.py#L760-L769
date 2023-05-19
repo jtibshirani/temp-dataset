@@ -1,0 +1,10 @@
+def set_cookie(self, name, value = '', expires = 0, path = '/', domain = '', secure = False, http_only = False):
+        cook                    = Cookie.SimpleCookie()
+        cook[name]              = value
+        cook[name]['expires']   = expires
+        cook[name]['path']      = path
+        cook[name]['domain']    = domain
+        cook[name]['secure']    = secure
+        cook[name]['httponly']  = http_only
+
+        self.send_header('Set-Cookie', cook.output(header = ''))

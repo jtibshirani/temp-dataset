@@ -1,0 +1,26 @@
+def sort_numpy(array, col=0, order_back=False):
+    """
+    Sorts the columns for an entire ``ndarrray`` according to sorting
+    one of them.
+    
+    :param array: Array to sort.
+    :type array: ndarray
+    :param col: Master column to sort.
+    :type col: int
+    :param order_back: If True, also returns the index to undo the
+        new order.
+    :type order_back: bool
+    :returns: sorted_array or [sorted_array, order_back]
+    :rtype: ndarray, list
+    """
+    x = array[:,col]
+    sorted_index = np.argsort(x, kind = 'quicksort')
+    sorted_array = array[sorted_index]
+    
+    if not order_back:
+        return sorted_array
+    else:
+        n_points = sorted_index.shape[0]
+        order_back = np.empty(n_points, dtype=int)
+        order_back[sorted_index] = np.arange(n_points)
+        return [sorted_array, order_back]

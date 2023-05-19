@@ -1,0 +1,35 @@
+firewall.valid = function(ip) {
+
+  var valid;
+
+  var toIPv4 = function(addr) {
+    var parts = String(addr).split(":");
+    return parts[parts.length - 1];
+  };
+
+  var addr =
+    (_.isString(ip)) ? ip :
+    (_.isObject(ip) && ip.family === "IPv6") ? toIPv4(ip.address) :
+    (_.isObject(ip)) ? ip.address : void 0;
+
+  if (!this._isValidIp(addr)) {
+    throw Error("Invalid IP Address passed to Firewall.prototype._process: " + addr);
+  }
+
+  var matches = [];
+  for (var i = 0; i < this._rules.length; ++i) {
+    var match = (inSubnet.Auto(addr, this._rules[i].ip, this._rules[i].subnet));
+    if (match) {
+      matches.push(this._rules[i]);
+    }
+  }
+
+  if (matches.length === 0) {
+    valid = (this._policy === "ACCEPT") ? true : false;
+    return valid;
+  }
+
+  var pick = matches[0];
+  valid = (pick.rule === "ACCEPT") ? true : false;
+  return valid;
+};

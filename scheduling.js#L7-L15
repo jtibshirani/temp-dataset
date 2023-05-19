@@ -1,0 +1,9 @@
+export function queueTaskProcessing (priority) {
+  if (priority === priorities.CRITICAL) {
+    nextTick(runQueuedCriticalTasks)
+  } else if (priority === priorities.HIGH) {
+    nextAnimationFrame(runQueuedHighTasks)
+  } else if (priority === priorities.LOW) {
+    nextIdlePeriod(runQueuedLowTasks)
+  }
+}

@@ -1,0 +1,17 @@
+def parse(obj)
+      if convertor.kind_of?(Symbol) || convertor.kind_of?(String)
+        obj.send(convertor)
+      elsif convertor.kind_of?(Class)
+        convertor.new(obj)
+      elsif convertor.respond_to?(:call)
+        if convertor.arity == 1
+          convertor.call(obj)
+        elsif convertor.arity == 0
+          convertor.call
+        else
+          convertor.call(obj,self)
+        end
+      else
+        "dunno how to convert"
+      end
+    end

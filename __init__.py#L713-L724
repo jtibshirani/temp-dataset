@@ -1,0 +1,12 @@
+def find_preset(self, preset):
+        """Find a preset profile matching the specified preset string.
+
+            :param preset: a string containing a preset profile name.
+            :returns: a matching PresetProfile.
+        """
+        # FIXME: allow fuzzy matching?
+        for match in self.presets.keys():
+            if match == preset:
+                return self.presets[match]
+
+        return None

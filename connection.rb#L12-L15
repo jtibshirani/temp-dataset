@@ -1,0 +1,4 @@
+def connect
+      @socket = Connector.connect(domain: domain, hosts: hosts, port: port)
+      start
+    end

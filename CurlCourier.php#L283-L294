@@ -1,0 +1,12 @@
+private function throwExceptionOnHttpErrors(Response $response)
+    {
+        $httpCode = $response->getHttpCode();
+
+        if ($httpCode >= 400)
+        {
+            // Get the description of the http error code
+            $httpMessage = $response->getHttpMessage($httpCode);
+
+            throw new HttpException($response, $httpMessage, $httpCode);
+        }
+    }

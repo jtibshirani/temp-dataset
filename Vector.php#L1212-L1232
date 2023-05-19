@@ -1,0 +1,21 @@
+public function median()
+    {
+        if ($this->n < 1) {
+            throw new RuntimeException('Median is not defined for vectors'
+                . ' with less than 1 element.');
+        }
+
+        $mid = intdiv($this->n, 2);
+
+        $a = $this->a;
+
+        sort($a);
+
+        if ($this->n % 2 === 1) {
+            $median = $a[$mid];
+        } else {
+            $median = ($a[$mid - 1] + $a[$mid]) / 2.;
+        }
+
+        return $median;
+    }

@@ -1,0 +1,15 @@
+def memoize(self, code):
+        pk = hash(self.as_grammar())
+        return"""
+start_pos_{2}= self.pos
+if ({0}, start_pos_{2}) in self._p_memoized:
+    result, self.pos = self._p_memoized[({0}, self.pos)]
+else:
+{1}
+    self._p_memoized[({0}, start_pos_{2})] = result, self.pos
+        """.format(
+            pk,
+            self._indent(code, 1),
+            self.id,
+            repr(self.rulename)
+        )

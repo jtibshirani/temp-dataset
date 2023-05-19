@@ -1,0 +1,8 @@
+def add_element element, attrs=nil
+      raise "First argument must be either an element name, or an Element object" if element.nil?
+      el = @elements.add(element)
+      attrs.each do |key, value|
+        el.attributes[key]=value
+      end	if attrs.kind_of? Hash
+      el
+    end

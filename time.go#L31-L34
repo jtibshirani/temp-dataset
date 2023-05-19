@@ -1,0 +1,4 @@
+func DateS(ts string, format string) string {
+	i, _ := strconv.ParseInt(ts, 10, 64)
+	return Date(i, format)
+}

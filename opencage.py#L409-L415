@@ -1,0 +1,7 @@
+def _catch_errors(self, json_response):
+        status = json_response.get('status')
+        if status and status.get('code') != 200:
+            self.status_code = status.get('code')
+            self.error = status.get('message')
+
+        return self.error

@@ -1,0 +1,8 @@
+public function Convert($data)
+	{
+		// Convert XML To JSON
+		$json = Json::fromXml($data, $this->drop_attributes);
+		
+		// Convert the Json to PHP Array
+		return json_decode($json, true);
+	}

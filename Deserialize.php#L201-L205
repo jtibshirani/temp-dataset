@@ -1,0 +1,5 @@
+public static function batchResponse($json)
+    {
+        $fields = Deserialize::_fromJson($json);
+        return Deserialize::_batchResponseFromFields($json, $fields);
+    }

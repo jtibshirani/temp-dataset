@@ -1,0 +1,12 @@
+public static function checkbox($name, $value = '', $checked = false, array $attributes = null)
+    {
+        // Set the input type
+        $attributes['type'] = 'checkbox';
+
+        if ($checked === true) {
+            // Make the checkbox active
+            $attributes['checked'] = 'checked';
+        }
+
+        return Form::input($name, $value, $attributes);
+    }

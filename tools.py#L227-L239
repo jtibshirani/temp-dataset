@@ -1,0 +1,13 @@
+def AddLogFileOptions(self, argument_group):
+    """Adds the log file option to the argument group.
+
+    Args:
+      argument_group (argparse._ArgumentGroup): argparse argument group.
+    """
+    argument_group.add_argument(
+        '--logfile', '--log_file', '--log-file', action='store',
+        metavar='FILENAME', dest='log_file', type=str, default='', help=(
+            'Path of the file in which to store log messages, by default '
+            'this file will be named: "{0:s}-YYYYMMDDThhmmss.log.gz". Note '
+            'that the file will be gzip compressed if the extension is '
+            '".gz".').format(self.NAME))

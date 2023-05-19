@@ -1,0 +1,32 @@
+def _urlparse_qs(url):
+    """
+    Parse a URL query string and return the components as a dictionary.
+
+    Based on the cgi.parse_qs method.This is a utility function provided
+    with urlparse so that users need not use cgi module for
+    parsing the url query string.
+
+    Arguments:
+
+    :type url: str
+    :param url: URL with query string to be parsed
+    """
+    # Extract the query part from the URL.
+    querystring = urlparse(url)[4]
+
+    # Split the query into name/value pairs.
+    pairs = [s2 for s1 in querystring.split('&') for s2 in s1.split(';')]
+
+    # Split the name/value pairs.
+    result = OrderedDefaultDict(list)
+    for name_value in pairs:
+        pair = name_value.split('=', 1)
+        if len(pair) != 2:
+            continue
+
+        if len(pair[1]) > 0:
+            name = _unquote(pair[0].replace('+', ' '))
+            value = _unquote(pair[1].replace('+', ' '))
+            result[name].append(value)
+
+    return result

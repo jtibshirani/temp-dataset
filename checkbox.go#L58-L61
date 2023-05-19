@@ -1,0 +1,4 @@
+func (c *Checkbox) SetChecked(checked bool) *Checkbox {
+	c.checked = checked
+	return c
+}

@@ -1,0 +1,17 @@
+func main() {
+	log.SetFlags(log.Flags() | log.Lshortfile)
+	ole.CoInitialize(0)
+	unknown, _ := oleutil.CreateObject("Excel.Application")
+	excel, _ := unknown.QueryInterface(ole.IID_IDispatch)
+	oleutil.PutProperty(excel, "Visible", true)
+
+	workbooks := oleutil.MustGetProperty(excel, "Workbooks").ToIDispatch()
+	cwd, _ := os.Getwd()
+	writeExample(excel, workbooks, cwd+"\\write.xls")
+	readExample(cwd+"\\excel97-2003.xls", excel, workbooks)
+	showMethodsAndProperties(workbooks)
+	workbooks.Release()
+	// oleutil.CallMethod(excel, "Quit")
+	excel.Release()
+	ole.CoUninitialize()
+}

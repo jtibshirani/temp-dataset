@@ -1,0 +1,4 @@
+func encodeURL(e objconv.Encoder, v reflect.Value) error {
+	u := v.Interface().(url.URL)
+	return e.Encode(u.String())
+}

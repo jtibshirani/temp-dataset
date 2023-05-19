@@ -1,0 +1,19 @@
+def do_td_field(self, indent, value, **kwargs):
+        field_name = kwargs.pop('name', None)
+        field = getattr(self.form, field_name)
+        obj = self.form.fields[field_name]
+        if 'label' in kwargs:
+            label = kwargs.pop('label')
+        else:
+            label = obj.label
+        if label:
+            obj.label = label
+            label_text = obj.get_label(_class='field')
+        else:
+            label_text = ''
+            
+        display = field.data or '&nbsp;'
+        if 'width' not in kwargs:
+            kwargs['width'] = 200
+        td = begin_tag('td', **kwargs) + u_str(display) + end_tag('td')
+        return indent * ' ' + '<th align=right width=200>%s</th>%s' % (label_text, td)

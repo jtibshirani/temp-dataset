@@ -1,0 +1,21 @@
+private function isValidWebsiteId($websiteId)
+    {
+        $websites = $this->storeManager->getWebsites();
+        if (array_key_exists($websiteId, $websites)) {
+            return true;
+        }
+
+        if (is_numeric($websiteId)) {
+            // Dont bother checking website codes on numeric input
+            return false;
+        }
+        // @todo hs: build up array of websiteCodes, to prevent wasting time looping
+        /** @var Website $website */
+        foreach ($websites as $website) {
+            if ($website->getCode() == $websiteId) {
+                return true;
+            }
+        }
+
+        return false;
+    }

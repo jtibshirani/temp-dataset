@@ -1,0 +1,6 @@
+promise = promise.then(function() {
+  // get epoch millis, convert to epoch micros
+  var startMicros = 1000*timeWindow.start.valueOf();
+  console.log("start: "+timeWindow.start.toISOString()+" "+timeWindow.start.valueOf());
+  return dlConn.awaitDLCommand("POSITION AFTER "+startMicros);
+}).then(function() {

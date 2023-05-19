@@ -1,0 +1,4 @@
+{headers:{Accept: 'text/html,application/xhtml+xml,application/xml'}},function(obj){
+	console.log('Converted from XML');
+	console.log(JSON.stringify(xmlToJson.xml2json(obj),null,2));
+});

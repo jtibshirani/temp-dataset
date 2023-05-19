@@ -1,0 +1,13 @@
+function currencyConvertParse(json) {
+  try {
+    json = json['util:CurrencyConversion'].map(curr => ({
+      from: curr.From,
+      to: curr.To,
+      rate: parseFloat(curr.BankSellingRate),
+    }));
+  } catch (e) {
+    throw new UtilsParsingError(json);
+  }
+
+  return json;
+}

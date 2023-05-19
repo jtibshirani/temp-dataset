@@ -1,0 +1,61 @@
+def copy_to_clipboard(i): # pragma: no cover 
+    """
+    Input:  {
+              string - string to copy
+
+    Output: {
+              return       - return code =  0, if successful
+                                         >  0, if error
+              (error)      - error text if return > 0
+            }
+    """
+
+    s=i['string']
+
+    failed=False
+    ee=''
+
+    # Try to load pyperclip (seems to work fine on Windows)
+    try:
+       import pyperclip
+    except Exception as e:
+       ee=format(e)
+       failed=True
+       pass
+
+    if not failed:
+       pyperclip.copy(s)
+    else:
+       failed=False
+
+       # Try to load Tkinter
+       try:
+          from Tkinter import Tk
+       except ImportError as e:
+          ee=format(e)
+          failed=True
+          pass
+
+       if failed:
+          failed=False
+          try:
+             from tkinter import Tk
+          except ImportError as e:
+             ee=format(e)
+             failed=True
+             pass
+
+       if failed:
+          return {'return':1, 'error':'none of pyperclip/Tkinter/tkinter packages is installed'}
+
+       # Copy to clipboard
+       try:
+          r = Tk()
+          r.withdraw()
+          r.clipboard_clear()
+          r.clipboard_append(s)
+          r.destroy()
+       except Exception as e:
+          return {'return':1, 'error':'problem copying string to clipboard ('+format(e)+')'}
+
+    return {'return':0}

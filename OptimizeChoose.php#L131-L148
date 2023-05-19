@@ -1,0 +1,18 @@
+protected function optimizeChoose()
+	{
+		if ($this->hasOtherwise())
+		{
+			$this->optimizeCommonFirstChild();
+			$this->optimizeCommonLastChild();
+			$this->optimizeCommonOnlyChild();
+			$this->optimizeEmptyOtherwise();
+		}
+		if ($this->isEmpty())
+		{
+			$this->choose->parentNode->removeChild($this->choose);
+		}
+		else
+		{
+			$this->optimizeSingleBranch();
+		}
+	}

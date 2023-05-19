@@ -1,0 +1,24 @@
+def convert_string(str)
+    ruby_19 { str = convert_to_ascii_if_ascii(str) }
+
+    encoding = 0
+
+    str.sub!(/^"/,'')   # Remove leading  "
+    str.sub!(/"$/,'')   # Remove trailing "
+    str.gsub!(/""/,'"') # Substitute Excel's escaped double quote "" for "
+
+    # number of characters in str
+    length = ruby_18 { str.gsub(/[^\WA-Za-z_\d]/, ' ').length } ||
+             ruby_19 { str.length }
+
+    # Handle utf8 strings
+    if is_utf8?(str)
+      str = utf8_to_16le(str)
+      ruby_19 { str.force_encoding('BINARY') }
+      encoding = 1
+    end
+
+    exit "String in formula has more than 255 chars\n" if length > 255
+
+    [@ptg['ptgStr'], length, encoding].pack("CCC") + str
+  end

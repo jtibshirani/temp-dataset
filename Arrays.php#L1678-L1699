@@ -1,0 +1,22 @@
+public static function getNonEmptyValuesAsString(array $values, $separator = ', ')
+    {
+        /*
+         * No elements?
+         * Nothing to do
+         */
+        if (empty($values)) {
+            return null;
+        }
+
+        $nonEmpty = self::getNonEmptyValues($values);
+
+        /*
+         * No values?
+         * Nothing to do
+         */
+        if (empty($nonEmpty)) {
+            return '';
+        }
+
+        return implode($separator, $nonEmpty);
+    }

@@ -1,0 +1,9 @@
+strings.sort(function(a, b) {
+    if (a.string.toLowerCase() < b.string.toLowerCase()) {
+      return -1;
+    }
+    if (a.string.toLowerCase() > b.string.toLowerCase()) {
+      return 1;
+    }
+    return 0;
+  });

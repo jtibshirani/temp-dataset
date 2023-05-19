@@ -1,0 +1,40 @@
+def expand(self, datasets):
+    import json
+
+    tf_graph_predictions, errors = datasets
+
+    if self._output_format == 'json':
+      (tf_graph_predictions |
+       'Write Raw JSON' >>
+       beam.io.textio.WriteToText(os.path.join(self._output_dir, 'predictions'),
+                                  file_name_suffix='.json',
+                                  coder=RawJsonCoder(),
+                                  shard_name_template=self._shard_name_template))
+    elif self._output_format == 'csv':
+      # make a csv header file
+      header = [col['name'] for col in self._schema]
+      csv_coder = CSVCoder(header)
+      (tf_graph_predictions.pipeline |
+       'Make CSV Header' >>
+       beam.Create([json.dumps(self._schema, indent=2)]) |
+       'Write CSV Schema File' >>
+       beam.io.textio.WriteToText(os.path.join(self._output_dir, 'csv_schema'),
+                                  file_name_suffix='.json',
+                                  shard_name_template=''))
+
+      # Write the csv predictions
+      (tf_graph_predictions |
+       'Write CSV' >>
+       beam.io.textio.WriteToText(os.path.join(self._output_dir, 'predictions'),
+                                  file_name_suffix='.csv',
+                                  coder=csv_coder,
+                                  shard_name_template=self._shard_name_template))
+    else:
+      raise ValueError('FormatAndSave: unknown format %s', self._output_format)
+
+    # Write the errors to a text file.
+    (errors |
+     'Write Errors' >>
+     beam.io.textio.WriteToText(os.path.join(self._output_dir, 'errors'),
+                                file_name_suffix='.txt',
+                                shard_name_template=self._shard_name_template))

@@ -1,0 +1,35 @@
+def register_work(self, work, deps=None, manager=None, workdir=None):
+        """
+        Register a new :class:`Work` and add it to the internal list, taking into account possible dependencies.
+
+        Args:
+            work: :class:`Work` object.
+            deps: List of :class:`Dependency` objects specifying the dependency of this node.
+                  An empy list of deps implies that this node has no dependencies.
+            manager: The :class:`TaskManager` responsible for the submission of the task.
+                     If manager is None, we use the `TaskManager` specified during the creation of the work.
+            workdir: The name of the directory used for the :class:`Work`.
+
+        Returns:
+            The registered :class:`Work`.
+        """
+        if getattr(self, "workdir", None) is not None:
+            # The flow has a directory, build the named of the directory of the work.
+            work_workdir = None
+            if workdir is None:
+                work_workdir = os.path.join(self.workdir, "w" + str(len(self)))
+            else:
+                work_workdir = os.path.join(self.workdir, os.path.basename(workdir))
+
+            work.set_workdir(work_workdir)
+
+        if manager is not None:
+            work.set_manager(manager)
+
+        self.works.append(work)
+
+        if deps:
+            deps = [Dependency(node, exts) for node, exts in deps.items()]
+            work.add_deps(deps)
+
+        return work

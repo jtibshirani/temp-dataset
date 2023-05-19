@@ -1,0 +1,10 @@
+def is_effective(self):
+        """Tests if the current date is within the start end end dates inclusive.
+
+        return: (boolean) - ``true`` if this is effective, ``false``
+                otherwise
+        *compliance: mandatory -- This method must be implemented.*
+
+        """
+        now = DateTime.utcnow()
+        return self.get_start_date() <= now and self.get_end_date() >= now

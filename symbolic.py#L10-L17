@@ -1,0 +1,8 @@
+def std_tsymbol(tsymbol):
+    s, date = tsymbol
+    if date == 0:
+        return '_{}_'.format(s)
+    elif date <= 0:
+        return '_{}_m{}_'.format(s, str(-date))
+    elif date >= 0:
+        return '_{}__{}_'.format(s, str(date))

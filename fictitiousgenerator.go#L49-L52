@@ -1,0 +1,4 @@
+func (fng *FakeNumberGenerator) RandomLocalNumberUSAreaCodes(acs []uint16) uint64 {
+	ac := acs[fng.Rand.Intn(len(acs))]
+	return fng.LocalNumberUS(ac, fng.RandomLineNumber())
+}

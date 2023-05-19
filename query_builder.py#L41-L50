@@ -1,0 +1,10 @@
+def _build_filtered_query(self, f, operator):
+        """
+        Create the root of the filter tree
+        """
+        self._filtered = True
+        if isinstance(f, Filter):
+            filter_object = f
+        else:
+            filter_object = Filter(operator).filter(f)
+        self._filter_dsl = filter_object

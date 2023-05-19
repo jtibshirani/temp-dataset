@@ -1,0 +1,5 @@
+return Object.keys(groupedTables).map(function(dbname) {
+        return dbname + ':' + (groupedTables[dbname].map(function(table) {
+            return table.schema_name + '.' + table.table_name;
+        }));
+    }).join(';;');

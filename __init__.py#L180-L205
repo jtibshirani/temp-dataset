@@ -1,0 +1,26 @@
+def random_elements(self, elements=('a', 'b', 'c'), length=None, unique=False):
+        fn = choices_distribution_unique if unique else choices_distribution
+
+        if length is None:
+            length = self.generator.random.randint(1, len(elements))
+
+        if unique and length > len(elements):
+            raise ValueError(
+                "Sample length cannot be longer than the number of unique elements to pick from.")
+
+        if isinstance(elements, dict):
+            choices = elements.keys()
+            probabilities = elements.values()
+        else:
+            if unique:
+                # shortcut
+                return self.generator.random.sample(elements, length)
+            choices = elements
+            probabilities = [1.0 for _ in range(len(choices))]
+
+        return fn(
+            list(choices),
+            list(probabilities),
+            self.generator.random,
+            length=length,
+        )

@@ -1,0 +1,13 @@
+def parse_file(file_name)
+            @file_system.parse_file(file_name).expand_el
+        rescue Parslet::ParseFailed => failure
+            #TODO: spec this somehow
+            cause = failure.cause
+            source = cause.source.str
+            row, column = @file_system.find_coordinates(source, file_name)
+            raise ElParseError.new(file_name, cause, source, row, column)
+        rescue ElExpansionError => failure
+            raise failure
+        rescue Exception => failure
+            raise CfooParseError.new(file_name, failure)
+        end

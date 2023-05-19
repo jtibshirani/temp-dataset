@@ -1,0 +1,8 @@
+def receive_line(line)
+      if @active
+        cmd = parse(line)
+        handle cmd
+      end
+    rescue HandlerMissing
+      logger.info "ignoring irc command #{cmd.inspect}: no handler"
+    end

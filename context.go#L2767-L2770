@@ -1,0 +1,4 @@
+func (ctx *context) HTML(htmlContents string) (int, error) {
+	ctx.ContentType(ContentHTMLHeaderValue)
+	return ctx.writer.WriteString(htmlContents)
+}

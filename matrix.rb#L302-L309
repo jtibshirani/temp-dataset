@@ -1,0 +1,8 @@
+def *(other)
+      if other.kind_of?(Matrix)
+        raise "Matrix A columns(#{self.columns}) != Matrix B rows(#{other.columns})" if other.rows != self.columns
+        Matrix.new(self.matrix * other.matrix, typecode)
+      else
+        self.class.new(apply_scalar(:*, other), typecode)
+      end
+    end

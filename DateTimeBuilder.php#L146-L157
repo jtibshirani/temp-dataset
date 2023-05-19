@@ -1,0 +1,12 @@
+public function stringToDateTime(string $string) : \DateTime
+    {
+        $this->logger->notice("unsupported date format, use strtotime() to build the DateTime instance : {$string}");
+
+        if (false === strtotime($string)) {
+            throw new \InvalidArgumentException('Impossible to convert date : '.$string);
+        }
+        $date = new \DateTime($string, $this->getFeedTimezone());
+        $date->setTimezone($this->getTimezone());
+
+        return $date;
+    }

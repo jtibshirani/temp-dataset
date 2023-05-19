@@ -1,0 +1,8 @@
+def unpack_zipfile(filename):
+    """Unpack a zipfile, using the names in the zip."""
+    with open(filename, "rb") as fzip:
+        z = zipfile.ZipFile(fzip)
+        for name in z.namelist():
+            print(("      extracting {}".format(name)))
+            ensure_dirs(name)
+            z.extract(name)

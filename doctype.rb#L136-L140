@@ -1,0 +1,5 @@
+def add child
+      super(child)
+      @entities = DEFAULT_ENTITIES.clone if @entities == DEFAULT_ENTITIES
+      @entities[ child.name ] = child if child.kind_of? Entity
+    end

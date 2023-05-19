@@ -1,0 +1,6 @@
+def circ_permutation(items):
+    """Calculate the circular permutation for a given list of items."""
+    permutations = []
+    for i in range(len(items)):
+        permutations.append(items[i:] + items[:i])
+    return permutations

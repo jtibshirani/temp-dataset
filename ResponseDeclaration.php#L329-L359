@@ -1,0 +1,31 @@
+public function areaMapToJson(){
+        $returnValue = null;
+
+        // Get the stored area mapping
+        $mapping = $this->getMapping('area');
+
+        if(count($mapping)){
+            $returnValue = Array();
+            $returnValue['identifier'] = $this->getIdentifier();
+            $returnValue['defaultValue'] = $this->mappingDefaultValue;
+            if($this->hasAttribute('areaMapping')){
+                $returnValue = array_merge($returnValue, $this->getAttributeValue('areaMapping'));
+            }
+            $mappingValue = Array();
+
+            // If a mapping has been defined
+            if(!empty($mapping)){
+                foreach($mapping as $mapKey => $mappedValue){
+                    $areaMapEntryJSON = Array();
+                    $areaMapEntryJSON['value'] = (float) $mappedValue["mappedValue"];
+                    $areaMapEntryJSON['key'] = taoQTI_models_classes_Matching_VariableFactory::createJSONShapeFromQTIData($mappedValue);
+                    array_push($mappingValue, (object) $areaMapEntryJSON);
+                }
+                $returnValue['value'] = $mappingValue;
+            }
+
+            $returnValue = (object) $returnValue;
+        }
+
+        return $returnValue;
+    }

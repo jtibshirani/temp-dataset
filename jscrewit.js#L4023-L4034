@@ -1,0 +1,12 @@
+function conclude()
+    {
+        var clusters    = this.clusters.sort(compareClustersByQuality);
+        var maxLength   = this.maxLength;
+        var startLinks  = this.startLinks;
+        var bestClusters = [];
+        var cluster;
+        while (cluster = pickBestCluster(startLinks, clusters, maxLength))
+            bestClusters.push(cluster);
+        bestClusters.sort(compareClustersByStart);
+        return bestClusters;
+    }

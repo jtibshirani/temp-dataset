@@ -1,0 +1,16 @@
+def numberToString(value):
+    # return a nicely formatted string of this value
+    # return tuples as a tuple-looking string with formatted numbers
+    # return ints as ints, no commas
+    # return floats as compact rounded value
+    if value is None:
+        return "None"
+    if type(value)==tuple:
+        t = []
+        for v in value:
+            t.append(numberToString(v))
+        return "(%s)"%(",".join(t))
+    if int(value) == value:
+        # it is an int
+        return "%d"%(value)
+    return "%3.3f"%value

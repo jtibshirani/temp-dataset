@@ -1,0 +1,4 @@
+func WidgetToLabel(widget *Widget) (interface{}, error) {
+	obj := glib.Take(unsafe.Pointer(widget.GObject))
+	return wrapLabel(obj), nil
+}

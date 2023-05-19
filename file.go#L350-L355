@@ -1,0 +1,6 @@
+func (b *FileBackend) expandPath(k string) (string, string) {
+	path := filepath.Join(b.path, k)
+	key := filepath.Base(path)
+	path = filepath.Dir(path)
+	return path, "_" + key
+}

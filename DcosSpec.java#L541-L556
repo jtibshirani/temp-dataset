@@ -1,0 +1,16 @@
+public void checkComponentConstraint(String role, String service, String instance, String[] constraints) throws Exception {
+        for (int i = 0; i < constraints.length; i++) {
+            String[] elements = constraints[i].split(":");
+            Assertions.assertThat(elements.length).overridingErrorMessage("Error while parsing constraints. The constraint's format is ATRIBUTE:CONSTRAINT:VALOR or ATRIBUTE:CONSTRAINT").isIn(2, 3);
+            Assertions.assertThat(elements[1]).overridingErrorMessage("Error while parsing constraints. Constraints should be CLUSTER, UNIQUE, LIKE, UNLIKE, GROUP_BY, MAX_PER or IS").isIn("UNIQUE", "CLUSTER", "GROUP_BY", "LIKE", "UNLIKE", "MAX_PER", "IS");
+            if (elements.length == 2) {
+                Assertions.assertThat(elements[1]).overridingErrorMessage("Error while parsing constraints. The constraint's format " + elements[1] + " is ATRIBUTE:CONSTRAINT:VALOR").isIn("UNIQUE", "CLUSTER", "GROUP_BY");
+                if (!elements[1].equals("GROUP_BY")) {
+                    checkConstraint(role, service, instance, elements[0], elements[1], null);
+                }
+            } else {
+                Assertions.assertThat(elements[1]).overridingErrorMessage("Error while parsing constraints. The constraint's format " + elements[1] + " is ATRIBUTE:CONSTRAINT").isNotEqualTo("UNIQUE");
+                checkConstraint(role, service, instance, elements[0], elements[1], elements[2]);
+            }
+        }
+    }

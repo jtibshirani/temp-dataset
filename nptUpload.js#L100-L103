@@ -1,0 +1,4 @@
+plupload.each(files, function (file) {
+                        file.formateSize = plupload.formatSize(file.size);
+                        vm.filesInfo.push(file);
+                    });

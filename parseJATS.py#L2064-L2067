@@ -1,0 +1,4 @@
+def keywords_json(soup, html_flag=True):
+    # Configure the XML to HTML conversion preference for shorthand use below
+    convert = lambda xml_string: xml_to_html(html_flag, xml_string)
+    return list(map(convert, full_keywords(soup)))

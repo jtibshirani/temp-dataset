@@ -1,0 +1,13 @@
+def empty(shape, dtype=None, **kwargs):
+    """Create an array of given shape and type, without initializing entries.
+
+    Args:
+        shape (sequence of ints): 2D shape of the array.
+        dtype (data-type, optional): Desired data-type for the array.
+        kwargs (optional): Other arguments of the array (*coords, attrs, and name).
+
+    Returns:
+        array (decode.array): Decode array without initializing entries.
+    """
+    data = np.empty(shape, dtype)
+    return dc.array(data, **kwargs)

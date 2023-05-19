@@ -1,0 +1,5 @@
+def write_to_csv(file_name, mode = "w")
+      File.open(file_name, mode) do |file|
+        all.copy_csv(file)
+      end
+    end

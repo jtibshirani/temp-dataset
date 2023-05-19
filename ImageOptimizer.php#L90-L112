@@ -1,0 +1,23 @@
+public function optimize($path)
+    {
+        $optim = new PHPImageOptim();
+        $optim->setImage($path);
+
+        $type = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $path);
+        switch ($type) {
+            case self::TYPE_JPEG:
+                $optim->chainCommand($this->jpegOptim);
+                break;
+            case self::TYPE_PNG:
+                $optim->chainCommand($this->optiPng);
+                break;
+            case self::TYPE_GIF:
+                 //$optim->chainCommand($this->gifsicle);
+                 return false;
+                break;
+            default:
+                return false;
+        }
+
+        return $optim->optimise();
+    }

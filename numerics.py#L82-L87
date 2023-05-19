@@ -1,0 +1,6 @@
+def _print_summary(module, case, summary):
+    try:
+        module.print_summary(case, summary)
+    except (NotImplementedError, AttributeError):
+        print("    Ran " + case + "!")
+        print("")

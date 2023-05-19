@@ -1,0 +1,20 @@
+var store = function store(hmap){
+
+            var _ = {
+                // data is a two dimensional array
+                // a datapoint gets saved as data[point-x-value][point-y-value]
+                // the value at [point-x-value][point-y-value] is the occurrence of the datapoint
+                data: [],
+                // tight coupling of the heatmap object
+                heatmap: hmap
+            };
+            // the max occurrence - the heatmaps radial gradient alpha transition is based on it
+            this.max = 1;
+
+            this.get = function(key){
+                return _[key];
+            };
+            this.set = function(key, value){
+                _[key] = value;
+            };
+        }

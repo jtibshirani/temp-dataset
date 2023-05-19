@@ -1,0 +1,12 @@
+def replaces_in_file(file, replacement_list):
+    rs = [(re.compile(regexp), repl) for (regexp, repl) in replacement_list]
+    file_tmp = file + "." + str(os.getpid()) + ".tmp"
+    with open(file, 'r') as f:
+        with open(file_tmp, 'w') as f_tmp:
+            for line in f:
+                for r, replace in rs:
+                    match = r.search(line)
+                    if match:
+                        line = replace + "\n"
+                f_tmp.write(line)
+    shutil.move(file_tmp, file)

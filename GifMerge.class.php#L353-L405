@@ -1,0 +1,53 @@
+function read_extension()
+	{
+    	$this->getbytes(1);
+    	switch($this->buffer[0])
+    	{
+			case 0xf9:
+				if($this->debug) print "Skipping Graphic Control Extension.\n<br>";
+	    		$this->getbytes(6);
+	   			break;
+			case 0xfe:
+				if($this->debug) print "Skipping Comment Extension.\n<br>";
+	    		for (;;)
+	    		{
+					$this->getbytes(1);
+                	if (($u = $this->buffer[0]) == 0)
+		    			break;
+					$this->getbytes($u);
+	    		}
+	    		break;
+			case 0x01:
+				if($this->debug) print "Skipping Plain Text Extension.\n<br>";
+	    		$this->getbytes(13);
+	    		for (;;)
+	    		{
+					$this->getbytes(0);
+                	if (($u = $this->buffer[0]) == 0)
+		    			break;
+					$this->getbytes($u);
+	    		}
+				break;
+       		case 0xff:
+				if($this->debug) print "Skipping Application Extension.\n<br>";
+	    		$this->getbytes(9);
+	    		$this->getbytes(3);
+	    		for (;;)
+	    		{
+					$this->getbytes(1);
+                	if (!$this->buffer[0])
+                		break;
+                	$this->getbytes($this->buffer[0]);
+            	}
+				break;
+			default:
+				if($this->debug) print "Skipping unrecognized extension.\n<br>";
+	    		for (;;)
+	    		{
+					$this->getbytes(1);
+        			if(!$this->buffer[0])
+        				break;
+					$this->getbytes($this->buffer[0]);
+				}
+    	}
+	}

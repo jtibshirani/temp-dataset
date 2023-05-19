@@ -1,0 +1,63 @@
+def read(opts = {})
+      unless relative_path.end_with?(".org")
+        return _orig_read(opts)
+      end
+
+      Jekyll.logger.debug "Reading:", relative_path
+
+      self.content = File.read(path, Utils.merged_file_read_opts(site, opts))
+      self.data ||= {}
+      liquid_enabled = false
+
+      org_text = Orgmode::Parser.new(content, { markup_file: "html.tags.yml" })
+      org_text.in_buffer_settings.each_pair do |key, value|
+        # Remove #+TITLE from the buffer settings to avoid double exporting
+        org_text.in_buffer_settings.delete(key) if key =~ /title/i
+        buffer_setting = key.downcase
+
+        if buffer_setting == 'liquid'
+          liquid_enabled = true
+        end
+
+        if buffer_setting == 'tags'
+          # Parse a string of tags separated by spaces into a list.
+          # Tags containing spaces can be wrapped in quotes,
+          # e.g. '#+TAGS: foo "with spaces"'.
+          # 
+          # The easiest way to do this is to use rubys builtin csv parser
+          # and use spaces instead of commas as column separator.
+          self.data[buffer_setting] = CSV::parse_line(value, col_sep: ' ')
+        else
+          self.data[buffer_setting] = value
+        end
+      end
+      # set default slug
+      # copy and edit frmo jekyll:lib/jekyll/document.rb -- populate_title
+      if relative_path =~ DATE_FILENAME_MATCHER
+        date, slug, ext = Regexp.last_match.captures
+        modify_date(date)
+      elsif relative_path =~ DATELESS_FILENAME_MATCHER
+        slug, ext = Regexp.last_match.captures
+      end
+      self.data["title"] ||= Utils.titleize_slug(slug)
+      self.data["slug"]  ||= slug
+      self.data["ext"]   ||= ext
+
+      # Disable Liquid tags from the output by default or enabled with liquid_enabled tag
+      if liquid_enabled
+        self.content = org_text.to_html
+        self.content = self.content.gsub("&#8216;","'")
+        self.content = self.content.gsub("&#8217;", "'")
+      else
+        self.content = [
+          '{% raw %}',
+          org_text.to_html,
+          '{% endraw %}'
+        ].join(" ")
+      end
+      begin
+        self.data
+        rescue => e
+          puts "Error converting file #{relative_path}: #{e.message} #{e.backtrace}"
+      end
+    end

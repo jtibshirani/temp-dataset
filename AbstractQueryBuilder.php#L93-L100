@@ -1,0 +1,8 @@
+public function useFilterArray(array $filterArray)
+    {
+        foreach ($filterArray as $key => $additionalFilter) {
+            $this->useFilter($additionalFilter, $key);
+        }
+
+        return $this;
+    }

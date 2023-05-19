@@ -1,0 +1,10 @@
+function saveFile(target, content) {
+    fs.writeFile(target, content, function(err) {
+        if(err) {
+            console.log(err);
+        } else {
+            console.log("The file was saved!");
+        }
+    });
+    console.log
+}

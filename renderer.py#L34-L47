@@ -1,0 +1,14 @@
+def _html_escape(string):
+    """HTML escape all of these " & < >"""
+
+    html_codes = {
+        '"': '&quot;',
+        '<': '&lt;',
+        '>': '&gt;',
+    }
+
+    # & must be handled first
+    string = string.replace('&', '&amp;')
+    for char in html_codes:
+        string = string.replace(char, html_codes[char])
+    return string

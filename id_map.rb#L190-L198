@@ -1,0 +1,9 @@
+def stats
+		fuzzy = 0
+		orphaned = 0
+		@entries.each_value do |entry|
+			fuzzy += 1 if entry.fuzzy?
+			orphaned += 1 if !entry.associated?
+		end
+		return { :fuzzy => fuzzy, :orphaned => orphaned }
+	end

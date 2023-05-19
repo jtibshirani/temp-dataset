@@ -1,0 +1,10 @@
+public function setCwd($cwd)
+    {
+        if (empty($cwd)) {
+            $cwd    = null;
+        } else {
+            $cwd    = (string)$cwd;
+        }
+        $this->cwd  = $cwd;
+        return $this;
+    }

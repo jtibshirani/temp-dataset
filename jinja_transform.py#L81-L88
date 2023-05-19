@@ -1,0 +1,8 @@
+def text_filter(html):
+    if isinstance(html, list):
+        html = "".join(html)
+    ok, content = SoupOps.extract_text(html)
+    if ok:
+        return content
+    else:
+        raise RuntimeError("Extract text failed")

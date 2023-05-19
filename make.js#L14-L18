@@ -1,0 +1,5 @@
+function hex2dec ( hex ) {
+
+  return hex.includes ( '-' ) ? hex.split ( '-' ).map ( hex2dec ) : parseInt ( hex, 16 );
+
+}

@@ -1,0 +1,12 @@
+def display_summary
+      puts
+
+      unless report.records.empty?
+        puts 'Summary:'
+        puts
+        puts report.colored_summary
+        puts
+      end
+
+      puts report.colored_stats
+    end

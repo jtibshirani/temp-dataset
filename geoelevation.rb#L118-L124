@@ -1,0 +1,7 @@
+def get_row_and_column(latitude, longitude)
+            if latitude == nil || longitude == nil
+                return nil
+            end
+
+            [ ((@latitude + 1 - latitude) * (@square_side - 1).to_f).floor, ((longitude - @longitude) * (@square_side - 1).to_f).floor ]
+        end

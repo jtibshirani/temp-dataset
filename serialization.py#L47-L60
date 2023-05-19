@@ -1,0 +1,14 @@
+def deserialize(s):
+    s = s.strip()
+    try:
+        doc = etree.fromstring(s)
+        if is_tmdd(doc):
+            # Transparently convert the TMDD on deserialize
+            from ..converter.tmdd import tmdd_to_json
+            return (tmdd_to_json(doc), 'json')
+        return (doc, 'xml')
+    except etree.XMLSyntaxError:
+        try:
+            return (json.loads(s), 'json')
+        except ValueError:
+            raise Exception("Doesn't look like either JSON or XML")

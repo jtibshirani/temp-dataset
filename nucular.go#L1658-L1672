@@ -1,0 +1,15 @@
+func buttonWidth(lbl label.Label, style *nstyle.Button, font font.Face) int {
+	w := 2*style.Padding.X + 2*style.TouchPadding.X + 2*style.Border
+	switch lbl.Kind {
+	case label.TextLabel:
+		w += FontWidth(font, lbl.Text)
+	case label.SymbolLabel:
+		w += symbolWidth(lbl.Symbol, font)
+	case label.ImageLabel:
+		w += lbl.Img.Bounds().Dx() + 2*style.ImagePadding.X
+	case label.SymbolTextLabel:
+		w += FontWidth(font, lbl.Text) + symbolWidth(lbl.Symbol, font) + 2*style.Padding.X
+	case label.ImageTextLabel:
+	}
+	return w
+}

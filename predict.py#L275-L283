@@ -1,0 +1,9 @@
+def get_prob(self):
+        if self.total < 5:
+            return 0.
+        a, b = self.dup + 1, self.nodup + 1
+        n = a + b
+        p = a / n
+        q = b / n
+        # Lower edge of the 95% confidence interval, binomial distribution
+        return p - 1.96 * math.sqrt(p * q / n)

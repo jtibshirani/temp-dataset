@@ -1,0 +1,11 @@
+function filterEmptyStrings(array) {
+        var result = [], i;
+
+        for (i = 0; i < array.length; i++) {
+          if (array[i] !== "") {
+            result.push(array[i]);
+          }
+        }
+
+        return result;
+      }

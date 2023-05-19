@@ -1,0 +1,3 @@
+def perform_filter(result_array: Array, data, f_low, f_high, filter_bw):
+    result_array = np.frombuffer(result_array.get_obj(), dtype=np.complex64)
+    result_array[:] = Filter.apply_bandpass_filter(data, f_low, f_high, filter_bw=filter_bw)

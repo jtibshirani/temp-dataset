@@ -1,0 +1,21 @@
+protected function getRedisHandler(array $config)
+    {
+        $options = array_get($config, 'redis', []);
+        // In case anyone puts the servers under redis configuration - similar to how we handle cache
+        $servers = array_get($options, 'servers', []);
+        if (empty($servers)) {
+            $servers = array_get($config, 'servers', []);
+        }
+
+        $redis = $this->getRedisInstance($servers);
+        if (!empty($options['database'])) {
+            $redis->select((int) $options['database']);
+        }
+
+        // In case of anyone setting prefix on the redis server directly
+        // Similar to how we do it on cache
+        $prefix = array_get($options, 'prefix', 'CCM_SESSION');
+
+        // We pass the prefix to the Redis Handler when we build it
+        return $this->app->make(RedisSessionHandler::class, [$redis, ['prefix' => array_get($config, 'name') ?: $prefix]]);
+    }

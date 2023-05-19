@@ -1,0 +1,44 @@
+func (self *Tab) getElementFromResult(node *maputil.Map) *dom.Element {
+	if remoteObjectId, err := self.resolveNode(node.Int(`backendNodeId`)); err == nil {
+		var element *dom.Element
+		var children = node.Slice(`children`)
+
+		// load the various properties from the given node map into a new elements
+		pair := node.String(`localName`, strings.ToLower(node.String(`nodeName`)))
+		ns, name := stringutil.SplitPairRightTrailing(pair, `:`)
+
+		element = &dom.Element{
+			ID:         remoteObjectId,
+			Namespace:  ns,
+			Name:       name,
+			Attributes: make(map[string]interface{}),
+		}
+
+		for _, pair := range sliceutil.Chunks(node.Slice(`attributes`), 2) {
+			element.Attributes[typeutil.String(pair[0])] = typeutil.Auto(pair[1])
+		}
+
+		switch len(children) {
+		case 0:
+			element.Text = node.String(`nodeValue`)
+		default:
+			for _, child := range children {
+				childM := maputil.M(child)
+
+				switch childM.Int(`nodeType`) {
+				case 1:
+					if subel := self.getElementFromResult(childM); subel != nil {
+						element.Text += subel.Text
+					}
+				case 3:
+					element.Text += childM.String(`nodeValue`)
+				}
+			}
+		}
+
+		return element
+	} else {
+		log.Warningf("Received invalid node: %v", err)
+		return nil
+	}
+}

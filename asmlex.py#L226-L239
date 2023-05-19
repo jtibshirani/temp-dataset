@@ -1,0 +1,14 @@
+def t_BIN(self, t):
+        r'(%[01]+)|([01]+[bB])'  # A Binary integer
+        # Note 00B is a 0 binary, but
+        # 00Bh is a 12 in hex. So this pattern must come
+        # after HEXA
+
+        if t.value[0] == '%':
+            t.value = t.value[1:]  # Remove initial %
+        else:
+            t.value = t.value[:-1]  # Remove last 'b'
+
+        t.value = int(t.value, 2)  # Convert to decimal
+        t.type = 'INTEGER'
+        return t

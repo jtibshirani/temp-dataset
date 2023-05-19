@@ -1,0 +1,15 @@
+protected function statusCodes($statusCode, $customDescription = null)
+    {
+        if ($customDescription) {
+            $description = $customDescription;
+        }
+        if ($customDescription !== null || array_key_exists($statusCode, $this->defaultStatusCodes)) {
+            if (!isset($description)) {
+                $description = $this->defaultStatusCodes[$statusCode];
+            }
+            $description = !is_array($description) ? [$description] : $description;
+            $this->addStatusCode($statusCode, $description);
+        }
+
+        return $this;
+    }

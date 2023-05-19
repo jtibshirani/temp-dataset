@@ -1,0 +1,5 @@
+def __init__(self, read_size):
+        self._stream = None
+        self._buffer = None
+        self._read_size = read_size
+        self.encoding = None

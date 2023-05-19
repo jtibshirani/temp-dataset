@@ -1,0 +1,14 @@
+def render(scene, camera)
+      return if @sprites.empty?
+
+      init if @program.nil?
+      setup_gl_for_render(camera)
+      setup_fog(scene)
+
+      update_positions_and_sort(camera)
+
+      render_all_sprites(scene)
+
+      glEnable(GL_CULL_FACE)
+      @renderer.reset_gl_state
+    end

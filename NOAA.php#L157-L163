@@ -1,0 +1,7 @@
+public function getObservations(){
+				if(!isset($this->observations)){
+						$this->station();
+						$this->observations = $this->observation($this->station->getObservations());
+				}
+				return $this->observations->getObservations();
+		}

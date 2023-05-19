@@ -1,0 +1,5 @@
+def __mul__(self, other):
+        if isinstance(other, Matrix):
+            return Matrix(self.matrix.dot(other.matrix))
+        else:
+            return Matrix(self.matrix * other)

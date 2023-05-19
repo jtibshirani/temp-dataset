@@ -1,0 +1,31 @@
+protected function htmlTag(\DOMElement $element) {
+    switch ($element->tagName) {
+      case 'xlf:group':
+      case 'trans-unit':
+        $attr = $element->getAttribute('restype');
+        break;
+
+      case 'g':
+      case 'x':
+        $attr = $element->getAttribute('ctype');
+        break;
+
+      default:
+        // var_export( $element->nodeValue);
+    }
+
+    if (!$attr) {
+      return $this->out->createDocumentFragment();
+    }
+
+    if (isset($this->elementMap[$attr])) {
+      $html_element = $this->elementMap[$attr];
+    }
+    else {
+      $html_element = substr($attr, 7);
+    }
+
+    $out = $this->out->createElement($html_element);
+    $this->addAttrs($out, $element);
+    return $out;
+  }

@@ -1,0 +1,7 @@
+protected function _setAllChecked($checked){
+		$result="$('#".$this->identifier." [name=%quote%selection[]%quote%]:not(._jsonArrayChecked)').prop('checked',".$checked.");";
+		if(isset($this->_checkedClass)){
+			$result.="$('#".$this->identifier." tr').toggleClass('".$this->_checkedClass."',".$checked.");";
+		}
+		return $result;
+	}

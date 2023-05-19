@@ -1,0 +1,23 @@
+public static function fromObservable(ObservableInterface $observable, Deferred $deferred = null): ReactPromise
+    {
+
+        $d = $deferred ?: new Deferred(function () use (&$subscription) {
+            $subscription->dispose();
+        });
+
+        $value = null;
+
+        $subscription = $observable->subscribe(
+            function ($v) use (&$value) {
+                $value = $v;
+            },
+            function ($error) use ($d) {
+                $d->reject($error);
+            },
+            function () use ($d, &$value) {
+                $d->resolve($value);
+            }
+        );
+
+        return $d->promise();
+    }

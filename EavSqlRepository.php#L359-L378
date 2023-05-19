@@ -1,0 +1,20 @@
+private function reverseTransformValue($value, $type) {
+		if ($value === null) {
+			return null;
+		}
+
+		switch ($type) {
+			case self::VALUE_TYPE_INT:
+				return (int) $value;
+			case self::VALUE_TYPE_FLOAT:
+				return (float) $value;
+			case self::VALUE_TYPE_BOOL:
+				return ($value == 1 ? true : false);
+			case self::VALUE_TYPE_STRING:
+				return (string) $value;
+			case self::VALUE_TYPE_NULL:
+				return null;
+			default:
+				throw new \InvalidArgumentException('Do not know how to reverse-transform value type: '. $type);
+		}
+	}

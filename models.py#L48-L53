@@ -1,0 +1,6 @@
+def get_table(self, database_name, table_name):
+        database = self.get_database(database_name)
+        try:
+            return database.tables[table_name]
+        except KeyError:
+            raise TableNotFoundException(table_name)

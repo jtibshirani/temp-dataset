@@ -1,0 +1,17 @@
+def _isavaliablevni(vnirange,allocated,vni):
+    
+    find = False
+    for start,end in vnirange:
+        if start <= int(vni) <= end:
+            find = True
+            break
+
+    if find:
+        if str(vni) not in allocated:
+            find = True
+        else:
+            find = False
+    else:
+        find = False
+
+    return find

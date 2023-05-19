@@ -1,0 +1,7 @@
+def to_bool(x):
+    if x.lower() in ("true", "yes", "on", "1"):
+        return True
+    elif x.lower() in ("false", "no", "off", "0"):
+        return False
+    else:
+        raise ValueError("%r in config file is not boolean" % x)

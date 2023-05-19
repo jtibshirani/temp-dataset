@@ -1,0 +1,5 @@
+def _connect(self):
+        if mysql is None:
+            raise ImproperlyConfigured('MySQL driver not installed!')
+        conn = mysql.connect(db=self.database, **self.connect_params)
+        return conn

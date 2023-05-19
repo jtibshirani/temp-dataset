@@ -1,0 +1,7 @@
+function unzip(filename){
+  var zip = new AdmZip(filename);
+  var zipEntries = zip.getEntries();
+  var dirname = zipEntries[0].entryName;
+  zip.extractEntryTo(dirname, '../', true);
+  console.log('update success!');
+}

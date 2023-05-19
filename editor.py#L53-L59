@@ -1,0 +1,7 @@
+def unzip(self, in_file, out_file):
+        with ZipFile(in_file) as zf:
+            zf.extract('collection.anki2', path=self.tempdir)
+        shutil.move(os.path.join(self.tempdir, 'collection.anki2'),
+                    out_file)
+
+        return out_file

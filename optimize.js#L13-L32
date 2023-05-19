@@ -1,0 +1,20 @@
+var optimize = function(options) {
+    var stream = through.obj(function(file, enc, cb) {
+        var out = options.out;
+
+        // Convert to the main file to a vinyl file
+        options.out = function(text) {
+            cb(null, new gutil.File({
+                path: out,
+                contents: new Buffer(text)
+            }));
+        };
+
+        // Optimize the main file
+        requirejs.optimize(options, null, function(err) {
+            stream.emit('error', new gutil.PluginError('gulp-rjs', err.message));
+        });
+    });
+
+    return stream;
+}

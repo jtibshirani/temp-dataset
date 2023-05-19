@@ -1,0 +1,10 @@
+def _code_no_lexer(self, text):
+        # encode to utf8 string
+        text = text.encode(charset).strip()
+        return(
+            """
+            <div class="highlight">
+              <pre><code>%s</code></pre>
+            </div>
+            """ % houdini.escape_html(text)
+        )

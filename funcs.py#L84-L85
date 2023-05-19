@@ -1,0 +1,2 @@
+def position(substring, string):
+    return logic.Func('position', logic.SqlBlock(substring).in_(string))

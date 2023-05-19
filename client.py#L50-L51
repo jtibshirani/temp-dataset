@@ -1,0 +1,2 @@
+def post(self, path, data, json=True, **kwargs):
+        return self._request('post', path, data, json=json, **kwargs)

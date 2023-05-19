@@ -1,0 +1,8 @@
+def _underline(self):
+        # Underline text
+        up = self.font.underline_position
+        ut = self.font.underline_thickness
+        w = self.font._string_width(self.text)
+        s = '%.2f %.2f %.2f %.2f re f' % (self.cursor.x,
+            self.cursor.y_prime - up, w, ut)
+        return s

@@ -1,0 +1,11 @@
+def data_to_binary(self):
+        """
+        :return: bytes
+        """
+        return bytes([
+            COMMAND_CODE,
+            self.channels_to_byte([self.channel]),
+            self.disable_inhibit_forced,
+            self.status,
+            self.led_status
+        ]) + struct.pack('>L', self.delay_time)[-3:]

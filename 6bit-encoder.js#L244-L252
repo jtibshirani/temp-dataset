@@ -1,0 +1,9 @@
+function encodeFor(n) {
+  return (
+      n === 1 ? encode
+    : n === 2 ? encode2
+    : n === 3 ? encode3
+    : n === 4 ? encode4
+    : encode5
+  )
+}

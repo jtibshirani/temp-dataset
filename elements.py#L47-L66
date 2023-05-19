@@ -1,0 +1,20 @@
+def xml(self):
+		element = ElementTree.Element(self.tagname)
+		for node in self.nodes:
+			element.append(node.xml())
+		for attr in self.attributes:
+			attrib = getattr(self, attr, None)
+			if attrib is not None:
+				if isinstance(attrib, bool):
+					attrib = str(attrib).lower()
+				elif isinstance(attrib, int):
+					# Check for enums
+					attrib = str(int(attrib))
+				element.attrib[attr] = attrib
+		if self.timestamp and self.ts:
+			element.attrib["ts"] = self.ts.isoformat()
+
+		for k, v in self._attributes.items():
+			element.attrib[k] = v
+
+		return element

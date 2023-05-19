@@ -1,0 +1,22 @@
+def _get_address_translations_table(address_translations):
+    """Yields a formatted table to print address translations.
+
+    :param List[dict] address_translations: List of address translations.
+    :return Table: Formatted for address translation output.
+    """
+    table = formatting.Table(['id',
+                              'static IP address',
+                              'static IP address id',
+                              'remote IP address',
+                              'remote IP address id',
+                              'note'])
+    for address_translation in address_translations:
+        table.add_row([address_translation.get('id', ''),
+                       address_translation.get('internalIpAddressRecord', {})
+                       .get('ipAddress', ''),
+                       address_translation.get('internalIpAddressId', ''),
+                       address_translation.get('customerIpAddressRecord', {})
+                       .get('ipAddress', ''),
+                       address_translation.get('customerIpAddressId', ''),
+                       address_translation.get('notes', '')])
+    return table

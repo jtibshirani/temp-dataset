@@ -1,0 +1,22 @@
+protected function updateClusters()
+    {
+        $dim = $this->space->getDimension();
+        if (!$this->clusters) {
+            $this->clusters = [];
+            for ($i = 0; $i < $this->clustersNumber; ++$i) {
+                $this->clusters[] = new Cluster($this->space, array_fill(0, $dim, 0.0));
+            }
+        }
+
+        for ($i = 0; $i < $this->clustersNumber; ++$i) {
+            $cluster = $this->clusters[$i];
+            $center = $cluster->getCoordinates();
+            for ($k = 0; $k < $dim; ++$k) {
+                $a = $this->getMembershipRowTotal($i, $k, true);
+                $b = $this->getMembershipRowTotal($i, $k, false);
+                $center[$k] = $a / $b;
+            }
+
+            $cluster->setCoordinates($center);
+        }
+    }

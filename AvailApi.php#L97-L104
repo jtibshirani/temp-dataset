@@ -1,0 +1,8 @@
+public function stackScripts($DistributionID = null, $DistributionVendor = null, $keywords = null)
+    {
+        return $this->call('avail.stackscripts', [
+            'DistributionID'     => $DistributionID,
+            'DistributionVendor' => $DistributionVendor,
+            'keywords'           => $keywords,
+        ]);
+    }

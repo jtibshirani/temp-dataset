@@ -1,0 +1,28 @@
+def manga_id(id, flag=nil)
+      @json = Jikan::API.new.get(endpoint: "manga", id: id, flag: flag)
+      if flag == nil
+        Jikan::Manga.new(@json)
+      elsif flag == :reviews
+        @json['reviews'].map do |review|
+          Jikan::Review.new(review)
+        end
+      elsif flag == :news
+        @json['articles'].map do |news|
+          Jikan::News.new(news)
+        end
+      elsif flag == :recommendations
+        @json['recommendations'].map do |rec|
+          Jikan::Recommendation.new(rec)
+        end
+      elsif flag == :userupdates
+        @json['users'].map do |user|
+          Jikan::UserUpdate.new(user)
+        end
+      elsif flag == :pictures
+        @json['pictures'].map do |pic|
+          Jikan::Picture.new(pic)
+        end
+      elsif flag == :stats
+        Jikan::Stat.new(@json)
+      end
+    end

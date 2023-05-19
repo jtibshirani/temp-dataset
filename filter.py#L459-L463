@@ -1,0 +1,5 @@
+def params(self):
+        if not any(filter.params for filter in self):
+            return None
+        else:
+            return Array(filter.params or Null() for filter in self)

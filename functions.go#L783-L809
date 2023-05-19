@@ -1,0 +1,27 @@
+func MakeArrayFunction(env *Zlisp, name string, args []Sexp) (Sexp, error) {
+	if len(args) < 1 {
+		return SexpNull, WrongNargs
+	}
+
+	var size int
+	switch e := args[0].(type) {
+	case *SexpInt:
+		size = int(e.Val)
+	default:
+		return SexpNull, fmt.Errorf("first argument must be integer")
+	}
+
+	var fill Sexp
+	if len(args) == 2 {
+		fill = args[1]
+	} else {
+		fill = SexpNull
+	}
+
+	arr := make([]Sexp, size)
+	for i := range arr {
+		arr[i] = fill
+	}
+
+	return env.NewSexpArray(arr), nil
+}

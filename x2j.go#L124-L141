@@ -1,0 +1,18 @@
+func DocToJsonIndent(doc string, recast ...bool) (string, error) {
+	var r bool
+	if len(recast) == 1 {
+		r = recast[0]
+	}
+	m, merr := xmlToMap([]byte(doc), r)
+	if m == nil || merr != nil {
+		return "", merr
+	}
+
+	b, berr := json.MarshalIndent(m, "", "  ")
+	if berr != nil {
+		return "", berr
+	}
+
+	// NOTE: don't have to worry about safe JSON marshaling with json.Marshal, since '<' and '>" are reservedin XML.
+	return string(b), nil
+}

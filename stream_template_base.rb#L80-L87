@@ -1,0 +1,8 @@
+def next_binary
+      binary = @buffered_binary_stream.read(self.class.get_byte_length)
+      if binary && binary.length < self.class.get_byte_length
+        raise ParsingError, "Stream's rest binary length" + 
+          "(#{binary.length} byte) is shorter than required length (#{self.class.get_byte_length} byte)."
+      end
+      return binary
+    end

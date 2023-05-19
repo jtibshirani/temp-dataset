@@ -1,0 +1,10 @@
+def get_mpl_heatmap_axes(dfr, fig, heatmap_gs):
+    """Return axis for Matplotlib heatmap."""
+    # Create heatmap axis
+    heatmap_axes = fig.add_subplot(heatmap_gs[1, 1])
+    heatmap_axes.set_xticks(np.linspace(0, dfr.shape[0] - 1, dfr.shape[0]))
+    heatmap_axes.set_yticks(np.linspace(0, dfr.shape[0] - 1, dfr.shape[0]))
+    heatmap_axes.grid(False)
+    heatmap_axes.xaxis.tick_bottom()
+    heatmap_axes.yaxis.tick_right()
+    return heatmap_axes

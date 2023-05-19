@@ -1,0 +1,14 @@
+def write_csv(filename, data, delimiter=CSV_DELIMITER):
+    """ Write image data to CSV file
+
+    :param filename: name of CSV file to write data to
+    :type filename: str
+    :param data: image data to write to CSV file
+    :type data: numpy array
+    :param delimiter: delimiter used in CSV file. Default is ``;``
+    :type delimiter: str
+    """
+    with open(filename, 'w') as file:
+        csv_writer = csv.writer(file, delimiter=delimiter)
+        for line in data:
+            csv_writer.writerow(line)

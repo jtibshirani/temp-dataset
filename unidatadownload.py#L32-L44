@@ -1,0 +1,13 @@
+def unzip_unicode(output, version):
+    """Unzip the Unicode files."""
+
+    unzipper = zipfile.ZipFile(os.path.join(output, 'unicodedata', '%s.zip' % version))
+    target = os.path.join(output, 'unicodedata', version)
+
+    print('Unzipping %s.zip...' % version)
+
+    os.makedirs(target)
+
+    for f in unzipper.namelist():
+        # Do I need backslash on windows? Or is it forward as well?
+        unzipper.extract(f, target)

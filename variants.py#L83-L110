@@ -1,0 +1,28 @@
+def vcf_as_df(fn):
+    """
+    Read VCF file into pandas DataFrame.
+
+    Parameters:
+    -----------
+    fn : str
+        Path to VCF file.
+
+    Returns
+    -------
+    df : pandas.DataFrame
+        The VCF file as a data frame. Note that all header information is thrown
+        away.
+
+    """
+    header_lines = 0
+    with open(fn, 'r') as f:
+        line = f.readline().strip()
+        header_lines += 1
+        while line[0] == '#':
+            line = f.readline().strip()
+            header_lines += 1
+    
+    header_lines -= 2
+    df = pd.read_table(fn, skiprows=header_lines, header=0)
+    df.columns = ['CHROM'] + list(df.columns[1:])
+    return df

@@ -1,0 +1,15 @@
+var _getIntroContent = function(html) {
+    var htmlContent = $(html),
+      result = '';
+    for (var i = 0; i < 10; i++) {
+      if (!htmlContent[i]) {
+        break;
+      }
+      if (!htmlContent[i].outerHTML) {
+        continue;
+      }
+
+      result += htmlContent[i].outerHTML;
+    }
+    return result
+  }

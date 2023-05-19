@@ -1,0 +1,24 @@
+def _read_csv(self, filename: str) -> pd.DataFrame:
+        path = self._pathmap.get(filename)
+        columns = self._config.nodes.get(filename, {}).get("required_columns", [])
+
+        if path is None or os.path.getsize(path) == 0:
+            # The file is missing or empty. Return an empty
+            # DataFrame containing any required columns.
+            return empty_df(columns)
+
+        # If the file isn't in the zip, return an empty DataFrame.
+        with open(path, "rb") as f:
+            encoding = detect_encoding(f)
+
+        df = pd.read_csv(path, dtype=np.unicode, encoding=encoding, index_col=False)
+
+        # Strip leading/trailing whitespace from column names
+        df.rename(columns=lambda x: x.strip(), inplace=True)
+
+        if not df.empty:
+            # Strip leading/trailing whitespace from column values
+            for col in df.columns:
+                df[col] = df[col].str.strip()
+
+        return df

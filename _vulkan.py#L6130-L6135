@@ -1,0 +1,6 @@
+def vkCmdDispatch(commandBuffer
+        ,groupCountX
+        ,groupCountY
+        ,groupCountZ
+        ,):
+    result = _callApi(lib.vkCmdDispatch, commandBuffer,groupCountX,groupCountY,groupCountZ)

@@ -1,0 +1,6 @@
+public function setClipboard(Contracts\Clipboard $clipboard)
+    {
+        $this->guard->setClipboard($clipboard);
+
+        return $this->registerClipboardAtContainer();
+    }

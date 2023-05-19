@@ -1,0 +1,11 @@
+function getHtmlInnerBody($pHtml)
+    {
+        $returnValue = NULL;
+        if (gettype($pHtml) === "string") {
+            $start = strpos($pHtml, "<body");
+            $start = strpos($pHtml, '>', $start + 5) + 1;
+            $end = strpos($pHtml, "</body>", $start) - $start;
+            $returnValue = substr($pHtml, $start, $end);
+        }
+        return $returnValue;
+    }

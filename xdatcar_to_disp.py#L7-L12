@@ -1,0 +1,6 @@
+def parse_command_line_arguments():
+    # command line arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument( 'xdatcar' )
+    args = parser.parse_args()
+    return( args )

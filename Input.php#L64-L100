@@ -1,0 +1,37 @@
+private function parseArgs() {
+        // Use the global $argv variable to retrieve command-line arguments
+        global $argv;
+
+        // Reset values
+        $this->_flags       = [];
+        $this->_options     = [];
+        $this->_parameters  = [];
+
+        // index[0] is the script name and index[1] is the command name
+        // so count starts from 2 from now on
+        for ($i = 2; $i < count($argv); $i++) {
+            if (strpos($argv[$i], '-') === 0) {
+                // In gnuopt flags are determined by parameters that starts with `-`
+                $flag = ltrim($argv[$i], '-');
+                // Make sure that every things splittable
+                $flag = strlen($flag) > 1 ? str_split($flag) : [$flag];
+                // Then register flags
+                $this->_flags = array_merge($this->_flags, $flag);
+            } else if (strpos($argv[$i], $this->_delimeter) > 0) {
+                // In our history options are the parameters that lets the user
+                // to set the value of a key 
+                $tokens = explode($this->_delimeter, $argv[$i]);
+                // Make sure to remove the option key
+                $param_name = strtolower($tokens[0]);
+                array_shift($tokens);
+                // Then let the others to be the value
+                $param_value = implode($this->_delimeter, $tokens);
+                // Register options
+                // NOTE: Options are allowed to be overwritten
+                $this->_options[$param_name] = $param_value;
+            } else {
+                // Else, it a parameter
+                $this->_parameters[] = $argv[$i];
+            }
+        }
+    }

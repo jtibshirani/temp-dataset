@@ -1,0 +1,18 @@
+def generate_vector_color_map(self):
+        """Generate color stops array for use with match expression in mapbox template"""
+        vector_stops = []
+
+        # if join data specified as filename or URL, parse JSON to list of Python dicts
+        if type(self.data) == str:
+            self.data = geojson_to_dict_list(self.data)
+
+        # loop through features in self.data to create join-data map
+        for row in self.data:
+            
+            # map color to JSON feature using color_property
+            color = color_map(row[self.color_property], self.color_stops, self.color_default)
+
+            # link to vector feature using data_join_property (from JSON object)
+            vector_stops.append([row[self.data_join_property], color])
+
+        return vector_stops

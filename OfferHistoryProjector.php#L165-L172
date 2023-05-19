@@ -1,0 +1,8 @@
+protected function domainMessageDateToNativeDate(DateTime $date)
+    {
+        $dateString = $date->toString();
+        return \DateTime::createFromFormat(
+            DateTime::FORMAT_STRING,
+            $dateString
+        );
+    }

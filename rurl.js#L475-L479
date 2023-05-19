@@ -1,0 +1,5 @@
+RURL.setStatic(function encodeUriSegment(val) {
+		return RURL.encodeUriQuery(val, true)
+			.replace(/%5b/gi, '[')
+			.replace(/%5d/gi, ']');
+	});

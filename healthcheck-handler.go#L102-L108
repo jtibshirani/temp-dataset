@@ -1,0 +1,7 @@
+func goroutineCountCheck(threshold int) error {
+	count := runtime.NumGoroutine()
+	if count > threshold {
+		return fmt.Errorf("too many goroutines (%d > %d)", count, threshold)
+	}
+	return nil
+}

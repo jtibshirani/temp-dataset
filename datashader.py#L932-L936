@@ -1,0 +1,5 @@
+def uint32_to_uint8(cls, img):
+        """
+        Cast uint32 RGB image to 4 uint8 channels.
+        """
+        return np.flipud(img.view(dtype=np.uint8).reshape(img.shape + (4,)))

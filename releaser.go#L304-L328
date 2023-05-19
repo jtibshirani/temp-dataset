@@ -1,0 +1,25 @@
+func (r *ReleaseHandler) replaceInFile(filename string, oldNew ...string) error {
+	fullFilename := hugoFilepath(filename)
+	fi, err := os.Stat(fullFilename)
+	if err != nil {
+		return err
+	}
+
+	if r.try {
+		fmt.Printf("Replace in %q: %q\n", filename, oldNew)
+		return nil
+	}
+
+	b, err := ioutil.ReadFile(fullFilename)
+	if err != nil {
+		return err
+	}
+	newContent := string(b)
+
+	for i := 0; i < len(oldNew); i += 2 {
+		re := regexp.MustCompile(oldNew[i])
+		newContent = re.ReplaceAllString(newContent, oldNew[i+1])
+	}
+
+	return ioutil.WriteFile(fullFilename, []byte(newContent), fi.Mode())
+}

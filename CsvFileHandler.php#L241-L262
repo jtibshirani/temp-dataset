@@ -1,0 +1,22 @@
+public function getCsvString($separator, CsvFile $csv_file = null)
+	{
+		$csv_file = $csv_file ? $csv_file : $this->csv_file;
+		$csv = '';
+		if( ! isset($csv_file) )
+		{
+			throw new NoDataException;
+		}
+		else
+		{
+			foreach($csv_file as $key => $csv_line)
+			{
+				if($key == 0)
+				{
+					$csv.=$csv_line->getCsvHeader($separator);
+				}
+				$csv.=$csv_line->getCsvString($separator);
+			}
+		}
+
+		return $csv;
+	}

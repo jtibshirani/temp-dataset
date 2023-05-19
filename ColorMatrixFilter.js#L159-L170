@@ -1,0 +1,12 @@
+ColorMatrixFilter.prototype.greyscale = function(scale, multiply)
+{
+    var matrix = [
+        scale, scale, scale, 0, 0,
+        scale, scale, scale, 0, 0,
+        scale, scale, scale, 0, 0,
+        0,0,0,1,0,
+        0,0,0,0,1
+    ];
+
+    this._loadMatrix(matrix, multiply);
+};

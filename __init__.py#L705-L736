@@ -1,0 +1,32 @@
+def connection(self):
+        """
+        Convenience property for externally accessing an authenticated
+        connection to the server. This connection is automatically
+        handled by the appcontext, so you do not have to perform an unbind.
+
+        Returns:
+            ldap3.Connection: A bound ldap3.Connection
+        Raises:
+            ldap3.core.exceptions.LDAPException: Since this method is performing
+                a bind on behalf of the caller. You should handle this case
+                occuring, such as invalid service credentials.
+        """
+        ctx = stack.top
+        if ctx is None:
+            raise Exception("Working outside of the Flask application "
+                            "context. If you wish to make a connection outside of a flask"
+                            " application context, please handle your connections "
+                            "and use manager.make_connection()")
+
+        if hasattr(ctx, 'ldap3_manager_main_connection'):
+            return ctx.ldap3_manager_main_connection
+        else:
+            connection = self._make_connection(
+                bind_user=self.config.get('LDAP_BIND_USER_DN'),
+                bind_password=self.config.get('LDAP_BIND_USER_PASSWORD'),
+                contextualise=False
+            )
+            connection.bind()
+            if ctx is not None:
+                ctx.ldap3_manager_main_connection = connection
+            return connection

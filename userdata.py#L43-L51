@@ -1,0 +1,9 @@
+def convert_str_to_int(arg):
+        """
+        """
+        for k, v in list(arg.items()):  # pylint: disable=invalid-name
+            try:
+                arg[String(k)] = int(v)
+            except ValueError:
+                pass
+        return arg

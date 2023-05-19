@@ -1,0 +1,16 @@
+var req = hyperquest.post(url, reqOpt, function (err, res) {
+		filename = qs.parse(res.headers['content-disposition'].split('; ')[1].replace(/"/g, '')).filename;
+		filepath = './' + filename;
+		var zipStream = fs.createWriteStream(filepath);
+		res.pipe(zipStream);
+
+		zipStream.on('finish', function () {
+			console.log('Finish downloading theme ' + filename);
+			var files = unzip(filepath);
+			files.extractAllTo('./', true);
+			console.log('Finished unzipping theme.');
+			if (!options.keepZip) {
+				fs.unlink(filepath);
+			}
+		});
+	});

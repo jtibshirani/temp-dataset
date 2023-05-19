@@ -1,0 +1,6 @@
+def setLabel(self, label=None):
+        if label is None:
+            self.label.hide()
+        else:
+            self.label.setText(label)
+            self.label.show()

@@ -1,0 +1,11 @@
+def lookup_filter(filter)
+      interpolated['filters'].each do |known_filter|
+        if known_filter == filter
+          return filter
+        elsif known_filter.is_a?(Array)
+          if known_filter.include?(filter)
+            return known_filter.first
+          end
+        end
+      end
+    end

@@ -1,0 +1,11 @@
+def readline(self):
+        if self._current_line >= len(self._linelist):
+            line = ''
+        else:
+            line = self._linelist[self._current_line] + '\n'
+        self._current_line += 1
+        self._current_indx += len(
+            '\n'.join(self._linelist[0:self._current_line]))
+        if self._encoding is not None:
+            line = line.encode(self._encoding)
+        return line

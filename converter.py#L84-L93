@@ -1,0 +1,10 @@
+def hex2dec(s):
+    """
+    hex2dec
+    十六进制 to 十进制
+    :param s:
+    :return:
+    """
+    if not isinstance(s, str):
+        s = str(s)
+    return int(s.upper(), 16)

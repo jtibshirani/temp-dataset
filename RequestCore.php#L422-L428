@@ -1,0 +1,7 @@
+public function set_read_file($location)
+    {
+        $this->read_file = $location;
+        $read_file_handle = fopen($location, 'r');
+
+        return $this->set_read_stream($read_file_handle);
+    }

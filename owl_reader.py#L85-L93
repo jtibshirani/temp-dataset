@@ -1,0 +1,9 @@
+def get_nidm_parent(self, term):
+        # Find direct nidm parent of 'term'
+        parents = self.get_direct_parents(term)
+
+        for parent in parents:
+            if not self.is_external_namespace(parent):
+                return parent
+
+        return None

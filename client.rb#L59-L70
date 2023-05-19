@@ -1,0 +1,12 @@
+def parse_date(date)
+      case date
+      when Time
+        date.strftime('%Y-%m-%d')
+      when Date
+        date.to_s
+      when String
+        date
+      else
+        Date.today.to_s
+      end
+    end

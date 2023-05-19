@@ -1,0 +1,38 @@
+def *(matrix)
+    #produit matriciel
+    #convert vector -> matrix
+    if matrix.is_a?Vector
+      Error.call "Matrix::* : Transformation implicite de Vector en Matrix", Error::ERR_LOW
+      matrix = matrix.to_matrix
+    end
+
+    if matrix.is_a?Matrix
+      Error.call "Matrix::* : Invalid multiplication at line #{matrix.lines} and column #{@columns}", Error::ERR_HIGH if @columns != matrix.lines
+
+      result = []
+      @lines.times do |i|
+        result << []
+      end
+      #colonne de resultat = colonne de matrix X
+      #ligne de resutlat = ligne de self Y
+      @lines.times do |y|
+        matrix.columns.times do |x|
+          result[y][x] = Matrix.mult_array(get_line(y), matrix.get_column(x))
+        end
+      end
+
+      return Matrix.new result
+    #produit d'un entier et d'une matrix
+    elsif matrix.is_a?Numeric
+      result = @v
+      @lines.times do |x|
+        @columns.times do |y|
+          result[x][y] = result[x][y].to_f * matrix
+        end
+      end
+    return Matrix.new result
+    #message d'erreur
+    else
+      Error.call "Matrix::* : Impossible de calculer cela (#{matrix} n'est pas une matrix)", Error::ERR_HIGH
+    end
+  end

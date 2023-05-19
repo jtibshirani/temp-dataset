@@ -1,0 +1,31 @@
+def convert_to_bool(x: Any, default: bool = None) -> bool:
+    """
+    Transforms its input to a ``bool`` (or returns ``default`` if ``x`` is
+    falsy but not itself a boolean). Accepts various common string versions.
+    """
+    if isinstance(x, bool):
+        return x
+
+    if not x:  # None, zero, blank string...
+        return default
+
+    try:
+        return int(x) != 0
+    except (TypeError, ValueError):
+        pass
+
+    try:
+        return float(x) != 0
+    except (TypeError, ValueError):
+        pass
+
+    if not isinstance(x, str):
+        raise Exception("Unknown thing being converted to bool: {!r}".format(x))
+
+    x = x.upper()
+    if x in ["Y", "YES", "T", "TRUE"]:
+        return True
+    if x in ["N", "NO", "F", "FALSE"]:
+        return False
+
+    raise Exception("Unknown thing being converted to bool: {!r}".format(x))

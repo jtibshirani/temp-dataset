@@ -1,0 +1,47 @@
+def url_encoder(self):
+        encodedurl = []
+        encodedurl.append(aios.IntByte("Tx Power",self.power))
+        asisurl=""
+        myurl = urlparse(self.type_payload)
+        myhostname = myurl.hostname
+        mypath = myurl.path
+        if (myurl.scheme,myhostname.startswith("www.")) in url_schemes:
+            encodedurl.append(aios.IntByte("URL Scheme",
+                                           url_schemes.index((myurl.scheme,myhostname.startswith("www.")))))
+            if myhostname.startswith("www."):
+                myhostname = myhostname[4:]
+        extval=None
+        if myhostname.split(".")[-1] in url_domain:
+            extval = url_domain.index(myhostname.split(".")[-1])
+            myhostname = ".".join(myhostname.split(".")[:-1])
+        if extval is not None and not mypath.startswith("/"):
+            extval+=7
+        else:
+            if myurl.port is None:
+                if extval is not None:
+                    mypath = mypath[1:]
+            else:
+                extval += 7
+        encodedurl.append(aios.String("URL string"))
+        encodedurl[-1].val = myhostname
+        if extval is not None:
+            encodedurl.append(aios.IntByte("URL Extention",extval))
+
+        if myurl.port:
+            asisurl += ":"+str(myurl.port)+mypath
+        asisurl += mypath
+        if myurl.params:
+            asisurl += ";"+myurl.params
+        if myurl.query:
+            asisurl += "?"+myurl.query
+        if myurl.fragment:
+            asisurl += "#"+myurl.fragment
+        encodedurl.append(aios.String("Rest of URL"))
+        encodedurl[-1].val = asisurl
+        tlength=0
+        for x in encodedurl: #Check the payload length
+            tlength += len(x)
+        if tlength > 19: #Actually 18 but we have tx power
+            raise Exception("Encoded url too long (max 18 bytes)")
+        self.service_data_length.val += tlength #Update the payload length
+        return encodedurl

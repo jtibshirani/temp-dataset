@@ -1,0 +1,9 @@
+public static function find($find, $value = null)
+    {
+        if ($value === null) {
+            $value = $find;
+            $find = static::$_primaryKey;
+        }
+
+        return static::select()->where("{$find} = ?", $value)->fetch();
+    }

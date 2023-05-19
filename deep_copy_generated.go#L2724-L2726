@@ -1,0 +1,3 @@
+func deepCopy_sets_Empty(in sets.Empty, out *sets.Empty, c *conversion.Cloner) error {
+	return nil
+}

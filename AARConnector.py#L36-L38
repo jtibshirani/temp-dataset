@@ -1,0 +1,3 @@
+def printJson(self):
+        jsonobject = self.getJson()
+        print(json.dumps(jsonobject, indent=1, sort_keys=True))

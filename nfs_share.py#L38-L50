@@ -1,0 +1,13 @@
+def get_xml_node(self):
+        xb = xmlapi.XmlBuilder()
+
+        ret = []
+        if self.access_hosts is not None:
+            ret.append(xb.list_elements('AccessHosts', self.access_hosts))
+        if self.rw_hosts is not None:
+            ret.append(xb.list_elements('RwHosts', self.rw_hosts))
+        if self.ro_hosts is not None:
+            ret.append(xb.list_elements('RoHosts', self.ro_hosts))
+        if self.root_hosts is not None:
+            ret.append(xb.list_elements('RootHosts', self.root_hosts))
+        return ret

@@ -1,0 +1,23 @@
+def __call__(self, req, res):
+        """
+        Parses cookies of the header request (using the 'cookie' header key)
+        and adds a callback to the 'on_headerstrings' response event.
+        """
+        # Do not clobber cookies
+        if hasattr(req, 'cookies'):
+            return
+
+        # Create an empty cookie state
+        req.cookies, res.cookies = SimpleCookie(), SimpleCookie()
+
+        log.info("{:d} built with {}", id(self), json.dumps(self.opts))
+
+        # If the request had a cookie, load it!
+        req.cookies.load(req.headers.get('COOKIE', ''))
+
+        def _gen_cookie():
+            if res.cookies:
+                cookie_string = res.cookies.output(header='', sep=res.EOL)
+                return cookie_string
+
+        res.headers['Set-Cookie'] = _gen_cookie

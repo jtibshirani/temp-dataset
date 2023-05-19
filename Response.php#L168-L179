@@ -1,0 +1,12 @@
+public function template($path, $data = [], $status = HttpMessage::HTTP_OK)
+    {
+        $tempFile = $path . '.php';
+        if (! is_file($tempFile)) {
+            throw new \RuntimeException('Could not find the template file <' . $path . '>');
+        }
+        ob_start();
+        extract($data);
+        include($path . '.php');
+        $content = ob_get_clean();
+        return $this->html($content, $status);
+    }

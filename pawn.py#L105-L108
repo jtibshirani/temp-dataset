@@ -1,0 +1,4 @@
+def on_priority(self, *args):
+        if self.proxy['_priority'] != self.priority:
+            self.proxy['_priority'] = self.priority
+        self.parent.restack()

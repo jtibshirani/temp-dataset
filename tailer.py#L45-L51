@@ -1,0 +1,7 @@
+def read(self, read_size=None):
+        if read_size:
+            read_str = self.file.read(read_size)
+        else:
+            read_str = self.file.read()
+
+        return len(read_str), read_str

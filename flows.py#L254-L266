@@ -1,0 +1,13 @@
+def set_workdir(self, workdir, chroot=False):
+        """
+        Set the working directory. Cannot be set more than once unless chroot is True
+        """
+        if not chroot and hasattr(self, "workdir") and self.workdir != workdir:
+            raise ValueError("self.workdir != workdir: %s, %s" % (self.workdir,  workdir))
+
+        # Directories with (input|output|temporary) data.
+        self.workdir = os.path.abspath(workdir)
+        self.indir = Directory(os.path.join(self.workdir, "indata"))
+        self.outdir = Directory(os.path.join(self.workdir, "outdata"))
+        self.tmpdir = Directory(os.path.join(self.workdir, "tmpdata"))
+        self.wdir = Directory(self.workdir)

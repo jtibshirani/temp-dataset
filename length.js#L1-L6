@@ -1,0 +1,6 @@
+var test = function(val, regex) {
+  // TODO: strict match anchor (^ instead of word end)
+  regex = new RegExp(`${regex}$`, 'i');
+  val = regex.exec(val);
+  return val ? val[0].toLowerCase() : false;
+};

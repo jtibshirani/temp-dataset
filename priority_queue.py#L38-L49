@@ -1,0 +1,12 @@
+def push(self, item, priority=None):
+        """Push the item in the priority queue.
+        if priority is not given, priority is set to the value of item.
+        """
+        priority = item if priority is None else priority
+        node = PriorityQueueNode(item, priority)
+        for index, current in enumerate(self.priority_queue_list):
+            if current.priority < node.priority:
+                self.priority_queue_list.insert(index, node)
+                return
+        # when traversed complete queue
+        self.priority_queue_list.append(node)

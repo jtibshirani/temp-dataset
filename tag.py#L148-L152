@@ -1,0 +1,5 @@
+def html(self) -> str:
+        """Get whole html representation of this node."""
+        if self._inner_element:
+            return self.start_tag + self._inner_element.html + self.end_tag
+        return super().html

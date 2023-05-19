@@ -1,0 +1,6 @@
+def addCheckBox(self, *args, **kwargs):
+        checkbox = BeakerxCheckbox(description=self.getDescription(args, kwargs))
+        checkbox.value = getValue(kwargs, 'value', False)
+        self.children += (checkbox,)
+        self.components[checkbox.description] = checkbox
+        return checkbox

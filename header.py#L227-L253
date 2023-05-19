@@ -1,0 +1,27 @@
+def header_without_lines(header, remove):
+    """Return :py:class:`Header` without lines given in ``remove``
+
+    ``remove`` is an iterable of pairs ``key``/``ID`` with the VCF header key
+    and ``ID`` of entry to remove.  In the case that a line does not have
+    a ``mapping`` entry, you can give the full value to remove.
+
+    .. code-block:: python
+
+        # header is a vcfpy.Header, e.g., as read earlier from file
+        new_header = vcfpy.without_header_lines(
+            header, [('assembly', None), ('FILTER', 'PASS')])
+        # now, the header lines starting with "##assembly=" and the "PASS"
+        # filter line will be missing from new_header
+    """
+    remove = set(remove)
+    # Copy over lines that are not removed
+    lines = []
+    for line in header.lines:
+        if hasattr(line, "mapping"):
+            if (line.key, line.mapping.get("ID", None)) in remove:
+                continue  # filter out
+        else:
+            if (line.key, line.value) in remove:
+                continue  # filter out
+        lines.append(line)
+    return Header(lines, header.samples)

@@ -1,0 +1,18 @@
+def add_filter(filter = nil, &block)
+      id = "#{filter.inspect}/#{block.inspect}".hash
+
+      @filters[id] = if filter.kind_of?(Filter)
+                       filter
+                     elsif filter.kind_of?(String)
+                       StringFilter.new(filter)
+                     elsif filter.kind_of?(Regexp)
+                       RegexpFilter.new(filter)
+                     elsif block
+                       BlockFilter.new(block)
+                     else
+                       raise ArgumentError, 'Please specify either a string, ' \
+                         'filter, or block to filter source files with!'
+                     end
+
+      true
+    end

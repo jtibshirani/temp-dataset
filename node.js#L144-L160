@@ -1,0 +1,17 @@
+_computeWorldMatrix : function( skipParents ){
+
+    var p = this._parent;
+
+    if( p !== null ){
+      if( ! skipParents && p._hasInvalidWorldMatrix( false ) ) {
+        p.updateMatrix();
+        p._computeWorldMatrix( false );
+      }
+      mat4.multiply( this._wmatrix, p._wmatrix, this._matrix );
+    } else {
+      mat4.copy( this._wmatrix, this._matrix );
+    }
+
+    this._invalidW = false;
+
+  },

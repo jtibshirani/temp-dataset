@@ -1,0 +1,6 @@
+func (w *Widget) GetHTML() string {
+	if w == nil || w.HTML == nil {
+		return ""
+	}
+	return *w.HTML
+}

@@ -1,0 +1,23 @@
+protected function getTableName($table)
+    {
+        $database = $this->getTableDatabase($table);
+
+        # If we found a database for this table then include it in the return value
+        if ($database) {
+            $database = $this->quoteField($database);
+
+            if (substr($this->mode, 0, 5) === "mssql") {
+                $database .= ".dbo";
+            }
+
+            return $database . "." . $this->quoteField($table);
+        }
+
+        # If we didn't find a database, and this table already looks like it includes
+        if (strpos($table, ".") !== false) {
+            return $table;
+        }
+
+
+        return $this->quoteField($table);
+    }

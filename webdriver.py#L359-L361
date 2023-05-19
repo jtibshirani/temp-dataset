@@ -1,0 +1,3 @@
+def assert_not_checked_checkbox(step, value):
+    check_box = find_field(world.browser, 'checkbox', value)
+    assert_true(step, not check_box.is_selected())

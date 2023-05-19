@@ -1,0 +1,4 @@
+protected static function optimizeInstance(Optimize $object = null): Optimize
+    {
+        return self::$__optimizeInstance = $object ?? Optimize::getInstance();
+    }

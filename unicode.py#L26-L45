@@ -1,0 +1,20 @@
+def _UInt(s):
+  """Converts string to Unicode code point ('263A' => 0x263a).
+
+  Args:
+    s: string to convert
+
+  Returns:
+    Unicode code point
+
+  Raises:
+    InputError: the string is not a valid Unicode value.
+  """
+
+  try:
+    v = int(s, 16)
+  except ValueError:
+    v = -1
+  if len(s) < 4 or len(s) > 6 or v < 0 or v > _RUNE_MAX:
+    raise InputError("invalid Unicode value %s" % (s,))
+  return v

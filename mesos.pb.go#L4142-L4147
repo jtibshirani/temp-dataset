@@ -1,0 +1,6 @@
+func (m *NetworkInfo_IPAddress) GetIpAddress() string {
+	if m != nil && m.IpAddress != nil {
+		return *m.IpAddress
+	}
+	return ""
+}

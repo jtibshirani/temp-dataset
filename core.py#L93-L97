@@ -1,0 +1,5 @@
+def multiply(self, matrix):
+        positions = [matrix * x for x in self.positions]
+        normals = list(self.normals)
+        uvs = list(self.uvs)
+        return Mesh(positions, normals, uvs)

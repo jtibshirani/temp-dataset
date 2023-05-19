@@ -1,0 +1,13 @@
+def export_xlsx(wb, output, fn):
+    """
+    export as excel
+    wb:
+    output:
+    fn: file name
+    """
+    wb.close()
+    output.seek(0)
+    response = HttpResponse(output.read(), content_type="application/vnd.ms-excel")
+    cd = codecs.encode('attachment;filename=%s' % fn, 'utf-8')
+    response['Content-Disposition'] = cd
+    return response

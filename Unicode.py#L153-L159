@@ -1,0 +1,7 @@
+def encode(self,str):
+        data = self.u2ent(str)
+        data = data.replace("&", "&amp;")
+        data = data.replace("<", "&lt;")
+        data = data.replace("\"", "&quot;")
+        data = data.replace(">", "&gt;")
+        return data

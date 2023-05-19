@@ -1,0 +1,3 @@
+def fuzzy_xor(a, b):
+    return fuzzy_and(fuzzy_or(a, b),
+                     fuzzy_not(fuzzy_equiv(a, b)))

@@ -1,0 +1,62 @@
+public function getCoordonneesFrom($id = 0, $type = '')
+    {
+        $longitude=0;
+        $latitude=0;
+
+        switch ($type) {
+            case 'idVille':
+                $req = "SELECT latitude, longitude FROM ville WHERE idVille='".$id."'";
+                $res = $this->connexionBdd->requete($req);
+                $fetch = mysql_fetch_assoc($res);
+                $longitude = $fetch['longitude'];
+                $latitude = $fetch['latitude'];
+                break;
+            case 'idEvenementGroupeAdresse':
+                $req = "
+                        SELECT ha1.latitude as latitude, ha1.longitude as longitude
+                        FROM _adresseEvenement ae
+                        LEFT JOIN historiqueAdresse ha1 ON ha1.idAdresse = ae.idAdresse
+                        LEFT JOIN historiqueAdresse ha2 ON ha2.idAdresse = ha1.idAdresse
+                        WHERE ha2.idAdresse = ha1.idAdresse
+                        AND ha1.longitude!=''
+                        AND ha1.latitude!=''
+                        AND ha1.longitude!='0'
+                        AND ha1.latitude!='0'
+                        AND ha1.longitude IS NOT NULL
+                        AND ha1.latitude IS NOT NULL
+                        AND ae.idEvenement = '".$id."'
+                        GROUP BY ha1.idAdresse,ha1.idHistoriqueAdresse
+                        HAVING ha1.idHistoriqueAdresse = max(ha2.idHistoriqueAdresse)
+                    ";
+                $res = $this->connexionBdd->requete($req);
+                if (mysql_num_rows($res)>0) {
+                    $fetch = mysql_fetch_assoc($res);
+                    $longitude = $fetch["longitude"];
+                    $latitude = $fetch["latitude"];
+                }
+
+                break;
+            case 'idAdresse':
+                $req = "
+                        SELECT ha1.latitude as latitude,ha1.longitude as longitude
+                        FROM historiqueAdresse ha2, historiqueAdresse ha1
+                        WHERE
+                            ha2.idAdresse = ha1.idAdresse
+                        AND ha1.idAdresse = '".$id."'
+                        GROUP BY ha1.idAdresse,ha1.idHistoriqueAdresse
+                        HAVING ha1.idHistoriqueAdresse = max(ha2.idHistoriqueAdresse)
+                        ";
+                $res = $this->connexionBdd->requete($req);
+                if (mysql_num_rows($res)>0) {
+                    $fetch = mysql_fetch_assoc($res);
+                    $longitude = $fetch["longitude"];
+                    $latitude = $fetch["latitude"];
+                }
+                break;
+
+            case 'idHistoriqueAdresse':
+                break;
+        }
+
+        return array("longitude"=>$longitude,"latitude"=>$latitude);
+    }

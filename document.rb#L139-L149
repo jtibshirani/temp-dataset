@@ -1,0 +1,11 @@
+def __check_unique_indices
+      model.uniques.each do |uniq|
+        if value = attributes[uniq]
+          index = model.indices[uniq]
+          records = model.bucket.get_index(index.riak_name, value)
+          unless records.empty? || records == [self.id]
+            raise Ork::UniqueIndexViolation, "#{uniq} is not unique"
+          end
+        end
+      end
+    end

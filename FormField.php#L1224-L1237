@@ -1,0 +1,14 @@
+public function performReadonlyTransformation()
+    {
+        $readonlyClassName = static::class . '_Readonly';
+
+        if (ClassInfo::exists($readonlyClassName)) {
+            $clone = $this->castedCopy($readonlyClassName);
+        } else {
+            $clone = $this->castedCopy(ReadonlyField::class);
+        }
+
+        $clone->setReadonly(true);
+
+        return $clone;
+    }

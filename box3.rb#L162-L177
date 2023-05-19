@@ -1,0 +1,16 @@
+def apply_matrix4(matrix)
+      points = [
+        # NOTE: I am using a binary pattern to specify all 2^3 combinations below
+        Mittsu::Vector3.new(@min.x, @min.y, @min.z).apply_matrix4(matrix), # 000
+        Mittsu::Vector3.new(@min.x, @min.y, @max.z).apply_matrix4(matrix), # 001
+        Mittsu::Vector3.new(@min.x, @max.y, @min.z).apply_matrix4(matrix), # 010
+        Mittsu::Vector3.new(@min.x, @max.y, @max.z).apply_matrix4(matrix), # 011
+        Mittsu::Vector3.new(@max.x, @min.y, @min.z).apply_matrix4(matrix), # 100
+        Mittsu::Vector3.new(@max.x, @min.y, @max.z).apply_matrix4(matrix), # 101
+        Mittsu::Vector3.new(@max.x, @max.y, @min.z).apply_matrix4(matrix), # 110
+        Mittsu::Vector3.new(@max.x, @max.y, @max.z).apply_matrix4(matrix)  # 111
+      ]
+      self.make_empty
+      self.set_from_points(points)
+      self
+    end

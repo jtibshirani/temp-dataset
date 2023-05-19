@@ -1,0 +1,9 @@
+function extractText( filePath, options, cb ) {
+  fs.readFile( filePath, function( error, data ) {
+    if ( error ) {
+      cb( error, null );
+      return;
+    }
+    extractFromText( data, options, cb );
+  });
+}

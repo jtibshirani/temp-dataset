@@ -1,0 +1,4 @@
+def to_html_file(self, path=''):
+        with open('{}/output.html'.format(path), 'w') as file:
+            tpl = self.to_html()
+            file.write(tpl)

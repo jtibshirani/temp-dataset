@@ -1,0 +1,3 @@
+def name_replace(self, to_replace, replacement):
+        """Replaces part of tag name with new value"""
+        self.name = self.name.replace(to_replace, replacement)

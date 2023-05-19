@@ -1,0 +1,9 @@
+def update(self):
+        # on every timer tick, record a gyro sample and exit if required time has elapsed
+        elapsed = int(100 * ((time.time() - self.started_at) / self.GYRO_BIAS_TIME))
+        self.progressBar.setValue(elapsed)
+        self.samples.append(self.imu.gyro)
+
+        if time.time() - self.started_at > self.GYRO_BIAS_TIME:
+            self.accept()
+            QtWidgets.QMessageBox.information(self, 'Gyro calibration', 'Calibration finished')

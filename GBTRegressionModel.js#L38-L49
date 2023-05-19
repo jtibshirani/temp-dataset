@@ -1,0 +1,12 @@
+var GBTRegressionModel = function (uid, trees, treeWeights) {
+        this.logger = Logger.getLogger("ml_regression_GBTRegressionModel_js");
+        var jvmObject;
+        if (uid instanceof org.apache.spark.ml.regression.GBTRegressionModel) {
+            jvmObject = uid;
+        } else {
+            var tress_uw = Utils.unwrapObject(trees);
+            jvmObject = new org.apache.spark.ml.regression.GBTRegressionModel(uid, tress_uw, treeWeights);
+        }
+        PredictionModel.call(this, jvmObject);
+
+    };

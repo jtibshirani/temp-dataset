@@ -1,0 +1,6 @@
+def distribution_point=(newval)
+      new = JSS::DistributionPoint.all.select { |b| (b[:id] == newval) || (b[:name] == newval) }[0]
+      raise JSS::MissingDataError, "No distribution_point matching '#{newval}' in the JSS" unless new
+      @distribution_point = new[:name]
+      @need_to_update = true
+    end

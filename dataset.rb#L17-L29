@@ -1,0 +1,13 @@
+def where(criteria)
+      new(
+        records.find_all { |row|
+          criteria.all? { |k, v|
+            if v.respond_to?(:include?)
+              test_inclusion_in_value(row, k, v)
+            else
+              test_equality(row, k, v)
+            end
+          }
+        }
+      )
+    end

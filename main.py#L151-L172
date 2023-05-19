@@ -1,0 +1,22 @@
+def filename_generator(file_parts, new_m_time=None):
+    # print "filename_generator"
+    # print file_parts
+    concat = "".join(file_parts)
+    if concat in FILENAMES_GENERATED:
+        # print FILENAMES_GENERATED[concat]
+        return FILENAMES_GENERATED[concat]
+    
+    sha = ""
+    if "-inkmd" not in file_parts[0]:
+        for base in MEDIA_ROOTS:
+            try:
+                sha = "%s-inkmd" % md5(os.path.join(base, concat))
+                break
+            except IOError:
+                pass
+
+
+    new_name = ''.join([file_parts[0], sha, file_parts[1]])
+    FILENAMES_GENERATED[concat] = new_name
+    # print new_name
+    return new_name

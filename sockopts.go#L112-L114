@@ -1,0 +1,3 @@
+func (s *Socket) SetRecvTimeout(timeo time.Duration) {
+	s.setInt(C.ZMQ_RCVTIMEO, int(fromDuration(timeo, time.Millisecond)))
+}

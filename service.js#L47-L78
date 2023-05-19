@@ -1,0 +1,32 @@
+Service.prototype.operating = function operatingOnDate (date) {
+  date = date || new Date()
+  date = moment(date)
+
+  var day = days[date.day()]
+  var yyyymmdd = date.format('YYYYMMDD')
+
+  // Check start and end
+  if (this.start && this.start > yyyymmdd) {
+    return false
+  }
+  if (this.end && this.end < yyyymmdd) {
+    return false
+  }
+
+  // Check Exceptions
+  if (this.exceptions[yyyymmdd] && this.exceptions[yyyymmdd] === Service.Status.Operating) {
+    // Operating
+    return true
+  }
+  if (this.exceptions[yyyymmdd] && this.exceptions[yyyymmdd] === Service.Status.NotOperating) {
+    // Not Operating
+    return false
+  }
+
+  if (this.days[day] === 1) {
+    // Operating
+    return true
+  }
+
+  return false
+}

@@ -1,0 +1,10 @@
+protected function get_InnerHtml() {
+    $innerHtml = '';
+    $indexedRowAttributes = $this->IndexedRowAttributes;
+    foreach ($this->RowsInnerHtml as $rowIndex => $rowInnerHtml) {
+      if (isset($indexedRowAttributes[$rowIndex])) {
+        $innerHtml .= '    ' . $indexedRowAttributes[$rowIndex]->renderTag('tr', $rowInnerHtml) . "\n";
+      }
+    }
+    return $innerHtml;
+  }

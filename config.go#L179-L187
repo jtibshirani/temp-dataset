@@ -1,0 +1,9 @@
+func stringToURL(s string) (u *url.URL, err error) {
+	if s != "" && !strings.HasPrefix(s, "http") {
+		u, err = url.Parse(fmt.Sprintf("http://%s", s))
+	} else {
+		u, err = url.Parse(s)
+	}
+
+	return u, err
+}

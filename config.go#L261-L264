@@ -1,0 +1,4 @@
+func (encoder *htmlEscapedStringEncoder) Encode(ptr unsafe.Pointer, stream *Stream) {
+	str := *((*string)(ptr))
+	stream.WriteStringWithHTMLEscaped(str)
+}

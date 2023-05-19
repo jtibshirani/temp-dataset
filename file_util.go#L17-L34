@@ -1,0 +1,18 @@
+func (fu fileUtil) ReadByLines(filePath string, handler func(line string) error) error {
+	var f *os.File
+	var err error
+	if f, err = os.Open(filePath); err == nil {
+		defer f.Close()
+		var line string
+		scanner := bufio.NewScanner(f)
+		for scanner.Scan() {
+			line = scanner.Text()
+			err = handler(line)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return err
+
+}

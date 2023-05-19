@@ -1,0 +1,17 @@
+def change_to_workdir(self):
+        """Change working directory to working attribute
+
+        :return: None
+        """
+        logger.info("Changing working directory to: %s", self.workdir)
+
+        self.check_dir(self.workdir)
+        try:
+            os.chdir(self.workdir)
+        except OSError as exp:
+            self.exit_on_error("Error changing to working directory: %s. Error: %s. "
+                               "Check the existence of %s and the %s/%s account "
+                               "permissions on this directory."
+                               % (self.workdir, str(exp), self.workdir, self.user, self.group),
+                               exit_code=3)
+        self.pre_log.append(("INFO", "Using working directory: %s" % os.path.abspath(self.workdir)))

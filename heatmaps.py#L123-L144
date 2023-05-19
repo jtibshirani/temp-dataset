@@ -1,0 +1,22 @@
+def heatmap(x, y, step=None, min_pt=None, max_pt=None,
+                 colormap='Blues', alpha=1, grid=False,
+                 colorbar=True, scale='lin',
+                 vmax='auto', vmin='auto', crop=True):
+    """
+    function to take vectors x and y and hist them
+    """
+    (x_vec, y_vec, hist_matrix) = calc_2d_hist(x, y, step, min_pt, max_pt)
+
+    # simple in this case because it is positive counts
+    if scale == 'log':
+        for row in hist_matrix:
+            for i, el in enumerate(row):
+                row[i] = 0 if row[i] == 0 else log10(row[i])
+
+    # plot
+    fig = plt.figure()
+    init_heatmap(x_vec, y_vec, hist_matrix, fig, colormap=colormap,
+                 alpha=alpha, grid=grid, colorbar=colorbar,
+                 vmax=vmax, vmin=vmin, crop=crop)
+
+    return fig

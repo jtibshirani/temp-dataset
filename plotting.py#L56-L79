@@ -1,0 +1,24 @@
+def zoom_level_from_geometry(geometry, splits=4):
+    """Generate optimum zoom level for geometry.
+
+    Notes
+    -----
+    The obvious solution would be
+
+    >>> mercantile.bounding_tile(*geometry.get_shape(WGS84_CRS).bounds).z
+
+    However, if the geometry is split between two or four tiles,
+    the resulting zoom level might be too big.
+
+    """
+    # This import is here to avoid cyclic references
+    from telluric.vectors import generate_tile_coordinates
+
+    # We split the geometry and compute the zoom level for each chunk
+    levels = []
+    for chunk in generate_tile_coordinates(geometry, (splits, splits)):
+        levels.append(mercantile.bounding_tile(*chunk.get_shape(WGS84_CRS).bounds).z)
+
+    # We now return the median value using the median_low function, which
+    # always picks the result from the list
+    return median_low(levels)

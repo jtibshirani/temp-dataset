@@ -1,0 +1,28 @@
+def replace_entities(self, html):
+        """
+        Replace htmlentities with unicode characters
+        @Params
+        html - html source to replace entities in
+        @Returns
+        String html with entities replaced
+        """
+        def fixup(text):
+            """replace the htmlentities in some text"""
+            text = text.group(0)
+            if text[:2] == "&#":
+                # character reference
+                try:
+                    if text[:3] == "&#x":
+                        return chr(int(text[3:-1], 16))
+                    else:
+                        return chr(int(text[2:-1]))
+                except ValueError:
+                    pass
+            else:
+                # named entity
+                try:
+                    text = chr(htmlentitydefs.name2codepoint[text[1:-1]])
+                except KeyError:
+                    pass
+            return text  # leave as is
+        return re.sub(r"&#?\w+;", fixup, html)

@@ -1,0 +1,6 @@
+func (m *PolicyTopicEvidence_WebsiteList) GetWebsites() []*wrappers.StringValue {
+	if m != nil {
+		return m.Websites
+	}
+	return nil
+}

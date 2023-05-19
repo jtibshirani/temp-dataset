@@ -1,0 +1,13 @@
+def memoize_by_args(func):
+    """Memoizes return value of a func based on args."""
+    memory = {}
+
+    @functools.wraps(func)
+    def memoized(*args):
+        if args not in memory.keys():
+            value = func(*args)
+            memory[args] = value
+
+        return memory[args]
+
+    return memoized

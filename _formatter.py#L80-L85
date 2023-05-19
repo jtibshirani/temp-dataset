@@ -1,0 +1,6 @@
+def format_date(self, value, format_):
+        """
+        Format the date using Babel
+        """
+        date_ = make_date(value)
+        return dates.format_date(date_, format_, locale=self.lang)

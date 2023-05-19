@@ -1,0 +1,27 @@
+def extract_zip(self):
+        assert self.FILE_COUNT>0
+        try:
+            with zipfile.ZipFile(self.archive_path, "r") as zip:
+                namelist = zip.namelist()
+                print("namelist():", namelist)
+                if namelist != self.ARCHIVE_NAMES:
+                    msg = (
+                        "Wrong archive content?!?"
+                        " namelist should be: %r"
+                    ) % self.ARCHIVE_NAMES
+                    log.error(msg)
+                    raise RuntimeError(msg)
+
+                zip.extractall(path=self.ROM_PATH)
+
+        except BadZipFile as err:
+            msg = "Error extracting archive %r: %s" % (self.archive_path, err)
+            log.error(msg)
+            raise BadZipFile(msg)
+
+
+        hex2bin(
+            src=os.path.join(self.ROM_PATH, "ExBasROM.hex"),
+            dst=self.rom_path,
+            verbose=False
+        )

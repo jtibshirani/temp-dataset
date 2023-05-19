@@ -1,0 +1,9 @@
+def which(name):
+    for p in os.environ['PATH'].split(os.pathsep):
+        exe = os.path.join(p, name)
+        if is_executable(exe):
+            return os.path.abspath(exe)
+        for ext in [''] + os.environ.get('PATHEXT', '').split(os.pathsep):
+            exe = '{}{}'.format(exe, ext.lower())
+            if is_executable(exe):
+                return os.path.abspath(exe)

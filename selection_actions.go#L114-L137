@@ -1,0 +1,24 @@
+func (s *Selection) setChecked(checked bool) error {
+	return s.forEachElement(func(selectedElement element.Element) error {
+		elementType, err := selectedElement.GetAttribute("type")
+		if err != nil {
+			return fmt.Errorf("failed to retrieve type attribute of %s: %s", s, err)
+		}
+
+		if elementType != "checkbox" {
+			return fmt.Errorf("%s does not refer to a checkbox", s)
+		}
+
+		elementChecked, err := selectedElement.IsSelected()
+		if err != nil {
+			return fmt.Errorf("failed to retrieve state of %s: %s", s, err)
+		}
+
+		if elementChecked != checked {
+			if err := selectedElement.Click(); err != nil {
+				return fmt.Errorf("failed to click on %s: %s", s, err)
+			}
+		}
+		return nil
+	})
+}

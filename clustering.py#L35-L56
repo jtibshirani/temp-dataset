@@ -1,0 +1,22 @@
+def cluster_kmeans(data, n_clusters, **kwargs):
+    """
+    Identify clusters using K - Means algorithm.
+
+    Parameters
+    ----------
+    data : array_like
+        array of size [n_samples, n_features].
+    n_clusters : int
+        The number of clusters expected in the data.
+
+    Returns
+    -------
+    dict
+        boolean array for each identified cluster.
+    """
+    km = cl.KMeans(n_clusters, **kwargs)
+    kmf = km.fit(data)
+
+    labels = kmf.labels_
+
+    return labels, [np.nan]

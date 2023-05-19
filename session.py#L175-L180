@@ -1,0 +1,6 @@
+def _send_custom_response(self, reply):
+        code, custom_response = reply
+        if self._is_multiline_reply(custom_response):
+            self.multiline_reply(code, custom_response)
+        else:
+            self.reply(code, custom_response)

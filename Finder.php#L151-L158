@@ -1,0 +1,8 @@
+protected function levenshteinUtf8($string1, $string2)
+    {
+        $charMap = array();
+        $string1 = $this->utf8ToExtendedAscii($string1, $charMap);
+        $string2 = $this->utf8ToExtendedAscii($string2, $charMap);
+
+        return levenshtein($string1, $string2);
+    }

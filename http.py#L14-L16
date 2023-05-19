@@ -1,0 +1,3 @@
+def deserialize(self, s, cls):
+        vals = json.JSONDecoder().decode(s)
+        return self.deserialize_map(vals, cls)

@@ -1,0 +1,25 @@
+def lookupChdbid( tableName, dbid=nil )
+      getSchema(dbid) if dbid
+      unmodifiedTableName = tableName.dup
+      @chdbid = findElementByAttributeValue( @chdbids, "name", formatChdbidName( tableName ) )
+      if @chdbid
+         @dbid = @chdbid.text
+         return @dbid
+      end
+      if @chdbids
+         chdbidArray = findElementsByAttributeName( @chdbids, "name" )
+         chdbidArray.each{ |chdbid|
+            if chdbid.has_text?
+               dbid = chdbid.text
+               getSchema( dbid )
+               name = getResponseElement( "table/name" )
+               if name and name.has_text? and name.text.downcase == unmodifiedTableName.downcase
+                  @chdbid = chdbid
+                  @dbid = dbid
+                  return @dbid
+               end
+            end
+         }
+      end
+      nil
+   end

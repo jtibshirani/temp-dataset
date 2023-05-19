@@ -1,0 +1,10 @@
+def execute
+      rank = 1
+      scores_unique_sorted.each_with_index { |score, index|
+        rankables_for_score = rankables_for_score(score)
+        rankables_for_score.each { |value|
+          create_ranking(rank, score, [value])
+          rank += 1
+        }
+      }
+    end

@@ -1,0 +1,9 @@
+def get_enum_from_name(self, enum_name):
+        """
+            Return an enum from a name
+        Args:
+            enum_name (str): name of the enum
+        Returns:
+            Enum
+        """
+        return next((e for e in self.enums if e.name == enum_name), None)

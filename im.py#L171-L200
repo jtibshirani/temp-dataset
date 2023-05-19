@@ -1,0 +1,30 @@
+def _do_put(self, uri, **kwargs):
+        """
+        Convinient method for POST requests
+        Returns http request status value from a POST request
+        """
+        #TODO:
+        # Add error handling. Check for HTTP status here would be much more conveinent than in each calling method
+        scaleioapi_put_headers = {'content-type':'application/json'}
+        print "_do_put()"
+        if kwargs:
+            for key, value in kwargs.iteritems():
+                #if key == 'headers':
+                #    scaleio_post_headers = value
+                #    print "Adding custom PUT headers"
+                if key == 'json':
+                    payload = value
+        try:
+            self.logger.debug("do_put(): " + "{}".format(uri))
+
+            #self._session.headers.update({'Content-Type':'application/json'})
+            response = self._session.put(url, headers=scaleioapi_put_headers, verify_ssl=self._im_verify_ssl, data=json.dumps(payload))
+            self.logger.debug("_do_put() - Response: " + "{}".format(response.text))
+            if response.status_code == requests.codes.ok:
+                return response
+            else:
+                self.logger.error("_do_put() - HTTP response error: " + "{}".format(response.status_code))
+                raise RuntimeError("_do_put() - HTTP response error" + response.status_code)
+        except:
+            raise RuntimeError("_do_put() - Communication error with ScaleIO gateway")
+        return response

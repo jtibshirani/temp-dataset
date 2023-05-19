@@ -1,0 +1,17 @@
+func (m *Matrix) Multiply(m2 *Matrix) (m3 *Matrix, err error) {
+	if m.stride*m2.stride != len(m2.elements) {
+		return nil, ErrDimensionMismatch
+	}
+
+	m3 = &Matrix{epsilon: m.epsilon, stride: m2.stride, elements: make([]float64, (len(m.elements)/m.stride)*m2.stride)}
+	for m1c0, m3x := 0, 0; m1c0 < len(m.elements); m1c0 += m.stride {
+		for m2r0 := 0; m2r0 < m2.stride; m2r0++ {
+			for m1x, m2x := m1c0, m2r0; m2x < len(m2.elements); m2x += m2.stride {
+				m3.elements[m3x] += m.elements[m1x] * m2.elements[m2x]
+				m1x++
+			}
+			m3x++
+		}
+	}
+	return
+}

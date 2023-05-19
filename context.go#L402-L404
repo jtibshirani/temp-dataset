@@ -1,0 +1,3 @@
+func (c *context) HTML(code int, html string) (err error) {
+	return c.HTMLBlob(code, []byte(html))
+}

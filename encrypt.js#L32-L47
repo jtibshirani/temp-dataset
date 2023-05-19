@@ -1,0 +1,16 @@
+OAuthEncryption.loadKey = function (key) {
+  if (key === null) {
+    gcmKey = null;
+    return;
+  }
+
+  if (! OAuthEncryption._isBase64(key))
+    throw new Error("The OAuth encryption key must be encoded in base64");
+
+  var buf = new Buffer(key, "base64");
+
+  if (buf.length !== 16)
+    throw new Error("The OAuth encryption AES-128-GCM key must be 16 bytes in length");
+
+  gcmKey = buf;
+};

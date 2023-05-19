@@ -1,0 +1,45 @@
+protected function hyphenate_word( $word, $hyphen, $hyphenate_title_case, $min_length, $min_before, $min_after ) {
+		// Quickly reference string functions according to encoding.
+		$f = Strings::functions( $word );
+		if ( empty( $f ) ) {
+			return $word; // unknown encoding, abort.
+		}
+
+		// Check word length.
+		$word_length = $f['strlen']( $word );
+		if ( $word_length < $min_length ) {
+			return $word;
+		}
+
+		// Trie lookup requires a lowercase search term.
+		$the_key = $f['strtolower']( $word );
+
+		// If this is a capitalized word, and settings do not allow hyphenation of such, abort!
+		// Note: This is different than uppercase words, where we are looking for title case.
+		if ( ! $hyphenate_title_case && $the_key !== $word ) {
+			return $word;
+		}
+
+		// Determine pattern.
+		if ( isset( $this->merged_exception_patterns[ $the_key ] ) ) {
+			// Give preference to exceptions.
+			$pattern = $this->merged_exception_patterns[ $the_key ];
+		} else {
+			// Lookup word pattern if there is no exception.
+			$pattern = $this->lookup_word_pattern( $the_key, $f['strlen'], $f['str_split'] );
+		}
+
+		// Add hyphen character based on pattern.
+		$word_parts      = $f['str_split']( $word, 1 );
+		$hyphenated_word = '';
+
+		for ( $i = 0; $i < $word_length; $i++ ) {
+			if ( isset( $pattern[ $i ] ) && self::is_odd( $pattern[ $i ] ) && ( $i >= $min_before ) && ( $i <= $word_length - $min_after ) ) {
+				$hyphenated_word .= $hyphen;
+			}
+
+			$hyphenated_word .= $word_parts[ $i ];
+		}
+
+		return $hyphenated_word;
+	}

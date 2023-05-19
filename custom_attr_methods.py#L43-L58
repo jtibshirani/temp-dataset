@@ -1,0 +1,16 @@
+def to_html(doc, output="/tmp", style="dep"):
+    """Doc method extension for saving the current state as a displaCy
+    visualization.
+    """
+    # generate filename from first six non-punct tokens
+    file_name = "-".join([w.text for w in doc[:6] if not w.is_punct]) + ".html"
+    html = displacy.render(doc, style=style, page=True)  # render markup
+    if output is not None:
+        output_path = Path(output)
+        if not output_path.exists():
+            output_path.mkdir()
+        output_file = Path(output) / file_name
+        output_file.open("w", encoding="utf-8").write(html)  # save to file
+        print("Saved HTML to {}".format(output_file))
+    else:
+        print(html)

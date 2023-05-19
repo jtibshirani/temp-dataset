@@ -1,0 +1,6 @@
+def pick(self):
+        while True:
+            idx = random.randint(0, len(self.values) - 1)
+            v, p = self.values[idx]
+            if p >= random.uniform(0, 1):
+                return v

@@ -1,0 +1,9 @@
+func (c *Controller) Get() mvc.View {
+	return mvc.View{
+		Name: "index.html",
+		Data: iris.Map{
+			"Layout":  c.Layout,
+			"Message": "Welcome to my website!",
+		},
+	}
+}

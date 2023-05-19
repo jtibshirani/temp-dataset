@@ -1,0 +1,3 @@
+def get_table_obj(self, name):
+        table = PostgreSQLTable(db=self.db, name=name, mode=self.mode)
+        return table

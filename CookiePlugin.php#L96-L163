@@ -1,0 +1,68 @@
+private function createCookie(RequestInterface $request, string $setCookieHeader): ?Cookie
+    {
+        $parts = array_map('trim', explode(';', $setCookieHeader));
+
+        if (empty($parts) || !strpos($parts[0], '=')) {
+            return null;
+        }
+
+        list($name, $cookieValue) = $this->createValueKey(array_shift($parts));
+
+        $maxAge = null;
+        $expires = null;
+        $domain = $request->getUri()->getHost();
+        $path = $request->getUri()->getPath();
+        $secure = false;
+        $httpOnly = false;
+
+        // Add the cookie pieces into the parsed data array
+        foreach ($parts as $part) {
+            list($key, $value) = $this->createValueKey($part);
+
+            switch (strtolower($key)) {
+                case 'expires':
+                    try {
+                        $expires = CookieUtil::parseDate($value);
+                    } catch (UnexpectedValueException $e) {
+                        throw new TransferException(
+                            sprintf(
+                                'Cookie header `%s` expires value `%s` could not be converted to date',
+                                $name,
+                                $value
+                            ),
+                            0,
+                            $e
+                        );
+                    }
+
+                    break;
+
+                case 'max-age':
+                    $maxAge = (int) $value;
+
+                    break;
+
+                case 'domain':
+                    $domain = $value;
+
+                    break;
+
+                case 'path':
+                    $path = $value;
+
+                    break;
+
+                case 'secure':
+                    $secure = true;
+
+                    break;
+
+                case 'httponly':
+                    $httpOnly = true;
+
+                    break;
+            }
+        }
+
+        return new Cookie($name, $cookieValue, $maxAge, $domain, $path, $secure, $httpOnly, $expires);
+    }

@@ -1,0 +1,5 @@
+func (c *context) setViewportImpl(width, height int) {
+	c.ensureGL()
+	gl := c.gl
+	gl.Call("viewport", 0, 0, width, height)
+}

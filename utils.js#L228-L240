@@ -1,0 +1,13 @@
+util.assertArityRange = function(min, max, args, query) {
+  var len;
+  if (Array.isArray(args)) {
+    len = args.length;
+  }
+  else {
+    len = 0;
+  }
+
+  if ((len < min) || (len > max)) {
+    util.arityRangeError(min, max, len, query);
+  }
+};

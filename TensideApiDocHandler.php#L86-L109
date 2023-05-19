@@ -1,0 +1,24 @@
+private function convertField($array)
+    {
+        $result = [];
+
+        // Copy over well known keys.
+        foreach (static::$convertFields as $key) {
+            if (isset($array[$key])) {
+                $result[$key] = $array[$key];
+            }
+        }
+
+        if (isset($array['dataType'])) {
+            $result['dataType'] = $this->inferType($array['dataType']);
+        } else {
+            $result['dataType'] = isset($array['children']) ? 'object' : DataTypes::STRING;
+        }
+
+        $result['required'] = isset($array['required']) && (bool) $array['required'];
+        $result['readonly'] = isset($array['readonly']) && (bool) $array['readonly'];
+
+        $result = $this->convertChildren($array, $result);
+
+        return $result;
+    }

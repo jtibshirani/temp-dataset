@@ -1,0 +1,15 @@
+private function pickFrom($generators, RandomRange $rand)
+    {
+        $acc = 0;
+        $frequencies = $this->frequenciesFrom($generators);
+        $random = $rand->rand(1, array_sum($frequencies));
+        foreach ($generators as $index => $generator) {
+            $acc += $generator['frequency'];
+            if ($random <= $acc) {
+                return [$index, $generator['generator']];
+            }
+        }
+        throw new Exception(
+            'Unable to pick a generator with frequencies: ' . var_export($frequencies, true)
+        );
+    }

@@ -1,0 +1,21 @@
+private function flushHeaders() {
+		$file = null; 
+		$line = null;
+		if (headers_sent($file, $line)) {
+			throw new \ErrorException('Response sent outside of n2n context', 
+					0, E_USER_ERROR, $file, $line);
+		}
+		
+		header('X-Powered-By: N2N/' . N2N::VERSION, false, $this->bufferedStatusCode);
+		
+		if ($this->bufferedHttpCacheControl !== null && $this->httpCachingEnabled) {
+			$this->bufferedHttpCacheControl->applyHeaders($this);
+		} else {
+			$httpCacheControl = new HttpCacheControl();
+			$httpCacheControl->applyHeaders($this);
+		}
+		
+		while (!is_null($header = array_pop($this->bufferedHeaders))) {
+			header($header->getHeaderStr(), $header->isReplace());
+		}
+	}

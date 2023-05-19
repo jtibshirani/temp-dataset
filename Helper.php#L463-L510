@@ -1,0 +1,48 @@
+public function fillSuggestions($suggestions)
+    {
+        $iNumberOfSuggestions = count($suggestions['default']);
+        if ($iNumberOfSuggestions > $this->shop['itemdetail_suggestions']) { // if there are more suggestions than should be displayed, randomly pick as many as to be shown
+            $aKeysSuggestions = array_rand($suggestions['default'], $this->shop['itemdetail_suggestions']); // get the array keys that will stay
+            foreach ($suggestions['default'] as $aSuggestionsKey => $aSuggestionsValue) { // iterate suggestions and remove those that which will not be kept
+                if (!in_array($aSuggestionsKey, $aKeysSuggestions)) {
+                    unset($suggestions['default'][$aSuggestionsKey]);
+                }
+            }
+
+            return $suggestions['default'];
+        }
+
+        // if less or equal continue here
+        $numAdditionalSuggs = count($suggestions['additional']);
+        if (
+            $numAdditionalSuggs > 0
+            && $iNumberOfSuggestions < $this->shop['itemdetail_suggestions']
+        ) { // if there are less suggestions than should be displayed and there are additional available
+            // how many more are needed?
+            $addSuggsRequired = $this->shop['itemdetail_suggestions'] - $iNumberOfSuggestions;
+            // see if there are more available than required, if so, pick as many as needed
+            if ($numAdditionalSuggs > $addSuggsRequired) {
+                // since array_rand returns a string and no array if there is only one row picked, we have to do this awkward dance
+                $keysAddSuggsTMP = array_rand($suggestions['additional'], $addSuggsRequired);
+                if (is_string($keysAddSuggsTMP) || is_int($keysAddSuggsTMP)) {
+                    $keysAddSuggsTMP = [$keysAddSuggsTMP];
+                }
+                // because array_rand will change numerical (string) values to integer, we have to do this awkward dance
+                foreach ($keysAddSuggsTMP as $key => $item) {
+                    $keysAddSuggs[] = (string)$item;
+                }
+
+                // iterate suggestions and remove those that which will not be kept
+                foreach ($suggestions['additional'] as $addSuggsKey => $addSuggsVal) {
+                    if (!in_array((string)$addSuggsKey, $keysAddSuggs, true)) {
+                        unset($suggestions['additional'][$addSuggsKey]);
+                    }
+                }
+            }
+            return array_merge($suggestions['default'], $suggestions['additional']); // merge
+        }
+
+        // if the number of default suggestions is not larger than configured and also not smaller, then it equals the
+        // configured amount, so lets return this then.
+        return $suggestions['default'];
+    }

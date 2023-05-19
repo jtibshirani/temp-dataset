@@ -1,0 +1,6 @@
+def fill_input_radio(self, value, skip_reset=False):
+        elm = self.form_elm.get_elm(xpath='//input[@type="radio"][@name="%s"][@value="%s"]' % (
+            self.elm_name,
+            self.convert_value(value),
+        ))
+        self._click_on_elm_or_his_ancestor(elm)

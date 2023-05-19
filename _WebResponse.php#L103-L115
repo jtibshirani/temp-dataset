@@ -1,0 +1,13 @@
+public static function _sendHTTPStatusCode($code, $customDescription = FALSE) {
+        if (!preg_match('/\d\d\d/', $code)) {
+            _Log::warn("Invalid status code: $code - Using default '200 OK' response");
+            $code = 200;
+        }
+
+        if ($customDescription === FALSE) {
+            $description = isset(_WebResponseIncludes::$STATUS_CODES[$code]) ? _WebResponseIncludes::$STATUS_CODES[$code] : '';
+        } else {
+            $description = $customDescription;
+        }
+        header("HTTP/1.0 $code $description");
+    }

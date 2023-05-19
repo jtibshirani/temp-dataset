@@ -1,0 +1,5 @@
+def initialize(self):
+        self.state = self.init_func()
+        if isinstance(self.state, xr.DataArray):
+            self.shape_info = {'dims': self.state.dims,
+                               'coords': self.state.coords}

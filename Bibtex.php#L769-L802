@@ -1,0 +1,34 @@
+function _determineCase($word)
+    {
+        $ret = -1;
+        $trimmedword = trim($word);
+        /*We need this variable. Without the next of would not work
+         (trim changes the variable automatically to a string!)*/
+        if (is_string($word) && (strlen($trimmedword) > 0)) {
+            $i = 0;
+            $found = false;
+            $openbrace = 0;
+            while (!$found && ($i <= strlen($word))) {
+                $letter = substr($trimmedword, $i, 1);
+                $ord = ord($letter);
+                if ($ord == 123) { //Open brace
+                    $openbrace++;
+                }
+                if ($ord == 125) { //Closing brace
+                    $openbrace--;
+                }
+                if (($ord >= 65) && ($ord <= 90) && (0 == $openbrace)) { //The first character is uppercase
+                    $ret = 1;
+                    $found = true;
+                } elseif (($ord >= 97) && ($ord <= 122) && (0 == $openbrace)) { //The first character is lowercase
+                    $ret = 0;
+                    $found = true;
+                } else { //Not yet found
+                    $i++;
+                }
+            }
+        } else {
+            throw new BibtexException('Could not determine case on word: ' . (string)$word);
+        }
+        return $ret;
+    }

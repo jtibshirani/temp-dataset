@@ -1,0 +1,13 @@
+def to_str(num):
+    if isinstance(num, dict):
+        s = sorted(num.items())
+        sp = num.get('_', '')
+        return (sp + ' ').join(to_str(v) for n, v in s if n != '_')
+    elif isinstance(num, float):
+        num = ('%0.03f' % round(num, 3)).rstrip('0').rstrip('.')
+        return num
+    elif isinstance(num, bool):
+        return 'true' if num else 'false'
+    elif num is None:
+        return ''
+    return str(num)

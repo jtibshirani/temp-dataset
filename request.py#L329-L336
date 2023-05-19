@@ -1,0 +1,8 @@
+def url(self) -> str:
+        """
+        path + query 的url
+        """
+        url_str = self.parse_url.path or ""
+        if self.parse_url.querystring is not None:
+            url_str += "?" + self.parse_url.querystring
+        return url_str

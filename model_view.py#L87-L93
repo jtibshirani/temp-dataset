@@ -1,0 +1,7 @@
+def _linreg_model(fitmodel):
+    output = "Linear regression model\n\n"
+    for k, v in result_iterator(fitmodel):
+        if k == "thetas":
+            output += "Thetas\n"
+            output += ", ".join(map(str, v)) + "\n\n"
+    return output

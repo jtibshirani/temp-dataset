@@ -1,0 +1,4 @@
+def get_group_count(group_id, failures=False):
+        if failures:
+            return Failure.objects.filter(group=group_id).count()
+        return Task.objects.filter(group=group_id).count()

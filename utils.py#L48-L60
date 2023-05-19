@@ -1,0 +1,13 @@
+def to_epoch(t):
+    """Take a datetime, either as a string or a datetime.datetime object,
+    and return the corresponding epoch"""
+    if isinstance(t, str):
+        if '+' not in t:
+            t = t + '+00:00'
+        t = parser.parse(t)
+    elif t.tzinfo is None or t.tzinfo.utcoffset(t) is None:
+        t = t.replace(tzinfo=pytz.timezone('utc'))
+
+    t0 = datetime.datetime(1970, 1, 1, 0, 0, 0, 0, pytz.timezone('utc'))
+    delta = t - t0
+    return int(delta.total_seconds())

@@ -1,0 +1,18 @@
+def parse_rc_json():
+    """ Reads the json configuration file(.yasirc.json), parses it and returns the
+    dictionary
+    """
+    fname = '.yasirc.json'
+    path = os.path.expanduser('~/' + fname)
+    if os.path.exists(fname):
+        path = os.path.abspath(fname)
+    elif not os.path.exists(path):
+        path = ''
+    content = ''
+    if path:
+        with open(path) as f:
+            content = f.read()
+    ret = {}
+    if content:
+        ret = json.loads(content)
+    return collections.defaultdict(dict, ret)

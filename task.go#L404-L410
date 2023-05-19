@@ -1,0 +1,7 @@
+func (t *task) getProcess(id string) *process {
+	t.Lock()
+	p := t.processes[id]
+	t.Unlock()
+
+	return p
+}

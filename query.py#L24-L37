@@ -1,0 +1,14 @@
+def _regex_span(_regex, _str, case_insensitive=True):
+    """Return all matches in an input string.
+    :rtype : regex.match.span
+    :param _regex: A regular expression pattern.
+    :param _str: Text on which to run the pattern.
+    """
+    if case_insensitive:
+        flags = regex.IGNORECASE | regex.FULLCASE | regex.VERSION1
+    else:
+        flags = regex.VERSION1
+    comp = regex.compile(_regex, flags=flags)
+    matches = comp.finditer(_str)
+    for match in matches:
+        yield match

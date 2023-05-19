@@ -1,0 +1,4 @@
+func (a *String) Contains(substring string) *String {
+	return a.isTrue(strings.Contains(a.actual, substring),
+		"Expected string <%s> to contain <%s>, but didn't.", a.actual, substring)
+}

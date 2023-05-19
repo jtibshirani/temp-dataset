@@ -1,0 +1,16 @@
+def union_elements(elements):
+    """elements = [(chr, s, e, id), ...], this is to join elements that have a
+    deletion in the 'to' species
+    """
+
+    if len(elements) < 2: return elements
+    assert set( [e[3] for e in elements] ) == set( [elements[0][3]] ), "more than one id"
+    el_id = elements[0][3]
+
+    unioned_elements = []
+    for ch, chgrp in groupby(elements, key=itemgetter(0)):
+        for (s, e) in elem_u( np.array([itemgetter(1, 2)(_) for _ in chgrp], dtype=np.uint) ):
+            if (s < e):
+                unioned_elements.append( (ch, s, e, el_id) )
+    assert len(unioned_elements) <= len(elements)
+    return unioned_elements

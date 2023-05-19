@@ -1,0 +1,17 @@
+function jscoverage_createLink(file, line) {
+  var link = document.createElement("a");
+  link.href = '#';
+  link.onclick = jscoverage_createHandler(file, line);
+
+  var text;
+  if (line) {
+    text = line.toString();
+  }
+  else {
+    text = file;
+  }
+
+  link.appendChild(document.createTextNode(text));
+
+  return link;
+}

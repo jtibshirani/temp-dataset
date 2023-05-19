@@ -1,0 +1,9 @@
+utils.without = function(array, value) {
+    function filter(v) {
+        return v !== value;
+    };
+
+    return array.filter ?
+        array.filter(filter) :
+        utils.filter(array, filter);
+};

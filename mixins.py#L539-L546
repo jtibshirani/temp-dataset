@@ -1,0 +1,8 @@
+def value(self):
+        if not self.partial:
+            self.full.wait()
+        try:
+            return self.average(self.queue)
+        except (ZeroDivisionError, ValueError):
+            # No data == inactive value
+            return 0.0

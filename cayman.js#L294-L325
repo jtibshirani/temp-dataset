@@ -1,0 +1,32 @@
+cayman.prototype.parse = function( argv ) {
+	// Заголовок программы //
+	this.header();
+
+	if ( argv.length === 2 ) {
+		// Программа вызвана без аргументов //
+		this.help();
+	} else {
+		// Определение команды //
+		if ( this.commands[ argv[ 2 ] ] ) {
+			this.cmd  = this.commands[ argv[ 2 ] ];
+			this.argv = parse_arguments.call( this, argv );
+
+			// Если удалось распарсить параметры программы //
+			if ( this.argv ) {
+				// Выполнение действий, связанных с параметрами //
+				for ( var i = 0; i < actions_quee.length; i++ ) {
+					actions_quee[ i ].action( actions_quee[ i ].value );
+				}
+
+				// Выполнение выбранной команды //
+				if ( this.cmd.action ) {
+					this.cmd.action.call( this, this.argv );
+				}
+			} else {
+				console.log();
+			}
+		} else {
+			console.log( '  Command not found, see help.' );
+		}
+	}
+};

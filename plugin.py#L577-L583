@@ -1,0 +1,7 @@
+def set_working_directory(self, dirname):
+        """Set current working directory.
+        In the workingdirectory and explorer plugins.
+        """
+        if dirname:
+            self.main.workingdirectory.chdir(dirname, refresh_explorer=True,
+                                             refresh_console=False)

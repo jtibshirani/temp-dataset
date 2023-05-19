@@ -1,0 +1,25 @@
+def virtual_memory():
+    total, free, buffers, shared, _, _ = _psutil_linux.get_sysinfo()
+    cached = active = inactive = None
+    f = open('/proc/meminfo', 'r')
+    try:
+        for line in f:
+            if line.startswith('Cached:'):
+                cached = int(line.split()[1]) * 1024
+            elif line.startswith('Active:'):
+                active = int(line.split()[1]) * 1024
+            elif line.startswith('Inactive:'):
+                inactive = int(line.split()[1]) * 1024
+            if cached is not None \
+            and active is not None \
+            and inactive is not None:
+                break
+        else:
+            raise RuntimeError("line(s) not found")
+    finally:
+        f.close()
+    avail = free + buffers + cached
+    used = total - free
+    percent = usage_percent((total - avail), total, _round=1)
+    return nt_virtmem_info(total, avail, percent, used, free,
+                           active, inactive, buffers, cached)

@@ -1,0 +1,10 @@
+def pprint(j, no_pretty):
+    """
+    Prints as formatted JSON
+    """
+    if not no_pretty:
+        click.echo(
+            json.dumps(j, cls=PotionJSONEncoder, sort_keys=True, indent=4, separators=(",", ": "))
+        )
+    else:
+        click.echo(j)

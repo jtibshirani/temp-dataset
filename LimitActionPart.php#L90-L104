@@ -1,0 +1,15 @@
+public function initFromArray(array $data) {
+
+        $this->traitInitFromArray($data);
+
+        if (!empty($data['total'])) {
+            $this->setTotal((new LimitAmount())->initFromArray($data['total']));
+        }
+
+        if (!empty($data['remaining'])) {
+            $this->setRemaining((new LimitAmount())->initFromArray($data['remaining']));
+        }
+
+        return $this;
+
+    }

@@ -1,0 +1,29 @@
+protected function getTextFromHtml($htmlCode)
+    {
+        $document = new \DOMDocument();
+
+        $okay = $document->loadHTML($htmlCode);
+
+        // Cannot load HTML document, not a valid HTML document
+        if (!$okay) {
+            return null;
+        }
+
+        $bodyElements = $document->getElementsByTagName('body');
+
+        // Cannot find body-Element, not a valid HTML-Document
+        if (sizeof($bodyElements) != 1) {
+            return null;
+        }
+
+        /** @var \DOMElement $bodyElement */
+        $bodyElement = $bodyElements[0];
+        $text = $bodyElement->nodeValue;
+
+        // Notes:
+        // - It is not necessary to use some kind of "mb_trim()" function since trim() works with unicode chars
+        // - We know that the server will add \n chars but no \r chars
+        $text = str_replace("\n", ' - ', trim($text));
+
+        return $text;
+    }

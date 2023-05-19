@@ -1,0 +1,32 @@
+public static function validateCustomDateRange(
+        $startDateString,
+        $endDateString
+    ) {
+        $startDate = DateTime::createFromFormat('Ymd', $startDateString);
+        $warningsFound = !empty(DateTime::getLastErrors()['warnings']);
+
+        // If parsing fails with errors, the `$startDate` will be `false`.
+        // If parsing succeeds, there could still be warnings indicating that
+        // the parsed result might not be what the original string represents.
+        //
+        // For example: the string '20180231' will be parsed as March 3rd
+        // 2018 with a warning of 'The parsed date is invalid'.
+        if (false === $startDate || $warningsFound) {
+            return ValidationResult::fail('The start date must be a valid' .
+                ' date and follow YYYYMMDD format.');
+        }
+
+        $endDate = DateTime::createFromFormat('Ymd', $endDateString);
+        $warningsFound = !empty(DateTime::getLastErrors()['warnings']);
+        if (false === $endDate || $warningsFound) {
+            return ValidationResult::fail('The end date must be a valid date' .
+                ' and follow YYYYMMDD format.');
+        }
+
+        if ($endDate < $startDate) {
+            return ValidationResult::fail('The end date must not be prior to' .
+                ' the start date.');
+        }
+
+        return ValidationResult::pass();
+    }

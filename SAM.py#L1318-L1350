@@ -1,0 +1,33 @@
+def kmeans_clustering(self, numc, X=None, npcs=15):
+        """Performs k-means clustering.
+
+        Parameters
+        ----------
+        numc - int
+            Number of clusters
+
+        npcs - int, optional, default 15
+            Number of principal components to use as inpute for k-means
+            clustering.
+
+        """
+
+        from sklearn.cluster import KMeans
+        if X is None:
+            D_sub = self.adata.uns['X_processed']
+            X = (
+                D_sub -
+                D_sub.mean(0)).dot(
+                self.adata.uns['pca_obj'].components_[
+                    :npcs,
+                    :].T)
+            save = True
+        else:
+            save = False
+
+        cl = KMeans(n_clusters=numc).fit_predict(Normalizer().fit_transform(X))
+
+        if save:
+            self.adata.obs['kmeans_clusters'] = pd.Categorical(cl)
+        else:
+            return cl

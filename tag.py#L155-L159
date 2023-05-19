@@ -1,0 +1,5 @@
+def innerHTML(self) -> str:
+        """Get innerHTML of the inner node."""
+        if self._inner_element:
+            return self._inner_element.innerHTML
+        return super().innerHTML

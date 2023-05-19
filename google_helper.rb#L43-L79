@@ -1,0 +1,37 @@
+def download(sheet_obj_list, export_format:, export_to:)
+      FileUtils.mkdir_p(export_to) unless File.directory?(export_to)
+      remove_old_files(from: export_to)
+      authorization = authorize
+      begin
+        case export_format
+        when 'csv'
+          sheet_obj_list.each do |sheet_obj|
+            sheet_name = sheet_obj.sheetname
+            file_path = File.expand_path("#{sheet_name}.csv", export_to)
+            csv = open("https://docs.google.com/spreadsheets/d/#{self.spreadsheet_id}/gviz/tq?tqx=out:csv&sheet=#{sheet_name}&access_token=#{authorization.access_token}")
+            IO.copy_stream(csv, file_path)
+          end
+        when 'xlsx'
+          service = Google::Apis::DriveV3::DriveService.new
+          service.client_options.application_name = APPLICATION_NAME
+          service.authorization = authorization
+          service.export_file(self.spreadsheet_id,
+                              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                              download_dest: self.xlsx_path)
+        end
+
+        if Dir["#{export_to}/*"].any?
+          puts 'Download from google finished'.green
+        else
+          ErrorUtil::DownloadFromGoogleFail.new.raise
+        end
+      rescue Google::Apis::AuthorizationError => e
+        failauth
+      rescue Google::Apis::ClientError => e
+        failauth
+      rescue Google::Apis::ServerError => e
+        failauth
+      rescue => execption
+        ErrorUtil.raise(execption)
+      end
+    end

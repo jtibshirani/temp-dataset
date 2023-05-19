@@ -1,0 +1,16 @@
+def time_with_offset(time)
+      time = sanitize(time)
+
+      utc = utc_to_local(time)
+      offset = utc_offset(time)
+
+      Time.new(
+        utc.year,
+        utc.month,
+        utc.day,
+        utc.hour,
+        utc.min,
+        utc.sec + utc.subsec,
+        offset
+      )
+    end

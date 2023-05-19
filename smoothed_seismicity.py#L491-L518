@@ -1,0 +1,28 @@
+def write_to_csv(self, filename):
+        '''
+        Exports to simple csv
+
+        :param str filename:
+            Path to file for export
+        '''
+        fid = open(filename, 'wt')
+        # Create header list
+        header_info = ['Longitude', 'Latitude', 'Depth', 'Observed Count',
+                       'Smoothed Rate', 'b-value']
+        writer = csv.DictWriter(fid, fieldnames=header_info)
+        headers = dict((name0, name0) for name0 in header_info)
+        # Write to file
+        writer.writerow(headers)
+        for row in self.data:
+            # institute crude compression by omitting points with no seismicity
+            # and taking advantage of the %g format
+            if row[4] == 0:
+                continue
+            row_dict = {'Longitude': '%g' % row[0],
+                        'Latitude': '%g' % row[1],
+                        'Depth': '%g' % row[2],
+                        'Observed Count': '%d' % row[3],
+                        'Smoothed Rate': '%.6g' % row[4],
+                        'b-value': '%g' % self.bval}
+            writer.writerow(row_dict)
+        fid.close()

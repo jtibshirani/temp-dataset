@@ -1,0 +1,4 @@
+def get_description(self, view, status_code):
+        if status_code in (status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN):
+            return ''
+        return view.get_view_description(html=True)

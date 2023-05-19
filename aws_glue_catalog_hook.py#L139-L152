@@ -1,0 +1,14 @@
+def get_table_location(self, database_name, table_name):
+        """
+        Get the physical location of the table
+
+        :param database_name: Name of hive database (schema) @table belongs to
+        :type database_name: str
+        :param table_name: Name of hive table
+        :type table_name: str
+        :return: str
+        """
+
+        table = self.get_table(database_name, table_name)
+
+        return table['StorageDescriptor']['Location']

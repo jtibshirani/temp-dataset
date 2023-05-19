@@ -1,0 +1,8 @@
+exports.formatRelative = function (date, format, now) {
+        var parsedDate = new Date(date);
+        if (!underscore_1.isDate(parsedDate))
+            throw new TypeError("A date or timestamp must be provided to {{formatRelative}}");
+        return getCachedRelativeFormat(locale, format).format(parsedDate, {
+            now: now || new Date()
+        });
+    };

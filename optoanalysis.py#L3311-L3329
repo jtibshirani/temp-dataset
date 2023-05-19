@@ -1,0 +1,19 @@
+def _GetRealImagArray(Array):
+    """
+    Returns the real and imaginary components of each element in an array and returns them in 2 resulting arrays.
+
+    Parameters
+    ----------
+    Array : ndarray
+        Input array
+
+    Returns
+    -------
+    RealArray : ndarray
+        The real components of the input array
+    ImagArray : ndarray
+        The imaginary components of the input array
+    """
+    ImagArray = _np.array([num.imag for num in Array])
+    RealArray = _np.array([num.real for num in Array])
+    return RealArray, ImagArray

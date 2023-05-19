@@ -1,0 +1,16 @@
+func (t *TopK) Elements() []*Element {
+	if t.elements.Len() == 0 {
+		return make([]*Element, 0)
+	}
+
+	elements := make(elementHeap, t.elements.Len())
+	copy(elements, *t.elements)
+	heap.Init(&elements)
+	topK := make([]*Element, 0, t.k)
+
+	for elements.Len() > 0 {
+		topK = append(topK, heap.Pop(&elements).(*Element))
+	}
+
+	return topK
+}

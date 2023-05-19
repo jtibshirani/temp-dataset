@@ -1,0 +1,9 @@
+public function setDistinct($isDistinct)
+    {
+        if (true === $isDistinct) {
+            $this->query['distinct'] = true;
+        } else {
+            $this->query['distinct'] = false;
+        }
+        return $this;
+    }

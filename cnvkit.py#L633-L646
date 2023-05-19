@@ -1,0 +1,14 @@
+def _add_plots_to_output(out, data):
+    """Add CNVkit plots summarizing called copy number values.
+    """
+    out["plot"] = {}
+    diagram_plot = _add_diagram_plot(out, data)
+    if diagram_plot:
+        out["plot"]["diagram"] = diagram_plot
+    scatter = _add_scatter_plot(out, data)
+    if scatter:
+        out["plot"]["scatter"] = scatter
+    scatter_global = _add_global_scatter_plot(out, data)
+    if scatter_global:
+        out["plot"]["scatter_global"] = scatter_global
+    return out

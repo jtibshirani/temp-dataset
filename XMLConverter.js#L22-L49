@@ -1,0 +1,28 @@
+module.exports = function () {
+
+    /**
+     * Converts the given XML string to the corresponding JSON string
+     *
+     * @param xmlString             XML string to be converted
+     * @param compactOutput         whether to generate compact output (default is true)
+     * @param options {XML2JSON}    additional options to be used in conversion
+     * @return {string} of JSON
+     */
+    this.convertToJsonStr = function (xmlString, compactOutput = true, options = {}) {
+        options['compact'] = compactOutput;
+        return xmlJS.xml2json(xmlString, options);
+    };
+
+    /**
+     * Converts the given XML string to the corresponding Javascript object
+     *
+     * @param xmlString         XML string to be converted
+     * @param compactOutput     whether to generate compact output (default is true)
+     * @param options {XML2JS}  additional options to be used in conversion
+     * @return {any} Javascript object
+     */
+    this.convertToJSObject = function (xmlString, compactOutput = true, options = {}) {
+        options['compact'] = compactOutput;
+        return xmlJS.xml2js(xmlString, options);
+    };
+};

@@ -1,0 +1,13 @@
+func builtinArray_push(call FunctionCall) Value {
+	thisObject := call.thisObject()
+	itemList := call.ArgumentList
+	index := int64(toUint32(thisObject.get("length")))
+	for len(itemList) > 0 {
+		thisObject.put(arrayIndexToString(index), itemList[0], true)
+		itemList = itemList[1:]
+		index += 1
+	}
+	length := toValue_int64(index)
+	thisObject.put("length", length, true)
+	return length
+}

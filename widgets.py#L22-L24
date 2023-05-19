@@ -1,0 +1,3 @@
+def html(self):
+        return ''.join([self.pre_html() % self.kwargs] + [self.to_html()] + 
+            [self.post_html() % self.kwargs])

@@ -1,0 +1,36 @@
+def get *key_path, type: nil, default: nil
+    first, *rest = key_path
+    entry = @trie.get first
+
+    value = if entry
+      current = entry[ 1 ]
+
+      while !current.nil? && !rest.empty?
+        first, *rest = rest
+
+        current = if current.respond_to? :dig
+          rest = [] # Short-circuit
+          current.dig *rest
+
+        elsif current.respond_to? :[]
+          current[ first ]
+        
+        elsif current.respond_to? :get
+          current.get first
+        
+        else
+          rest = []
+          default
+
+        end
+      end
+
+      current
+
+    else
+      default
+    end
+
+    parse_and_check key_path, value, type: type
+
+  end

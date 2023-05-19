@@ -1,0 +1,13 @@
+def adjust_for_elb(resp)
+      return resp unless from_elb?
+
+      # ELB requires statusCode to be an Integer whereas API Gateway requires statusCode to be a String
+      status = resp["statusCode"] = resp["statusCode"].to_i
+
+      # ELB also requires statusDescription attribute
+      status_desc = Rack::Utils::HTTP_STATUS_CODES[status]
+      status_desc = status_desc.nil? ? status.to_s : "#{status} #{status_desc}"
+      resp["statusDescription"] = status_desc
+
+      resp
+    end

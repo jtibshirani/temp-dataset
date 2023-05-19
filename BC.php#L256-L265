@@ -1,0 +1,10 @@
+public function convertHexToDec($hex)
+    {
+        if (strlen($hex) < 5) {
+            return hexdec($hex);
+        }
+
+        list($remain, $last) = array(substr($hex, 0, -1), substr($hex, -1));
+
+        return bcadd(bcmul('16', $this->convertHexToDec($remain)), hexdec($last));
+    }

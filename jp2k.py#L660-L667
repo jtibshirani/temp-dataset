@@ -1,0 +1,8 @@
+def _validate_image_datatype(self, img_array):
+        """
+        Only uint8 and uint16 images are currently supported.
+        """
+        if img_array.dtype != np.uint8 and img_array.dtype != np.uint16:
+            msg = ("Only uint8 and uint16 datatypes are currently supported "
+                   "when writing.")
+            raise RuntimeError(msg)

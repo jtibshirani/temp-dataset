@@ -1,0 +1,15 @@
+def chk_unique(old, new, ctx):
+    # do not check the unique argument string; check the parsed unique instead
+    # i_unique is not set in groupings; ignore
+    if not hasattr(old, 'i_unique') or not hasattr(new, 'i_unique'):
+        return
+    oldunique = []
+    for (u, l) in old.i_unique:
+        oldunique.append((u, [s.arg for s in l]))
+    for (u, l) in new.i_unique:
+        # check if this unique was present before
+        o = util.keysearch([s.arg for s in l], 1, oldunique)
+        if o is not None:
+            oldunique.remove(o)
+        else:
+            err_def_added(u, ctx)

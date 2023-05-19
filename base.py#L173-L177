@@ -1,0 +1,5 @@
+def get_exe_path(cls):
+        """
+        Return the full path to the executable.
+        """
+        return os.path.abspath(os.path.join(ROOT, cls.bmds_version_dir, cls.exe + ".exe"))

@@ -1,0 +1,17 @@
+def parseline(self, line):
+        cmd, arg, line = Cmd.parseline(self, line)
+        if cmd and cmd.strip() != '':
+            dof = getattr(self, 'do_' + cmd, None)
+            argf = getattr(self, 'args_' + cmd, None)
+        else:
+            argf = None
+        if argf:
+            parser = argparse.ArgumentParser(
+                prog=cmd,
+                description=getattr(dof, '__doc__', None))
+            argf(parser)
+            try:
+                arg = parser.parse_args(shlex.split(arg))
+            except SystemExit, e:
+                return '', '', ''
+        return cmd, arg, line

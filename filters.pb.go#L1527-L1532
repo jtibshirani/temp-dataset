@@ -1,0 +1,6 @@
+func (m *ApplicationDateFilter) GetEndDate() *date.Date {
+	if m != nil {
+		return m.EndDate
+	}
+	return nil
+}

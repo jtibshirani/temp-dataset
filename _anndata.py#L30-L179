@@ -1,0 +1,150 @@
+def scatter(
+        adata,
+        x=None,
+        y=None,
+        color=None,
+        use_raw=None,
+        layers='X',
+        sort_order=True,
+        alpha=None,
+        basis=None,
+        groups=None,
+        components=None,
+        projection='2d',
+        legend_loc='right margin',
+        legend_fontsize=None,
+        legend_fontweight=None,
+        color_map=None,
+        palette=None,
+        frameon=None,
+        right_margin=None,
+        left_margin=None,
+        size=None,
+        title=None,
+        show=None,
+        save=None,
+        ax=None):
+    """\
+    Scatter plot along observations or variables axes.
+
+    Color the plot using annotations of observations (`.obs`), variables
+    (`.var`) or expression of genes (`.var_names`).
+
+    Parameters
+    ----------
+    adata : :class:`~anndata.AnnData`
+        Annotated data matrix.
+    x : `str` or `None`
+        x coordinate.
+    y : `str` or `None`
+        y coordinate.
+    color : string or list of strings, optional (default: `None`)
+        Keys for annotations of observations/cells or variables/genes, e.g.,
+        `'ann1'` or `['ann1', 'ann2']`.
+    use_raw : `bool`, optional (default: `None`)
+        Use `raw` attribute of `adata` if present.
+    layers : `str` or tuple of strings, optional (default: `X`)
+        Use the `layers` attribute of `adata` if present: specify the layer for
+        `x`, `y` and `color`. If `layers` is a string, then it is expanded to
+        `(layers, layers, layers)`.
+    basis : {{'pca', 'tsne', 'umap', 'diffmap', 'draw_graph_fr', etc.}}
+        String that denotes a plotting tool that computed coordinates.
+    {scatter_temp}
+    {show_save_ax}
+
+    Returns
+    -------
+    If `show==False` a :class:`~matplotlib.axes.Axes` or a list of it.
+    """
+    if basis is not None:
+        axs = _scatter_obs(
+            adata=adata,
+            x=x,
+            y=y,
+            color=color,
+            use_raw=use_raw,
+            layers=layers,
+            sort_order=sort_order,
+            alpha=alpha,
+            basis=basis,
+            groups=groups,
+            components=components,
+            projection=projection,
+            legend_loc=legend_loc,
+            legend_fontsize=legend_fontsize,
+            legend_fontweight=legend_fontweight,
+            color_map=color_map,
+            palette=palette,
+            frameon=frameon,
+            right_margin=right_margin,
+            left_margin=left_margin,
+            size=size,
+            title=title,
+            show=show,
+            save=save,
+            ax=ax)
+    elif x is not None and y is not None:
+        if ((x in adata.obs.keys() or x in adata.var.index)
+            and (y in adata.obs.keys() or y in adata.var.index)
+            and (color is None or color in adata.obs.keys() or color in adata.var.index)):
+            axs = _scatter_obs(
+                adata=adata,
+                x=x,
+                y=y,
+                color=color,
+                use_raw=use_raw,
+                layers=layers,
+                sort_order=sort_order,
+                alpha=alpha,
+                basis=basis,
+                groups=groups,
+                components=components,
+                projection=projection,
+                legend_loc=legend_loc,
+                legend_fontsize=legend_fontsize,
+                legend_fontweight=legend_fontweight,
+                color_map=color_map,
+                palette=palette,
+                frameon=frameon,
+                right_margin=right_margin,
+                left_margin=left_margin,
+                size=size,
+                title=title,
+                show=show,
+                save=save,
+                ax=ax)
+        elif ((x in adata.var.keys() or x in adata.obs.index)
+                and (y in adata.var.keys() or y in adata.obs.index)
+                and (color is None or color in adata.var.keys() or color in adata.obs.index)):
+            axs = _scatter_var(
+                adata=adata,
+                x=x,
+                y=y,
+                color=color,
+                use_raw=use_raw,
+                layers=layers,
+                sort_order=sort_order,
+                alpha=alpha,
+                basis=basis,
+                groups=groups,
+                components=components,
+                projection=projection,
+                legend_loc=legend_loc,
+                legend_fontsize=legend_fontsize,
+                legend_fontweight=legend_fontweight,
+                color_map=color_map,
+                palette=palette,
+                frameon=frameon,
+                right_margin=right_margin,
+                left_margin=left_margin,
+                size=size,
+                title=title,
+                show=show,
+                save=save,
+                ax=ax)
+        else:
+            raise ValueError(
+                '`x`, `y`, and potential `color` inputs must all come from either `.obs` or `.var`')
+    else:
+        raise ValueError('Either provide a `basis` or `x` and `y`.')
+    return axs

@@ -1,0 +1,13 @@
+def requeue_job(self, job, queue, priority, delayed_for=None):
+        """
+        Requeue a job in a queue with the given priority, possibly delayed
+        """
+        job.requeue(queue_name=queue._cached_name,
+                    priority=priority,
+                    delayed_for=delayed_for,
+                    queue_model=self.queue_model)
+
+        if hasattr(job, 'on_requeued'):
+            job.on_requeued(queue)
+
+        self.log(self.job_requeue_message(job, queue))

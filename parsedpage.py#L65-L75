@@ -1,0 +1,11 @@
+def _filter_by_regex(self, regex, text, group=1):
+        """Filter @text by @regex."""
+        match = re.search(
+            regex,
+            text,
+            re.MULTILINE
+        )
+
+        return match.group(group).strip() if (
+            match and match.groups()
+        ) else text

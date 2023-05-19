@@ -1,0 +1,6 @@
+private function getProductImagesAsImageArray(string $variantCode) : array
+    {
+        return array_map(function (ProductImage $productImage) use ($variantCode) {
+            return $this->imageToArray($this->convertImage($productImage, $variantCode), $productImage->getLabel());
+        }, iterator_to_array($this->getOriginalProduct()->getImages()));
+    }

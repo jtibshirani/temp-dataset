@@ -1,0 +1,2 @@
+def pprint_json(json_raw):
+    print(json.dumps(json.loads(json_raw), indent=2, sort_keys=True))

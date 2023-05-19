@@ -1,0 +1,7 @@
+def deserialize_json(cls, serialized_json):
+        '''Return a macaroon deserialized from a string
+        @param serialized_json The string to decode {str}
+        @return {Macaroon}
+        '''
+        serialized = json.loads(serialized_json)
+        return Macaroon.from_dict(serialized)

@@ -1,0 +1,6 @@
+def parse_binary(self, data, display):
+        class_type, length = struct.unpack('=HH', data[:4])
+        class_struct = INFO_CLASSES.get(class_type, AnyInfo)
+        class_data, _ = class_struct.parse_binary(data, display)
+        data = data[length * 4:]
+        return class_data, data

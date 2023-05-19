@@ -1,0 +1,86 @@
+public function unzip()
+	{
+		if ($this->intIndex < 0)
+		{
+			$this->first();
+		}
+
+		$strName = $this->arrFiles[$this->intIndex]['file_name'];
+
+		// Encrypted files are not supported
+		if ($this->arrFiles[$this->intIndex]['general_purpose_bit_flag'] & 0x0001)
+		{
+			throw new \Exception("File $strName is encrypted");
+		}
+
+		// Reposition pointer
+		if (@fseek($this->resFile, $this->arrFiles[$this->intIndex]['offset_of_local_header']) !== 0)
+		{
+			throw new \Exception("Cannot reposition pointer");
+		}
+
+		$strSignature = @fread($this->resFile, 4);
+
+		// Not a file
+		if ($strSignature != self::FILE_SIGNATURE)
+		{
+			throw new \Exception("$strName is not a compressed file");
+		}
+
+		// Get extra field length
+		fseek($this->resFile, 24, SEEK_CUR);
+		$arrEFL = unpack('v', @fread($this->resFile, 2));
+
+		// Reposition pointer
+		fseek($this->resFile, ($this->arrFiles[$this->intIndex]['file_name_length'] + $arrEFL[1]), SEEK_CUR);
+
+		// Empty file
+		if ($this->arrFiles[$this->intIndex]['compressed_size'] < 1)
+		{
+			return '';
+		}
+
+		// Read data
+		$strBuffer = @fread($this->resFile, $this->arrFiles[$this->intIndex]['compressed_size']);
+
+		// Decompress data
+		switch ($this->arrFiles[$this->intIndex]['compression_method'])
+		{
+			// Stored
+			case 0:
+				break;
+
+			// Deflated
+			case 8:
+				$strBuffer = gzinflate($strBuffer);
+				break;
+
+			// BZIP2
+			case 12:
+				if (!\extension_loaded('bz2'))
+				{
+					throw new \Exception('PHP extension "bz2" required to decompress BZIP2 files');
+				}
+				$strBuffer = bzdecompress($strBuffer);
+				break;
+
+			// Unknown
+			default:
+				throw new \Exception('Unknown compression method');
+				break;
+		}
+
+		// Check uncompressed data
+		if ($strBuffer === false)
+		{
+			throw new \Exception('Could not decompress data');
+		}
+
+		// Check uncompressed size
+		if (\strlen($strBuffer) != $this->arrFiles[$this->intIndex]['uncompressed_size'])
+		{
+			throw new \Exception('Size of the uncompressed file does not match header value');
+		}
+
+		return $strBuffer;
+	}

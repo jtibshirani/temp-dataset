@@ -1,0 +1,6 @@
+def _import_parents_from_xml(self, xml):
+        parents = xml.iterfind('parent')
+        for p in parents:
+            for o in p:
+                # Store a tuple of orgid, identifier
+                self._parents.append( o.attrib['frameid'] ) #( o.attrib['orgid'],  ) )

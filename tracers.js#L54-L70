@@ -1,0 +1,17 @@
+DebugTracer.prototype.record = function (traces) {
+    var self = this;
+
+    traces.forEach(function(tuple) {
+      var trace, annotations;
+
+      trace = tuple[0];
+      annotations = tuple[1];
+
+      formatters.formatForRestkin([[trace, annotations]], function(err, json) {
+        self.destination.write('--- Trace ---\n');
+        // pretty print the json
+        self.destination.write(json);
+        self.destination.write('\n');
+      });
+    });
+  };

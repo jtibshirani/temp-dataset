@@ -1,0 +1,5 @@
+def sanitize_enum(self, enum):
+        for name, enumeratorlist in enum.children():
+            for name, enumerator in enumeratorlist.children():
+                enumerator.value = c_ast.Constant('dummy', '...')
+        return enum

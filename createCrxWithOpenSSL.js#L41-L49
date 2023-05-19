@@ -1,0 +1,9 @@
+function removePEMHeaderAndFooter(pem) {
+      var result, lines = pem.split('\n');
+      lines = lines.slice(1, lines.length-1);
+      lines.forEach(function(part, index, theArray) {
+        theArray[index] = part.trim();
+      });
+      result = lines.join('');
+      return result;
+    }

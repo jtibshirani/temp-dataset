@@ -1,0 +1,14 @@
+def decode_longitude(self, longitude):
+        match = RE_LONGITUDE.match(longitude)
+        if not match:
+            raise ParserError('Reading longitude failed')
+
+        longitude = int(match.group(1)) + float(match.group(2)) / 60.
+
+        if not (0 <= longitude <= 180):
+            raise ParserError('Longitude out of bounds')
+
+        if match.group(3).upper() == 'W':
+            longitude = -longitude
+
+        return longitude

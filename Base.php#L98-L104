@@ -1,0 +1,7 @@
+public static function isWord($word)
+    {
+        if (!is_string($word)) {
+            return false;
+        }
+        return (bool) preg_match(self::WORD_FILTER, $word);
+    }

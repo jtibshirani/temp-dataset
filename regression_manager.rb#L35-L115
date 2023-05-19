@@ -1,0 +1,81 @@
+def run(options = {})
+      options = {
+        build_reference:      true,
+        send_email:           false,
+        email_all_developers: false,
+        report_results:       false,
+        uses_lsf:             true
+      }.merge(options)
+      options = load_options if running_in_reference_workspace?
+      targets = prepare_targets(options)
+      if running_in_reference_workspace?
+        Origen.lsf.clear_all
+        yield options
+        wait_for_completion(options) if options[:uses_lsf]
+        save_and_delete_output
+      else
+        if options[:build_reference]
+          @reference_tag = version_to_tag(options[:version] || get_version(options))
+          # passing the options for regression to the setup reference workspace method.
+          setup_reference_workspace(options)
+          # Generate the reference files
+          save_options(options)
+          Origen.with_origen_root(reference_origen_root) do
+            disable_origen_version_check do
+              Dir.chdir reference_origen_root do
+                Bundler.with_clean_env do
+                  system 'rm -rf lbin'
+                  # If regression is run using a service account, we need to setup the path/bundler manually
+                  # The regression manager needs to be passed a --service_account option when initiated.
+                  if options[:service_account]
+                    puts "Running with a service account, setting up the workspace manually now, assuming it runs BASH!! <-- can't assume bash always"
+                    puts 'This is not an ideal way, need to discuss. Though, a normal user will never set service_account to true'
+                    # Future enhancement, probably add the sourcing of files in a service_origen_setup file.
+                    # Check if service_origen_setup exists, if it does, load/execute the file. If not, ask user to provide it.
+                    # If running as a service account, service_origen_setup file is NOT optional.
+                    # More enhancements to come on this bit of code, but if someone finds a better cleaner way, I am happy to discuss the issues I have seen and come up with a solution.
+                    system 'source ~/.bash_profile'
+                    system 'source ~/.bashrc.user'
+                    system 'bundle install --gemfile Gemfile --binstubs lbin --path ~/.origen/gems/' # this needs to be executed as 'origen -v' does not seem to handle it on its own.
+                    system 'origen -v' # Let origen handle the gems installation and bundler setup.
+                  else
+                    if Origen.site_config.gem_manage_bundler
+                      system 'origen -v'
+                      system 'bundle install' # Make sure bundle updates the necessary config/gems required for Origen.
+                      system 'origen m debug'
+                    else
+                      system 'bundle install' # Make sure bundle updates the necessary config/gems required for Origen.
+                      system 'bundle exec origen -v'
+                      system 'origen m debug'
+                    end
+                  end
+                  Origen.log.info '######################################################'
+                  Origen.log.info 'running regression command in reference workspace...'
+                  Origen.log.info '######################################################'
+                  Origen.log.info
+                  if Origen.site_config.gem_manage_bundler
+                    system 'origen regression'
+                  else
+                    system 'bundle exec origen regression'
+                  end
+                end
+              end
+            end
+          end
+        end
+        # Generate the latest files for comparison
+        Origen.lsf.clear_all
+        Origen.log.info '######################################################'
+        Origen.log.info 'running regression command in local workspace...'
+        Origen.log.info '######################################################'
+        Origen.log.info
+        yield options
+        wait_for_completion(options) if options[:uses_lsf]
+        summarize_results(options)
+
+        # call exit code false to force process fail
+        unless Origen.app.stats.clean_run?
+          exit 1
+        end
+      end
+    end

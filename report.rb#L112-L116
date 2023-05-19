@@ -1,0 +1,5 @@
+def save(filename)
+      report_file = File.expand_path filename
+      File.open(report_file, 'w'){|f| f.write(@html)}
+      Log.info "Result saved into file #{report_file}"
+    end

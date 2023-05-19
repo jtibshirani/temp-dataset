@@ -1,0 +1,7 @@
+def tag_to_dict(html):
+    """Extract tag's attributes into a `dict`."""
+
+    element = document_fromstring(html).xpath("//html/body/child::*")[0]
+    attributes = dict(element.attrib)
+    attributes["text"] = element.text_content()
+    return attributes

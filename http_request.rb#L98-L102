@@ -1,0 +1,5 @@
+def parse_json(s)
+      JSON.parse(s)
+    rescue JSON::ParserError => e
+      raise Error, "failed to parse JSON response: #{e}"
+    end

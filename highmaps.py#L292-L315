@@ -1,0 +1,24 @@
+def set_map_source(self, map_src, jsonp_map = False):
+        """set map data 
+        use if the mapData is loaded directly from a https source
+        the map_src is the https link for the mapData
+        geojson (from jsonp) or .js formates are acceptable
+        default is js script from highcharts' map collection: https://code.highcharts.com/mapdata/
+        """
+
+        if not map_src:
+            raise OptionTypeError("No map source input, please refer to: https://code.highcharts.com/mapdata/")
+        
+        if  jsonp_map:
+            self.jsonp_map_flag = True
+            self.map = 'geojson'
+            self.jsonp_map_url = json.dumps(map_src)
+        else:
+            self.add_JSsource(map_src)
+            map_name = self._get_jsmap_name(map_src)
+            self.map = 'geojson'
+            self.jsmap = self.map + ' = Highcharts.geojson(' + map_name + ');'
+            self.add_JSscript('var ' + self.jsmap, 'head')
+
+        if self.data_temp:
+            self.data_temp[0].__options__().update({'mapData': MapObject(self.map)})

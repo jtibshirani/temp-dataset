@@ -1,0 +1,10 @@
+func networkSysctlSet(path string, value string) error {
+	// Get current value
+	current, err := networkSysctlGet(path)
+	if err == nil && current == value {
+		// Nothing to update
+		return nil
+	}
+
+	return ioutil.WriteFile(fmt.Sprintf("/proc/sys/net/%s", path), []byte(value), 0)
+}

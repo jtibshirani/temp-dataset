@@ -1,0 +1,12 @@
+function pickMem (opts) {
+  if (!opts || !opts.memoize) {
+    return MEMO
+  } else if (opts.memoize.get && opts.memoize.set) {
+    return opts.memoize
+  } else if (typeof opts.memoize === 'object') {
+    PROX.obj = opts.memoize
+    return PROX
+  } else {
+    return null
+  }
+}

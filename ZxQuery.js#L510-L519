@@ -1,0 +1,10 @@
+ZxQuery.prototype.checked = function(check) {
+    if (util.isNoU(check)) {
+        const checked = this._selection[0].checked;
+        return (checked != null && checked != 'false' && (checked || checked == 'checked'));
+    }
+    this.each(function(k, el) {
+        el.checked = check;
+    });
+    return this;
+};

@@ -1,0 +1,12 @@
+func ToDynamicJSON(data interface{}) interface{} {
+	// TODO: convert straight to a json typed map (mergo + iterate?)
+	b, err := json.Marshal(data)
+	if err != nil {
+		log.Println(err)
+	}
+	var res interface{}
+	if err := json.Unmarshal(b, &res); err != nil {
+		log.Println(err)
+	}
+	return res
+}

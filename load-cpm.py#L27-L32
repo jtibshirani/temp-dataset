@@ -1,0 +1,6 @@
+def colorize(img, heatmap):
+    """ img: bgr, [0,255]
+        heatmap: [0,1]
+    """
+    heatmap = viz.intensity_to_rgb(heatmap, cmap='jet')[:, :, ::-1]
+    return img * 0.5 + heatmap * 0.5

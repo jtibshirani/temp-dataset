@@ -1,0 +1,13 @@
+func (s unicodeString) substring(start, end int64) valueString {
+	ss := s[start:end]
+	for _, c := range ss {
+		if c >= utf8.RuneSelf {
+			return unicodeString(ss)
+		}
+	}
+	as := make([]byte, end-start)
+	for i, c := range ss {
+		as[i] = byte(c)
+	}
+	return asciiString(as)
+}

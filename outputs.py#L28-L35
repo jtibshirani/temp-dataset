@@ -1,0 +1,8 @@
+def save(self):
+        filename_list = self.output['source']['filenames']
+        file_path_list = [
+            os.path.join(
+                self.working_dir, filename)
+            for filename in filename_list]
+        self.import_manager.import_result_file_list(
+            self.output, file_path_list, retry=True)

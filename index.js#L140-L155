@@ -1,0 +1,16 @@
+function readPropertiesSync(propertiesPath){
+    const fs = require('fs');
+    // 读取并解析plugin.properties文件
+    const content = fs.readFileSync(propertiesPath, 'utf-8');
+    const regexjing = /\s*(#+)/; // 去除注释行的正则
+    const regexkong = /\s*=\s*/; // 去除=号前后的空格的正则
+    const obj = {}; // 存储键值对
+    let arrCase = null;
+    const regexline = /.+/g; // 匹配换行符以外的所有字符的正则
+    while (!_.isEmpty(arrCase = regexline.exec(content))) { // 过滤掉空行
+        if (!regexjing.test(arrCase)) { // 去除注释行
+            obj[arrCase.toString().split(regexkong)[0]] = arrCase.toString().split(regexkong)[1].split(';')[0]; // 存储键值对
+        }
+    }
+    return obj;
+}

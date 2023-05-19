@@ -1,0 +1,76 @@
+def to_pdf(
+        self,
+        outFileName,
+        imageFileName=None,
+        showBoundingboxes=False,
+        fontname="Helvetica",
+        invisibleText=False,
+        interwordSpaces=False,
+    ):
+        """
+        Creates a PDF file with an image superimposed on top of the text.
+        Text is positioned according to the bounding box of the lines in
+        the hOCR file.
+        The image need not be identical to the image used to create the hOCR
+        file.
+        It can have a lower resolution, different color mode, etc.
+        """
+        # create the PDF file
+        # page size in points (1/72 in.)
+        pdf = Canvas(outFileName, pagesize=(self.width, self.height), pageCompression=1)
+
+        # draw bounding box for each paragraph
+        # light blue for bounding box of paragraph
+        pdf.setStrokeColorRGB(0, 1, 1)
+        # light blue for bounding box of paragraph
+        pdf.setFillColorRGB(0, 1, 1)
+        pdf.setLineWidth(0)  # no line for bounding box
+        for elem in self.hocr.findall(".//%sp[@class='%s']" % (self.xmlns, "ocr_par")):
+
+            elemtxt = self._get_element_text(elem).rstrip()
+            if len(elemtxt) == 0:
+                continue
+
+            pxl_coords = self.element_coordinates(elem)
+            pt = self.pt_from_pixel(pxl_coords)
+
+            # draw the bbox border
+            if showBoundingboxes:
+                pdf.rect(
+                    pt.x1, self.height - pt.y2, pt.x2 - pt.x1, pt.y2 - pt.y1, fill=1
+                )
+
+        found_lines = False
+        for line in self.hocr.findall(
+            ".//%sspan[@class='%s']" % (self.xmlns, "ocr_line")
+        ):
+            found_lines = True
+            self._do_line(
+                pdf,
+                line,
+                "ocrx_word",
+                fontname,
+                invisibleText,
+                interwordSpaces,
+                showBoundingboxes,
+            )
+
+        if not found_lines:
+            # Tesseract did not report any lines (just words)
+            root = self.hocr.find(".//%sdiv[@class='%s']" % (self.xmlns, "ocr_page"))
+            self._do_line(
+                pdf,
+                root,
+                "ocrx_word",
+                fontname,
+                invisibleText,
+                interwordSpaces,
+                showBoundingboxes,
+            )
+        # put the image on the page, scaled to fill the page
+        if imageFileName is not None:
+            pdf.drawImage(imageFileName, 0, 0, width=self.width, height=self.height)
+
+        # finish up the page and save it
+        pdf.showPage()
+        pdf.save()

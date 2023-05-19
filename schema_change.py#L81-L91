@@ -1,0 +1,11 @@
+def get_connection(engine, host, user, port, password, database, ssl={}):
+    """ Returns a PostgreSQL or MySQL connection """
+
+    if engine == 'mysql':
+        # Connection
+        return get_mysql_connection(host, user, port, password, database, ssl)
+    elif engine == 'postgresql':
+        # Connection
+        return get_pg_connection(host, user, port, password, database, ssl)
+    else:
+        raise RuntimeError('`%s` is not a valid engine.' % engine)

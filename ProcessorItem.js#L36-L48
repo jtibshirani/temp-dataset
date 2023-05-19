@@ -1,0 +1,13 @@
+ProcessorItem.getId = function getId(processorId, collection) {
+    if (!processorId) {
+        return null;
+    }
+
+    const foundItem = collection.find(item => item.processor.id === processorId);
+
+    if (!foundItem) {
+        return null;
+    }
+
+    return foundItem._id;
+};

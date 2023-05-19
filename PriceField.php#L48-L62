@@ -1,0 +1,15 @@
+protected function combineArrayPermutations(array $input, array $processed = null): array
+    {
+        $permutations = [];
+        foreach($input as $key => $value) {
+            $copy = $processed ?? [];
+            $copy[$key] = $value;
+            $tmp = \array_diff_key($input, $copy);
+            if (\count($tmp) === 0) {
+                $permutations[] = $copy;
+            } else {
+                $permutations = array_merge($permutations, $this->combineArrayPermutations($tmp, $copy));
+            }
+        }
+        return $permutations;
+    }

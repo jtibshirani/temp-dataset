@@ -1,0 +1,16 @@
+def select_timeout(type, timeout)
+      if timeout >= 0
+        if type == :read
+          read_array = [@socket]
+        else
+          write_array = [@socket]
+        end
+
+        start = Time.now
+        if IO.select(read_array, write_array, [@socket], timeout)
+          waited = Time.now - start
+          return timeout - waited
+        end
+      end
+      raise SocketTimeout, "#{type} timeout"
+    end

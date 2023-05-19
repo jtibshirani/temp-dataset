@@ -1,0 +1,18 @@
+def _raise_from_invalid_response(error):
+    """Re-wrap and raise an ``InvalidResponse`` exception.
+
+    :type error: :exc:`google.resumable_media.InvalidResponse`
+    :param error: A caught exception from the ``google-resumable-media``
+                  library.
+
+    :raises: :class:`~google.cloud.exceptions.GoogleCloudError` corresponding
+             to the failed status code
+    """
+    response = error.response
+    error_message = str(error)
+
+    message = u"{method} {url}: {error}".format(
+        method=response.request.method, url=response.request.url, error=error_message
+    )
+
+    raise exceptions.from_http_status(response.status_code, message, response=response)

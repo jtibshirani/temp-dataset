@@ -1,0 +1,33 @@
+def clustering(iterations)
+			iterations.times do
+				array2 = []
+				for i in 0...@num_rows
+					array = []
+					@cluster_centroids.each do |cluster|
+						array << (@dataset_matrix.row(i)-cluster).r
+					end
+					array2 << array
+				end
+
+				hash = {}
+				for i in 0...@num_rows
+					hash[@dataset_matrix.row(i)] = array2[i].index(array2[i].min)
+				end
+
+				@cluster_centroids.each_index do |index|
+					set("@cluster_#{index}", Array.new)
+				end
+
+				@cluster_centroids.each_index do |index|
+					hash.each do |key,value|
+						if value == index
+							get("@cluster_#{index}") << key
+						end
+					end
+				end
+
+				@cluster_centroids.each_index do |index|
+					@cluster_centroids[index] = media(get("@cluster_#{index}"))
+				end
+			end
+		end

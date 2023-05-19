@@ -1,0 +1,21 @@
+def confusion_matrix(actual=[], pred=[]):
+    idx = {
+        'ADJ' : 0,
+        'ADV' : 1,
+        'CONJ': 2,
+        'DET' : 3,
+        'NOUN': 4,
+        'NUM' : 5,
+        'OTH' : 6,
+        'PART': 7,
+        'PRON': 8,
+        'SYM' : 9,
+        'VERB': 10
+    }
+
+    matrix = [[0 for i in range(11)] for j in range(11)]
+
+    for i in range(0, len(actual)):
+       matrix[idx[actual[i]]][idx[pred[i]]] += 1
+    
+    return matrix

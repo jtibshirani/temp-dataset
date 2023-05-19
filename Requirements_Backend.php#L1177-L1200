@@ -1,0 +1,24 @@
+protected function parseCombinedFile($file)
+    {
+        // Array with path and type keys
+        if (is_array($file) && isset($file['path']) && isset($file['type'])) {
+            return array($file['path'], $file['type']);
+        }
+
+        // Extract value from indexed array
+        if (is_array($file)) {
+            $path = array_shift($file);
+
+            // See if there's a type specifier
+            if ($file) {
+                $type = array_shift($file);
+                return array($path, $type);
+            }
+
+            // Otherwise convent to string
+            $file = $path;
+        }
+
+        $type = File::get_file_extension($file);
+        return array($file, $type);
+    }

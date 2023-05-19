@@ -1,0 +1,15 @@
+def convert_cell_config
+      puts '-- Converting cells into unique fixed nestable elements.'
+
+      YAML.load_file(cells_config_file).each do |cell|
+        append_to_file Rails.root.join('config', 'alchemy', 'elements.yml') do
+          <<-CELL.strip_heredoc
+
+            - name: #{cell['name']}
+              fixed: true
+              unique: true
+              nestable_elements: [#{cell['elements'].join(', ')}]
+          CELL
+        end
+      end
+    end

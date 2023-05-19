@@ -1,0 +1,7 @@
+def _parse_enumerated_value(self, enumerated_value_node):
+        return SVDEnumeratedValue(
+            name=_get_text(enumerated_value_node, 'name'),
+            description=_get_text(enumerated_value_node, 'description'),
+            value=_get_int(enumerated_value_node, 'value'),
+            is_default=_get_int(enumerated_value_node, 'isDefault')
+        )

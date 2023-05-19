@@ -1,0 +1,9 @@
+XDR.prototype.readIntArray = function readIntArray() {
+    var arr = [];
+    var num = this.readInt();
+
+    for (var i = 0; i < num; i++)
+        arr.push(this.readInt());
+
+    return (arr);
+};

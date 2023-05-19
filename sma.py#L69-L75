@@ -1,0 +1,7 @@
+def get_monitor_observables(self, name):
+        try:
+            lines = self.items(name)
+        except NoSectionError:
+            return []
+        lines = [ItemLine(key, value) for key, value in lines]
+        return get_observables_from_lines(lines)

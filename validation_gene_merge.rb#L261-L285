@@ -1,0 +1,25 @@
+def slope(xx, yy, weights = nil)
+      weights = Array.new(hits.length, 1) if weights.nil?
+
+      # calculate the slope
+      xx_weighted = xx.each_with_index.map { |x, i| x * weights[i] }
+      yy_weighted = yy.each_with_index.map { |y, i| y * weights[i] }
+
+      denominator = weights.reduce(0) { |a, e| a + e }
+
+      x_mean = xx_weighted.reduce(0) { |a, e| a + e } / (denominator + 0.0)
+      y_mean = yy_weighted.reduce(0) { |a, e| a + e } / (denominator + 0.0)
+
+      numerator = (0...xx.length).reduce(0) do |a, e|
+        a + (weights[e] * (xx[e] - x_mean) * (yy[e] - y_mean))
+      end
+
+      denominator = (0...xx.length).reduce(0) do |a, e|
+        a + (weights[e] * ((xx[e] - x_mean)**2))
+      end
+
+      slope = numerator / (denominator + 0.0)
+      y_intercept = y_mean - (slope * x_mean)
+
+      [y_intercept, slope]
+    end

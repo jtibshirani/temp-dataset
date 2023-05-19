@@ -1,0 +1,9 @@
+DateHelper.prototype.format = function(date, format)
+{
+    if (!format) {
+        format = date;
+        date = new Date();
+    }
+
+    return this.moment(date).format(format);
+};

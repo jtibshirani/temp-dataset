@@ -1,0 +1,17 @@
+def website(app=None, mode='home', subcontext='UserGuide'):
+    """
+    Returns the website location for projex software.
+    
+    :param      app  | <str> || None
+                mode | <str> (home, docs, blog, dev)
+    
+    :return     <str>
+    """
+    base_url = WEBSITES.get(mode, '')
+
+    if app and base_url:
+        opts = {'app': app, 'base_url': base_url}
+        base_url = SUBCONTEXT_MAP.get((mode, subcontext), base_url)
+        base_url %= opts
+
+    return base_url

@@ -1,0 +1,6 @@
+def EvalBinomialPmf(k, n, p):
+    """Evaluates the binomial pmf.
+
+    Returns the probabily of k successes in n trials with probability p.
+    """
+    return scipy.stats.binom.pmf(k, n, p)

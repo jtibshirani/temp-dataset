@@ -1,0 +1,9 @@
+public function setHidden($pValue = self::PROTECTION_INHERIT) {
+		if ($this->_isSupervisor) {
+			$styleArray = $this->getStyleArray(array('hidden' => $pValue));
+			$this->getActiveSheet()->getStyle($this->getSelectedCells())->applyFromArray($styleArray);
+		} else {
+			$this->_hidden = $pValue;
+		}
+		return $this;
+    }

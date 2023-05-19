@@ -1,0 +1,5 @@
+def do_save(self, fname):
+        self.save_file(fname)
+        self.currentfile = fname
+        self.is_changed = False
+        logger.info(_('Project saved to {0}').format(fname))

@@ -1,0 +1,13 @@
+def make_jsonrpc_call(self, url, method, params):
+        client = HTTPClient()
+        body = json.dumps({
+            "jsonrpc": "2.0",
+            "method": method,
+            "params": params,
+            "id": "".join([random.choice(string.ascii_letters) for _ in range(10)])
+        })
+
+        request = HTTPRequest(url, method="POST", headers={"content-type": "application/json"},
+                              body=body)
+        result = client.fetch(request)
+        return result

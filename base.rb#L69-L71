@@ -1,0 +1,3 @@
+def neq(other)
+      Sass::Script::Value::Bool.new(!eq(other).to_bool)
+    end

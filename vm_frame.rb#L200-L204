@@ -1,0 +1,5 @@
+def enumnext(arg)
+      enum = @enum_stack.last
+      stack.push Types::String.new(enum[0][enum[1]])
+      enum[1] += 1
+    end

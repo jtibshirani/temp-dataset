@@ -1,0 +1,2 @@
+def urlEncode(self, url, path, params=[]):
+        return url + path + '?' + urllib.parse.urlencode(params)

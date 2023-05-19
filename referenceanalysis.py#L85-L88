@@ -1,0 +1,4 @@
+def toPdf(self):
+        html = safe_unicode(self.template()).encode('utf-8')
+        pdf_data = createPdf(html)
+        return pdf_data

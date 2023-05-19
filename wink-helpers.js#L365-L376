@@ -1,0 +1,12 @@
+var evaluate = function ( truth, guess ) {
+    // If prediction failed then return false!
+    if ( guess === unknown || !labelsObj[ truth ] || !labelsObj[ guess ] ) return false;
+    // Update confusion matrix.
+    if ( guess === truth ) {
+      cm[ truth ][ guess ] += 1;
+    } else {
+      cm[ guess ][ truth ] += 1;
+    }
+    evaluated = true;
+    return true;
+  }; // evaluate()

@@ -1,0 +1,15 @@
+def process_species(x)
+      return if page_title(x).match(/Wikispecies/i)
+      items = find_species_components(x)
+      if items
+        @data << {
+          taxonId: page_id(x),
+          canonicalForm: page_title(x),
+          scientificName: page_title(x),
+          classificationPath: [],
+          vernacularNames: [] }
+        get_full_scientific_name(items)
+        get_vernacular_names(items)
+        init_classification_path(items)
+      end
+    end

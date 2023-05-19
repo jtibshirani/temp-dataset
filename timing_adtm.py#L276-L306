@@ -1,0 +1,31 @@
+def tempoAdjust2(self, tempoFactor):
+    """
+    Adjust tempo by aggregating active basal cell votes for pre vs. post
+
+    :param tempoFactor: scaling signal to MC clock from last sequence item
+    :return: adjusted scaling signal
+    """
+
+    late_votes = (len(self.adtm.getNextBasalPredictedCells()) - len(self.apicalIntersect)) * -1
+    early_votes = len(self.apicalIntersect)
+    votes = late_votes + early_votes
+    print('vote tally', votes)
+
+    if votes > 0:
+      tempoFactor = tempoFactor * 0.5
+      print 'speed up'
+
+    elif votes < 0:
+      tempoFactor = tempoFactor * 2
+      print 'slow down'
+
+    elif votes == 0:
+      print 'pick randomly'
+      if random.random() > 0.5:
+        tempoFactor = tempoFactor * 0.5
+        print 'random pick: speed up'
+      else:
+        tempoFactor = tempoFactor * 2
+        print 'random pick: slow down'
+
+    return tempoFactor

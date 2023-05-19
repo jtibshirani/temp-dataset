@@ -1,0 +1,16 @@
+var getLocation = function (latitudeField, longitudeField) {
+			var latitude = L.Util.getFieldValue(record, latitudeField);
+			var longitude = L.Util.getFieldValue(record, longitudeField);
+			var location = null;
+
+			if (latitude && longitude) {
+				var latlng = new L.LatLng(latitude, longitude);
+				location = {
+					location: latlng,
+					text: [latlng.lat.toFixed(3),latlng.lng.toFixed(3)].join(', '),
+					center: latlng
+				};
+			}
+
+			return location;
+		};

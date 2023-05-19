@@ -1,0 +1,4 @@
+def call_filter(filter, val)
+    filter.is_a?(Proc) ? filter.call(val) :
+      val.respond_to?(Array(filter)[0]) ? val.send(*filter) : Filters.send(filter, val)
+  end

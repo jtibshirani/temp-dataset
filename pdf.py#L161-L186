@@ -1,0 +1,26 @@
+def add_to_writer(self,
+                      writer: PdfFileWriter,
+                      start_recto: bool = True) -> None:
+        """
+        Add the PDF described by this class to a PDF writer.
+
+        Args:
+            writer: a :class:`PyPDF2.PdfFileWriter`
+            start_recto: start a new right-hand page?
+
+        """
+        if self.is_html:
+            pdf = get_pdf_from_html(
+                html=self.html,
+                header_html=self.header_html,
+                footer_html=self.footer_html,
+                wkhtmltopdf_filename=self.wkhtmltopdf_filename,
+                wkhtmltopdf_options=self.wkhtmltopdf_options)
+            append_memory_pdf_to_writer(pdf, writer, start_recto=start_recto)
+        elif self.is_filename:
+            if start_recto and writer.getNumPages() % 2 != 0:
+                writer.addBlankPage()
+            writer.appendPagesFromReader(PdfFileReader(
+                open(self.filename, 'rb')))
+        else:
+            raise AssertionError("PdfPlan: shouldn't get here!")

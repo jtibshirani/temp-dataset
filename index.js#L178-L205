@@ -1,0 +1,28 @@
+function addCanvasSurface() {
+    var modifier = new Modifier({
+        size: [100, 100],
+        align: [0, 0],
+        origin: [0, 0],
+        transform: Transform.translate(0, 200)
+    });
+
+    var surface = new CanvasSurface({
+        canvasSize: [200, 200],
+        properties: {
+            backgroundColor: '#aeaeae'
+        }
+    });
+
+    surface.on('deploy', function() {
+        // test drawing: white circle
+        var ctx = surface.getContext('2d');
+        var w = surface.getSize()[0]; // half of canvas width
+        ctx.beginPath();
+        ctx.arc(w, w, 30, -0.5 * Math.PI, 1.5 * Math.PI);
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 10;
+        ctx.stroke();
+    });
+
+    ctx.add(modifier).add(surface);
+}

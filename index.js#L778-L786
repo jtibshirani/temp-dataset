@@ -1,0 +1,9 @@
+function isEmptyArray(val) {
+	if (Array.isArray(val)) {
+		return !val.length;
+	}
+	if (val && typeof val.length === 'number') {
+		return !val.length;
+	}
+	return false;
+}

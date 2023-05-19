@@ -1,0 +1,8 @@
+def get_edges(self, node):
+        return [
+            (node, child)
+            for child in self.get_children(node)
+        ] + [
+            (parent, node)
+            for parent in self.get_parents(node)
+        ]

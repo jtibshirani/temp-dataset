@@ -1,0 +1,38 @@
+def plotscatter(irrad: xarray.Dataset, c1: Dict[str, Any], log: bool = False):
+
+    fg = figure()
+    axs = fg.subplots(2, 1, sharex=True)
+
+    transtxt = 'Transmittance'
+
+    ax = axs[0]
+    ax.plot(irrad.wavelength_nm, irrad['transmission'].squeeze())
+    ax.set_title(transtxt)
+    ax.set_ylabel('Transmission (unitless)')
+    ax.grid(True)
+    ax.legend(irrad.angle_deg.values)
+
+    ax = axs[1]
+    if plotNp:
+        Np = (irrad['pathscatter']*10000) * (irrad.wavelength_nm*1e9)/(h*c)
+        ax.plot(irrad.wavelength_nm, Np)
+        ax.set_ylabel('Photons [s$^{-1}$ '+UNITS)
+    else:
+        ax.plot(irrad.wavelength_nm, irrad['pathscatter'].squeeze())
+        ax.set_ylabel('Radiance [W '+UNITS)
+
+    ax.set_xlabel('wavelength [nm]')
+    ax.set_title('Single-scatter Path Radiance')
+    ax.invert_xaxis()
+    ax.autoscale(True, axis='x', tight=True)
+    ax.grid(True)
+
+    if log:
+        ax.set_yscale('log')
+#        ax.set_ylim(1e-8,1)
+
+    try:
+        fg.suptitle(f'Obs. to Space: zenith angle: {c1["angle"]} deg., ')
+        # {datetime.utcfromtimestamp(irrad.time.item()/1e9)}
+    except (AttributeError, TypeError):
+        pass

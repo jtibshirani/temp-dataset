@@ -1,0 +1,3 @@
+def scatterplot(self, x, y, **kw):
+        """plot after clearing current plot """
+        self.panel.scatterplot(x, y, **kw)

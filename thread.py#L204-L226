@@ -1,0 +1,23 @@
+def get_pid(self):
+        """
+        @rtype:  int
+        @return: Parent process global ID.
+
+        @raise WindowsError: An error occured when calling a Win32 API function.
+        @raise RuntimeError: The parent process ID can't be found.
+        """
+        if self.dwProcessId is None:
+            if self.__process is not None:
+                # Infinite loop if self.__process is None
+                self.dwProcessId = self.get_process().get_pid()
+            else:
+                try:
+                    # I wish this had been implemented before Vista...
+                    # XXX TODO find the real ntdll call under this api
+                    hThread = self.get_handle(
+                                        win32.THREAD_QUERY_LIMITED_INFORMATION)
+                    self.dwProcessId = win32.GetProcessIdOfThread(hThread)
+                except AttributeError:
+                    # This method really sucks :P
+                    self.dwProcessId = self.__get_pid_by_scanning()
+        return self.dwProcessId

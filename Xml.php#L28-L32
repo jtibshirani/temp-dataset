@@ -1,0 +1,5 @@
+public function toArray()
+	{
+		$xml = simplexml_load_string($this->asXML(), 'SimpleXMLElement', LIBXML_NOCDATA);
+		return json_decode(json_encode((array) $xml), true);
+	}

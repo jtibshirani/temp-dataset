@@ -1,0 +1,6 @@
+def pid
+      return nil unless is_window?
+      process_id = 0.chr * 4
+      GetWindowThreadProcessId(handle, process_id)
+      process_id = process_id.unpack('L').first
+    end

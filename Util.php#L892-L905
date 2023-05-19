@@ -1,0 +1,14 @@
+public static function unzip($zip_file, $extract_path = null) {
+        $zip = new \ZipArchive;
+        if ($zip->open($zip_file)) {
+            if (!$extract_path) {
+                $path_info = pathinfo($zip_file);
+                $extract_path = $path_info['dirname'].DS;
+            }
+
+            $zip->extractTo($extract_path);
+            $zip->close();
+            return true;
+
+        } return false;
+    }

@@ -1,0 +1,16 @@
+public function unsubscribeAction() {
+        $id = $this->params('id');
+        if($id){
+            /** @var DistributionRecord $distributionRecord */
+            $distributionRecord = $this->getEntityRepository()->find($id);
+            if (!$distributionRecord) {
+                throw new \Exception("Distribution Record not found");
+            }
+            $distributionRecord->setSubscription(self::SUBSCRIPTION_INACTIVE);
+            $distributionListId = $distributionRecord->getDistributionList()->getId();
+            $this->getEm()->persist($distributionRecord);
+            $this->getEm()->flush();
+            $this->flashMessenger()->addSuccessMessage('Se canceló correctamente la suscripción del contacto "' . $distributionRecord->getEmail() . '" en la lista "' . $distributionRecord->getDistributionList()->getNameList() . '".');
+        }
+        return $this->redirect()->toUrl('/email-campaigns/distribution-record/grid/'.$distributionListId);
+    }

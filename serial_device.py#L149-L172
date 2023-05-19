@@ -1,0 +1,24 @@
+def write(self, data):
+        """
+        Writes data to the device.
+
+        :param data: data to write
+        :type data: string
+
+        :raises: py:class:`~alarmdecoder.util.CommError`
+        """
+        try:
+            # Hack to support unicode under Python 2.x
+            if isinstance(data, str) or (sys.version_info < (3,) and isinstance(data, unicode)):
+                data = data.encode('utf-8')
+
+            self._device.write(data)
+
+        except serial.SerialTimeoutException:
+            pass
+
+        except serial.SerialException as err:
+            raise CommError('Error writing to device.', err)
+
+        else:
+            self.on_write(data=data)

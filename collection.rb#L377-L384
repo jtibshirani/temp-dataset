@@ -1,0 +1,8 @@
+def join_special_params
+      # some params use comma-joined strings instead of query-based arrays for multiple values
+      @options.each do |k, v|
+        if SPECIALLY_JOINED_PARAMS.include?(k.to_sym) && v.is_a?(Array)
+          @options[k] = v.join(',')
+        end
+      end
+    end

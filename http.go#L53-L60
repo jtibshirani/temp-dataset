@@ -1,0 +1,8 @@
+func HTTPStatusCode(err error) int {
+	e, ok := err.(Error)
+	if ok {
+		return e.Type().HTTPStatusCode()
+	}
+
+	return http.StatusInternalServerError
+}

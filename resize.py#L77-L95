@@ -1,0 +1,19 @@
+def get_filter(self):
+        new_filter = self.input_buffer['filter'].peek()
+        if not new_filter:
+            return False
+        if new_filter == self.filter_frame:
+            return True
+        self.send('filter', new_filter)
+        filter_coefs = new_filter.as_numpy(dtype=numpy.float32)
+        if filter_coefs.ndim != 3:
+            self.logger.warning('Filter input must be 3 dimensional')
+            return False
+        ylen, xlen = filter_coefs.shape[:2]
+        if (xlen % 2) != 1 or (ylen % 2) != 1:
+            self.logger.warning('Filter input must have odd width & height')
+            return False
+        self.filter_frame = new_filter
+        self.filter_coefs = filter_coefs
+        self.fil_count = None
+        return True

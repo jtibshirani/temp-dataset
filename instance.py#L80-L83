@@ -1,0 +1,4 @@
+def get_ip(self):
+        if self._ip is None:
+            self._ip = self.fetch_ip()
+        return self._ip

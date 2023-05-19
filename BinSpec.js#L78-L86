@@ -1,0 +1,9 @@
+it('bin2pos should throw with illegal parameters', function () {
+    // when
+    var bin2posFixed = function () { mapper_200.bin2pos(1e9) };
+    var bin2posUniform = function () { mapper_2Mb.bin2pos(1e9) };
+
+    // then
+    expect(bin2posFixed).toThrow();
+    expect(bin2posUniform).toThrow();
+  });

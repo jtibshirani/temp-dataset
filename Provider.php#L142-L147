@@ -1,0 +1,6 @@
+private function toUtcDateTime(\DateTime $time)
+    {
+        $UTC = new \DateTimeZone("UTC");
+        $time->setTimezone($UTC);
+        return $time->format('Y-m-d\TH:i:s\Z');
+    }

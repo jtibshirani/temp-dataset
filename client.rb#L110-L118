@@ -1,0 +1,9 @@
+def post_query(path, data = {})
+      @request_uri = "#{@base_uri}#{path}" 
+      body = URI.encode_www_form(data)
+      extheader = { 'Content-Type' => 'application/x-www-form-urlencoded' }
+      req  = post_request(path, body, extheader)
+      @res = http_connection.start {|http| http.request(req) }
+      handle_error(@res, @request_uri)
+      JSON.parse(@res.body)
+    end

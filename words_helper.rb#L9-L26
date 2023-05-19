@@ -1,0 +1,18 @@
+def equate_words_register(wordE, word)
+      unless wordE == word
+        wordE.split('').each_with_index do |c, i|
+          unless wordE[i] == word[i]
+            if word[i] == YO_LETTER
+              if wordE[i] == BIG_E_LETTER
+                word[i] = BIG_YO_LETTER
+              else
+                next
+              end
+            else
+              word[i] = UnicodeUtils.upcase word[i]
+            end
+          end
+        end
+      end
+      word
+    end

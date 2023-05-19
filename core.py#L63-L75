@@ -1,0 +1,13 @@
+def get_reason_for_status(status_code):
+        """Lookup the HTTP reason text for a given status code.
+
+        :param status_code: int - HTTP status code
+
+        :returns: string - HTTP reason text
+        """
+
+        if status_code in requests.status_codes.codes:
+            return requests.status_codes._codes[status_code][0].replace('_',
+                                                                        ' ')
+        else:
+            return 'Unknown status code - {0}'.format(status_code)

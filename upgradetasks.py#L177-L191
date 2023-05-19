@@ -1,0 +1,15 @@
+def trigger(self, identifier, force=True):
+        """Trigger an upgrade task."""
+        self.debug(identifier)
+        url = "{base}/{identifier}".format(
+            base=self.local_base_url,
+            identifier=identifier
+        )
+        param = {}
+        if force:
+            param['force'] = force
+        encode = urllib.urlencode(param)
+        if encode:
+            url += "?"
+            url += encode
+        return self.core.update(url, {})

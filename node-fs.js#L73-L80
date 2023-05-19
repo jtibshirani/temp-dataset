@@ -1,0 +1,8 @@
+function onread(err, bytesRead) {
+      if (err) return callback(err);
+      length += bytesRead;
+      if (bytesRead === 0) {
+        return callback(null, buffer.slice(0, buffer.length + end));
+      }
+      read();
+    }

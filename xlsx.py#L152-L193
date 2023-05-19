@@ -1,0 +1,42 @@
+def export_to_xlsx(table, filename_or_fobj=None, sheet_name="Sheet1", *args, **kwargs):
+    """Export the rows.Table to XLSX file and return the saved file."""
+
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = sheet_name
+    prepared_table = prepare_to_export(table, *args, **kwargs)
+
+    # Write header
+    field_names = next(prepared_table)
+    for col_index, field_name in enumerate(field_names):
+        cell = sheet.cell(row=1, column=col_index + 1)
+        cell.value = field_name
+
+    # Write sheet rows
+    _convert_row = _python_to_cell(list(map(table.fields.get, field_names)))
+    for row_index, row in enumerate(prepared_table, start=1):
+        for col_index, (value, number_format) in enumerate(_convert_row(row)):
+            cell = sheet.cell(row=row_index + 1, column=col_index + 1)
+            cell.value = value
+            if number_format is not None:
+                cell.number_format = number_format
+
+    return_result = False
+    if filename_or_fobj is None:
+        filename_or_fobj = BytesIO()
+        return_result = True
+
+    source = Source.from_file(filename_or_fobj, mode="wb", plugin_name="xlsx")
+    workbook.save(source.fobj)
+    source.fobj.flush()
+
+    if return_result:
+        source.fobj.seek(0)
+        result = source.fobj.read()
+    else:
+        result = source.fobj
+
+    if source.should_close:
+        source.fobj.close()
+
+    return result

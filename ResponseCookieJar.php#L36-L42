@@ -1,0 +1,7 @@
+public function addCookie($name, $value = null, $expire = 0, $path = '/', $domain = null, $secure = false, $httpOnly = true)
+    {
+        $cookie = new Cookie($name, $value, $expire, $path, $domain, $secure, $httpOnly);
+        $this->addCookieObject($cookie);
+
+        return $cookie;
+    }

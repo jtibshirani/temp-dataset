@@ -1,0 +1,17 @@
+}, function() {
+    
+
+    Ext.dom.Element.select = function(selector, unique, root) {
+        var elements;
+
+        if (typeof selector == "string") {
+            elements = Ext.dom.Element.selectorFunction(selector, root);
+        }
+        else if (selector.length !== undefined) {
+            elements = selector;
+        }
+        else {
+        }
+        return (unique === true) ? new Ext.CompositeElement(elements) : new Ext.CompositeElementLite(elements);
+    };
+});

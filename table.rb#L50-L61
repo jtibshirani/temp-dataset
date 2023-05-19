@@ -1,0 +1,12 @@
+def read_file filename, options = {}
+      lines = []
+      if not options[:in_format] and filename =~ /\.csv$/
+        @logger.debug "Autodetected CSV file"
+        options[:in_format] = :csv
+      end
+      # Read the file lines into an Array, not lazy FIXME 
+      File.open(filename).each_line do | line |
+        lines.push line
+      end
+      read_lines(lines, options)
+    end

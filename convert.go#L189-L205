@@ -1,0 +1,17 @@
+func Int2HexStr(num int) (hex string) {
+	if num == 0 {
+		return "0"
+	}
+	for num > 0 {
+		r := num % 16
+		c := "?"
+		if r >= 0 && r <= 9 {
+			c = string(r + '0')
+		} else {
+			c = string(r + 'a' - 10)
+		}
+		hex = c + hex
+		num = num / 16
+	}
+	return hex
+}

@@ -1,0 +1,5 @@
+def get_procid(self, record):
+        procid = getattr(record, 'procid', self.procid)
+        if procid is None or procid == '':
+            procid = getattr(record, 'process', NILVALUE)
+        return self.filter_printusascii(str(procid))

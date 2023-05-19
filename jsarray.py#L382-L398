@@ -1,0 +1,17 @@
+def filter(this, args):
+        array = to_object(this, args.space)
+        callbackfn = get_arg(args, 0)
+        arr_len = js_arr_length(array)
+        if not is_callable(callbackfn):
+            raise MakeError('TypeError', 'callbackfn must be a function')
+        _this = get_arg(args, 1)
+        k = 0
+        res = []
+        while k < arr_len:
+            if array.has_property(unicode(k)):
+                kValue = array.get(unicode(k))
+                if to_boolean(
+                        callbackfn.call(_this, (kValue, float(k), array))):
+                    res.append(kValue)
+            k += 1
+        return args.space.ConstructArray(res)

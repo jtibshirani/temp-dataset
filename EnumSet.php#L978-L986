@@ -1,0 +1,9 @@
+public function getNames(): array
+    {
+        $enumeration = $this->enumeration;
+        $names       = [];
+        foreach ($this->getOrdinals() as $ord) {
+            $names[] = $enumeration::byOrdinal($ord)->getName();
+        }
+        return $names;
+    }

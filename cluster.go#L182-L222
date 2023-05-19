@@ -1,0 +1,41 @@
+func (cluster *Cluster) handleAsk(node *redisNode, replyMsg, cmd string, args []interface{}) (interface{}, error) {
+    fields := strings.Split(replyMsg, " ")
+    if len(fields) != 3 {
+	return nil, fmt.Errorf("handleAsk: invalid response \"%s\"", replyMsg)
+    }
+
+    newNode, err := cluster.getNodeByAddr(fields[2])
+    if err != nil {
+	return nil, fmt.Errorf("handleAsk: %v", err)
+    }
+
+    conn, err := newNode.getConn()
+    if err != nil {
+	return nil, fmt.Errorf("handleAsk: %v", err)
+    }
+
+    conn.send("ASKING")
+    conn.send(cmd, args...)
+
+    err = conn.flush()
+    if err != nil {
+	conn.shutdown()
+	return nil, fmt.Errorf("handleAsk: %v", err)
+    }
+
+    re, err := String(conn.receive())
+    if err != nil || re != "OK" {
+	conn.shutdown()
+	return nil, fmt.Errorf("handleAsk: %v", err)
+    }
+
+    reply, err := conn.receive()
+    if err != nil {
+	conn.shutdown()
+	return nil, fmt.Errorf("handleAsk: %v", err)
+    }
+
+    newNode.releaseConn(conn)
+
+    return reply, nil
+}

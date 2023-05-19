@@ -1,0 +1,3 @@
+def headers(file)
+      Array.new(CSV.open(file, &:readline).size) { |i| i.to_s }
+    end

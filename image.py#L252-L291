@@ -1,0 +1,40 @@
+def from_array(x, frame='unspecified'):
+        """ Converts an array of data to an Image based on the values in the array and the data format. """
+
+        if not Image.can_convert(x):
+            raise ValueError('Cannot convert array to an Image!')
+
+        dtype = x.dtype
+        height = x.shape[0]
+        width = x.shape[1]
+        channels = 1
+        if len(x.shape) == 3:
+            channels = x.shape[2]
+        if dtype == np.uint8:
+            if channels == 1:
+                if np.any((x % BINARY_IM_MAX_VAL) > 0):
+                    return GrayscaleImage(x, frame)
+                return BinaryImage(x, frame)
+            elif channels == 3:
+                return ColorImage(x, frame)
+            else:
+                raise ValueError(
+                    'No available image conversion for uint8 array with 2 channels')
+        elif dtype == np.uint16:
+            if channels != 1:
+                raise ValueError(
+                    'No available image conversion for uint16 array with 2 or 3 channels')
+            return GrayscaleImage(x, frame)
+        elif dtype == np.float32 or dtype == np.float64:
+            if channels == 1:
+                return DepthImage(x, frame)
+            elif channels == 2:
+                return GdImage(x, frame)
+            elif channels == 3:
+                logging.warning('Converting float array to uint8')
+                return ColorImage(x.astype(np.uint8), frame)
+            return RgbdImage(x, frame)
+        else:
+            raise ValueError(
+                'Conversion for dtype %s not supported!' %
+                (str(dtype)))

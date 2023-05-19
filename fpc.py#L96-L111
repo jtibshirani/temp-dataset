@@ -1,0 +1,16 @@
+def main(fpcfile):
+
+    fw = sys.stdout
+    f = FpcReader(fpcfile)
+
+    # first several lines are comments
+    header = '\t'.join(('bac_name', 'ctg_name', 'map_left', 'map_right',
+        'bands', 'probes', 'remark'))
+    print(header, file=fw)
+
+    recs = list(f)
+    logging.debug("%d records parsed" % len(recs))
+
+    recs.sort(key=lambda x: (x.ctg_name, x.map_left, x.map_right))
+    for rec in recs:
+        print(rec, file=fw)

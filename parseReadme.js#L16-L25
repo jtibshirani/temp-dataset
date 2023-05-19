@@ -1,0 +1,10 @@
+.spread(function(file, result) {
+        if (!file) {
+            throw new error.FileNotFoundError({ filename: 'README' });
+        }
+
+        logger.debug.ln('readme found at', file.getPath());
+
+        var readme = Readme.create(file, result);
+        return book.set('readme', readme);
+    });

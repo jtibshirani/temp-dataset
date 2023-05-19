@@ -1,0 +1,15 @@
+func (bing BinomialGenerator) binomial(n int64, p float64) int64 {
+	if !(0.0 <= p && p <= 1.0) {
+		panic(fmt.Sprintf("Invalid probability p: %.2f", p))
+	}
+	if n <= 0 {
+		panic(fmt.Sprintf("Invalid parameter n: %d", n))
+	}
+	var i, result int64
+	for i = 0; i < n; i++ {
+		if bing.uniform.Float64() < p {
+			result++
+		}
+	}
+	return result
+}

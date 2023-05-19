@@ -1,0 +1,8 @@
+def read_pid
+      fail("Invalid Type, not a pid") unless read_1 == PID
+      node = read_atom
+      id = read_4
+      serial = read_4
+      creation = read_1
+      Pid.new(node, id, serial, creation)
+    end

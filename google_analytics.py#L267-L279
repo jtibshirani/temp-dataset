@@ -1,0 +1,13 @@
+def format_grouped_date(self, data, group):
+        date = self.get_grouped_date(data, group)
+
+        if group == 'week':
+            date = u'%s — %s' % (
+                (date - datetime.timedelta(days=6)).strftime('%d.%m'),
+                date.strftime('%d.%m')
+            )
+        elif group == 'month':
+            date = date.strftime('%b, %Y')
+        else:
+            date = formats.date_format(date, 'DATE_FORMAT')
+        return date

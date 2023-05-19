@@ -1,0 +1,12 @@
+Command.prototype.parse = function(argv){
+  // store raw args
+  this.rawArgs = argv;
+
+  // guess name
+  if (!this.name) this.name = basename(argv[1]);
+
+  // process argv
+  var parsed = this.parseOptions(this.normalize(argv.slice(2)));
+  this.args = parsed.args;
+  return this.parseArgs(this.args, parsed.unknown, parsed.required);
+};

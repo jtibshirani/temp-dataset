@@ -1,0 +1,14 @@
+def most_dense_cluster(clusters = @clusters)
+      max_density = 0
+      max_density_cluster = 0
+
+      nil if clusters.nil?
+
+      clusters.each_with_index do |item, i|
+        if item.density > max_density
+          max_density = item.density
+          max_density_cluster = i
+        end
+      end
+      clusters[max_density_cluster]
+    end

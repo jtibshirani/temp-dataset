@@ -1,0 +1,30 @@
+def get_search_regex(query, ignore_case=True):
+    """Returns a compiled regex pattern to search for query letters in order.
+
+    Parameters
+    ----------
+    query : str
+        String to search in another string (in order of character occurrence).
+    ignore_case : True
+        Optional value perform a case insensitive search (True by default).
+
+    Returns
+    -------
+    pattern : SRE_Pattern
+
+    Notes
+    -----
+    This function adds '.*' between the query characters and compiles the
+    resulting regular expression.
+    """
+    regex_text = [char for char in query if char != ' ']
+    regex_text = '.*'.join(regex_text)
+
+    regex = r'({0})'.format(regex_text)
+
+    if ignore_case:
+        pattern = re.compile(regex, re.IGNORECASE)
+    else:
+        pattern = re.compile(regex)
+
+    return pattern

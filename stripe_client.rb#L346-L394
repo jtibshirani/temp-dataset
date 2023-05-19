@@ -1,0 +1,49 @@
+def specific_api_error(resp, error_data, context)
+      Util.log_error("Stripe API error",
+                     status: resp.http_status,
+                     error_code: error_data[:code],
+                     error_message: error_data[:message],
+                     error_param: error_data[:param],
+                     error_type: error_data[:type],
+                     idempotency_key: context.idempotency_key,
+                     request_id: context.request_id)
+
+      # The standard set of arguments that can be used to initialize most of
+      # the exceptions.
+      opts = {
+        http_body: resp.http_body,
+        http_headers: resp.http_headers,
+        http_status: resp.http_status,
+        json_body: resp.data,
+        code: error_data[:code],
+      }
+
+      case resp.http_status
+      when 400, 404
+        case error_data[:type]
+        when "idempotency_error"
+          IdempotencyError.new(error_data[:message], opts)
+        else
+          InvalidRequestError.new(
+            error_data[:message], error_data[:param],
+            opts
+          )
+        end
+      when 401
+        AuthenticationError.new(error_data[:message], opts)
+      when 402
+        # TODO: modify CardError constructor to make code a keyword argument
+        #       so we don't have to delete it from opts
+        opts.delete(:code)
+        CardError.new(
+          error_data[:message], error_data[:param], error_data[:code],
+          opts
+        )
+      when 403
+        PermissionError.new(error_data[:message], opts)
+      when 429
+        RateLimitError.new(error_data[:message], opts)
+      else
+        APIError.new(error_data[:message], opts)
+      end
+    end

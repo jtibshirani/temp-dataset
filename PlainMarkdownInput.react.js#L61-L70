@@ -1,0 +1,10 @@
+function copySelectionToClipboard(event, { state }) {
+  event.preventDefault();
+  const copyText = getCopyText(state);
+
+  if (window.clipboardData) {
+    window.clipboardData.setData("Text", copyText);
+  } else {
+    event.clipboardData.setData('text/plain', copyText);
+  }
+}

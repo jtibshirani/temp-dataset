@@ -1,0 +1,13 @@
+def median(self, **kwargs):
+        """Returns median of each column or row.
+
+        Returns:
+            A new QueryCompiler object containing the median of each column or row.
+        """
+        if self._is_transposed:
+            kwargs["axis"] = kwargs.get("axis", 0) ^ 1
+            return self.transpose().median(**kwargs)
+        # Pandas default is 0 (though not mentioned in docs)
+        axis = kwargs.get("axis", 0)
+        func = self._build_mapreduce_func(pandas.DataFrame.median, **kwargs)
+        return self._full_axis_reduce(axis, func)

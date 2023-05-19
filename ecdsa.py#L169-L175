@@ -1,0 +1,7 @@
+def string_to_int( s ):
+  """Convert a string of bytes into an integer, as per X9.62."""
+  result = 0
+  for c in s:
+    if not isinstance(c, int): c = ord( c )
+    result = 256 * result + c
+  return result

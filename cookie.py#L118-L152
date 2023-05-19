@@ -1,0 +1,35 @@
+def create_cookie(name, value, domain, httponly=None, **kwargs):
+    """Creates `cookielib.Cookie` instance"""
+
+    if domain == 'localhost':
+        domain = ''
+    config = dict(
+        name=name,
+        value=value,
+        version=0,
+        port=None,
+        domain=domain,
+        path='/',
+        secure=False,
+        expires=None,
+        discard=True,
+        comment=None,
+        comment_url=None,
+        rfc2109=False,
+        rest={'HttpOnly': httponly},
+    )
+
+    for key in kwargs:
+        if key not in config:
+            raise GrabMisuseError('Function `create_cookie` does not accept '
+                                  '`%s` argument' % key)
+
+    config.update(**kwargs)
+    config['rest']['HttpOnly'] = httponly
+
+    config['port_specified'] = bool(config['port'])
+    config['domain_specified'] = bool(config['domain'])
+    config['domain_initial_dot'] = (config['domain'] or '').startswith('.')
+    config['path_specified'] = bool(config['path'])
+
+    return Cookie(**config)

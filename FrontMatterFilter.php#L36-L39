@@ -1,0 +1,4 @@
+public function optimize(RendererAbstract $renderer, Filter $node, $options)
+    {
+        return $this->filter->optimize($renderer, $node, $options);
+    }

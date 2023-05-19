@@ -1,0 +1,23 @@
+def encryptData(self, encryptKey, privParameters, dataToEncrypt):
+        snmpEngineBoots, snmpEngineTime, salt = privParameters
+
+        # 8.3.1.1
+        desKey, salt, iv = self._getEncryptionKey(encryptKey, snmpEngineBoots)
+
+        # 8.3.1.2
+        privParameters = univ.OctetString(salt)
+
+        # 8.1.1.2
+        plaintext = dataToEncrypt
+        plaintext += univ.OctetString(
+            (0,) * (8 - len(dataToEncrypt) % 8)).asOctets()
+
+        try:
+            ciphertext = des.encrypt(plaintext, desKey, iv)
+
+        except PysnmpCryptoError:
+            raise error.StatusInformation(
+                errorIndication=errind.unsupportedPrivProtocol)
+
+        # 8.3.1.3 & 4
+        return univ.OctetString(ciphertext), privParameters

@@ -1,0 +1,50 @@
+def datestr2date(date_str):
+    '''
+    Turns a string into a datetime.date object. This will only work if the 
+    format can be "guessed", so the string must have one of the formats from
+    VALID_DATE_FORMATS_TEXT.
+
+    Args:
+        date_str (str) a string that represents a date
+    Returns:
+        datetime.date object
+    Raises:
+        ValueError if the input string does not have a valid format.
+    '''
+    if any(c not in '0123456789-/' for c in date_str):
+        raise ValueError('Illegal character in date string')
+    if '/' in date_str:
+        try:
+            m, d, y = date_str.split('/')
+        except:
+            raise ValueError('Date {} must have no or exactly 2 slashes. {}'.
+                    format(date_str, VALID_DATE_FORMATS_TEXT))
+    elif '-' in date_str:
+        try:
+            d, m, y = date_str.split('-')
+        except:
+            raise ValueError('Date {} must have no or exactly 2 dashes. {}'.
+                    format(date_str, VALID_DATE_FORMATS_TEXT))
+    elif len(date_str) == 8 or len(date_str) == 6:
+        d = date_str[-2:]
+        m = date_str[-4:-2]
+        y = date_str[:-4]
+    else:
+        raise ValueError('Date format not recognised. {}'.format(
+                VALID_DATE_FORMATS_TEXT))
+    if len(y) == 2:
+        year = 2000 + int(y)
+    elif len(y) == 4:
+        year = int(y)
+    else:
+        raise ValueError('year must be 2 or 4 digits')
+    for s in (m, d):
+        if 1 <= len(s) <= 2:
+            month, day = int(m), int(d)
+        else:
+            raise ValueError('m and d must be 1 or 2 digits')
+    try:
+        return datetime.date(year, month, day)
+    except ValueError:
+        raise ValueError('Invalid date {}. {}'.format(date_str, 
+                VALID_DATE_FORMATS_TEXT))

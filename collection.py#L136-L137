@@ -1,0 +1,2 @@
+def distinct(self, *args, **kwargs):
+        return self._collection_with_options(kwargs).distinct(*args, **kwargs)

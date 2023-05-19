@@ -1,0 +1,13 @@
+def sentiment_scatter(sms=sms):
+    plt.figure(figsize=(10, 7.5))
+    ax = plt.subplot(1, 1, 1)
+    ax = sms.plot.scatter(x='topic4', y='line', ax=ax, color='g', marker='+', alpha=.6)
+    ax = sms.plot.scatter(x='topic4', y='sgd', ax=ax, color='r', marker='x', alpha=.4)
+    ax = sms.plot.scatter(x='topic4', y='vader', ax=ax, color='k', marker='.', alpha=.3)
+    ax = sms.plot.scatter(x='topic4', y='sgd', ax=ax, color='c', marker='s', alpha=.6)
+    ax = sms.plot.scatter(x='topic4', y='pca_lda_spaminess', ax=ax, color='b', marker='o', alpha=.6)
+    plt.ylabel('Sentiment')
+    plt.xlabel('Topic 4')
+    plt.legend(['LinearRegressor', 'SGDRegressor', 'Vader', 'OneNeuronRegresor', 'PCA->LDA->spaminess'])
+    plt.tight_layout()
+    plt.show()

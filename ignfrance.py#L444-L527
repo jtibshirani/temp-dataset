@@ -1,0 +1,84 @@
+def _xml_to_json_places(tree, is_reverse=False):
+        """
+        Transform the xml ElementTree due to XML webservice return to json
+        """
+
+        select_multi = (
+            'GeocodedAddress'
+            if not is_reverse
+            else 'ReverseGeocodedLocation'
+        )
+
+        adresses = tree.findall('.//' + select_multi)
+        places = []
+
+        sel_pl = './/Address/Place[@type="{}"]'
+        for adr in adresses:
+            el = {}
+            el['pos'] = adr.find('./Point/pos')
+            el['street'] = adr.find('.//Address/StreetAddress/Street')
+            el['freeformaddress'] = adr.find('.//Address/freeFormAddress')
+            el['municipality'] = adr.find(sel_pl.format('Municipality'))
+            el['numero'] = adr.find(sel_pl.format('Numero'))
+            el['feuille'] = adr.find(sel_pl.format('Feuille'))
+            el['section'] = adr.find(sel_pl.format('Section'))
+            el['departement'] = adr.find(sel_pl.format('Departement'))
+            el['commune_absorbee'] = adr.find(sel_pl.format('CommuneAbsorbee'))
+            el['commune'] = adr.find(sel_pl.format('Commune'))
+            el['insee'] = adr.find(sel_pl.format('INSEE'))
+            el['qualite'] = adr.find(sel_pl.format('Qualite'))
+            el['territoire'] = adr.find(sel_pl.format('Territoire'))
+            el['id'] = adr.find(sel_pl.format('ID'))
+            el['id_tr'] = adr.find(sel_pl.format('ID_TR'))
+            el['bbox'] = adr.find(sel_pl.format('Bbox'))
+            el['nature'] = adr.find(sel_pl.format('Nature'))
+            el['postal_code'] = adr.find('.//Address/PostalCode')
+            el['extended_geocode_match_code'] = adr.find(
+                './/ExtendedGeocodeMatchCode'
+            )
+
+            place = {}
+
+            def testContentAttrib(selector, key):
+                """
+                Helper to select by attribute and if not attribute,
+                value set to empty string
+                """
+                return selector.attrib.get(
+                    key,
+                    None
+                ) if selector is not None else None
+
+            place['accuracy'] = testContentAttrib(
+                adr.find('.//GeocodeMatchCode'), 'accuracy')
+
+            place['match_type'] = testContentAttrib(
+                adr.find('.//GeocodeMatchCode'), 'matchType')
+
+            place['building'] = testContentAttrib(
+                adr.find('.//Address/StreetAddress/Building'), 'number')
+
+            place['search_centre_distance'] = testContentAttrib(
+                adr.find('.//SearchCentreDistance'), 'value')
+
+            for key, value in iteritems(el):
+                if value is not None:
+                    place[key] = value.text
+                    if value.text is None:
+                        place[key] = None
+                else:
+                    place[key] = None
+
+            # We check if lat lng is not empty and unpack accordingly
+            if place['pos']:
+                lat, lng = place['pos'].split(' ')
+                place['lat'] = lat.strip()
+                place['lng'] = lng.strip()
+            else:
+                place['lat'] = place['lng'] = None
+
+            # We removed the unused key
+            place.pop("pos", None)
+            places.append(place)
+
+        return places

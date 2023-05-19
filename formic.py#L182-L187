@@ -1,0 +1,6 @@
+def match(self, string):
+        """Returns True if the argument matches the constant."""
+        if self.casesensitive:
+            return self.pattern == os.path.normcase(string)
+        else:
+            return self.pattern.lower() == os.path.normcase(string).lower()

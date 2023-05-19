@@ -1,0 +1,19 @@
+def open_list(file)
+      f = clean_path_to(file, allow_missing: true)
+      if f
+        f = File.open(f, 'r')
+      elsif File.exist?("#{Origen.root}/list/#{File.basename(file)}")
+        f = File.open("#{Origen.root}/list/#{File.basename(file)}", 'r')
+      elsif @last_opened_list_dir && File.exist?("#{@last_opened_list_dir}/#{file}")
+        f = File.open("#{@last_opened_list_dir}/#{file}", 'r')
+      else
+        fail "Could not find list file: #{file}"
+      end
+      lines = f.readlines
+      f.close
+      # Before we go save the directory of this list, this will help
+      # us to resolve any relative path references to other lists that
+      # it may contain
+      @last_opened_list_dir = clean_path_to(Pathname.new(f).dirname)
+      lines
+    end

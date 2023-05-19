@@ -1,0 +1,12 @@
+def get_site(self, webspace_name, website_name):
+        '''
+        List the web sites defined on this webspace.
+
+        webspace_name:
+            The name of the webspace.
+        website_name:
+            The name of the website.
+        '''
+        return self._perform_get(self._get_sites_details_path(webspace_name,
+                                                              website_name),
+                                 Site)

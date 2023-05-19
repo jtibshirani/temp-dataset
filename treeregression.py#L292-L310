@@ -1,0 +1,19 @@
+def regression(self, slope=None):
+        """regress tip values against branch values
+
+        Parameters
+        ----------
+        slope : None, optional
+            if given, the slope isn't optimized
+
+        Returns
+        -------
+        dict
+            regression parameters
+        """
+        self._calculate_averages()
+
+        clock_model = base_regression(self.tree.root.Q, slope)
+        clock_model['r_val'] = self.explained_variance()
+
+        return clock_model

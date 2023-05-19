@@ -1,0 +1,9 @@
+def Enum(name, *fields):
+	obj = TypeObject()
+	obj.isEnum = True
+	obj.__name__ = name
+	obj.__enum__ = {}
+	for a, p in fields:
+		obj.__enum__[p] = TypeObject()
+		obj.__enum__[p].name = a
+	return obj

@@ -1,0 +1,15 @@
+def format_name_for_object(object)
+      date = object.to_date
+      if date == Date.current
+        format = :today
+      elsif date == Date.yesterday
+        format = :yesterday
+      elsif date == Date.tomorrow
+        format = :tomorrow
+      elsif date.year == Date.today.year
+        format = :current_year
+      elsif date.year != Date.today.year
+        format = :other_year
+      end
+      format
+    end

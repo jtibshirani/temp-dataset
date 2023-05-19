@@ -1,0 +1,13 @@
+def read(self, size):
+		"""
+		Read raw data from the serial connection. This function is not
+		meant to be called directly.
+
+		:param int size: The number of bytes to read from the serial connection.
+		"""
+		data = self.serial_h.read(size)
+		self.logger.debug('read data, length: ' + str(len(data)) + ' data: ' + binascii.b2a_hex(data).decode('utf-8'))
+		self.serial_h.write(ACK)
+		if sys.version_info[0] == 2:
+			data = bytearray(data)
+		return data

@@ -1,0 +1,9 @@
+def substitute_globals(string, globs=None):
+    sub = set(re.findall('\{(.*?)\}', string))
+    globs = globs or inspect.currentframe().f_back.f_globals
+    if sub:
+        for item in map(str, sub):
+            string = string.replace("${%s}"%item, globs[item])
+        return string
+    else:
+        return False

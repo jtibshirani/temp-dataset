@@ -1,0 +1,20 @@
+def postjson( request, url, data):
+    if isinstance(data, dict) or isinstance(data,list) or isinstance(data, tuple):
+        data = json.dumps(data)
+    if url and url[0] == '/': url = url[1:]
+    docservereq = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url + '/' + sid) #or opener.open()
+    setsid(docservereq, getsid(request))
+    docservereq.add_header('Content-Type', 'application/json')
+    f = urlopen(docservereq, urlencode(data).encode('utf-8'))
+    if sys.version < '3':
+        contents = unicode(f.read(),'utf-8')
+    else:
+        contents = str(f.read(),'utf-8')
+    f.close()
+    if contents and contents[0] == '{':
+        #assume this is json
+        return json.loads(contents)
+    elif contents:
+        return contents
+    else:
+        return None

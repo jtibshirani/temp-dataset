@@ -1,0 +1,11 @@
+def realtime_store(hash, key)
+      ret = nil
+      r0 = Time.now
+      begin
+        ret = yield
+      ensure
+        r1 = Time.now
+        hash[key] = (hash[key] || 0) + (r1.to_f - r0.to_f)
+      end
+      ret
+    end

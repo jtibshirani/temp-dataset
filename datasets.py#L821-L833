@@ -1,0 +1,13 @@
+def unzip_recursive(zip_file_name):
+    """Unzip file with all recursive zip files inside and delete zip files after that.
+
+    :param zip_file_name: file name of zip file
+    :return: list of archive members by name.
+    """
+    logger.debug("unzipping " + zip_file_name)
+    fnlist = unzip_one(zip_file_name)
+    for fn in fnlist:
+        if zipfile.is_zipfile(fn):
+            local_fnlist = unzip_recursive(fn)
+            fnlist.extend(local_fnlist)
+    return fnlist

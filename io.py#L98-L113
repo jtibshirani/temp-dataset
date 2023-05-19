@@ -1,0 +1,16 @@
+def __iter__(self):
+        if 't' in self.mode:
+            with gzip.GzipFile(self.path, compresslevel=self.compresslevel) as gz_file:
+                gz_file.read1 = gz_file.read
+                with io.TextIOWrapper(gz_file,
+                                      encoding=self.encoding,
+                                      errors=self.errors,
+                                      newline=self.newline) as file_content:
+                    for line in file_content:
+                        yield line
+        else:
+            with gzip.open(self.path,
+                           mode=self.mode,
+                           compresslevel=self.compresslevel) as file_content:
+                for line in file_content:
+                    yield line

@@ -1,0 +1,16 @@
+public function toCsv()
+    {
+        $csv = '';
+
+        foreach ($this->toArray() as $csvRow) {
+            if (is_array($csvRow)) {
+                $data = implode($this->_csvDelimiter, $csvRow);
+            } else {
+                $data = $csvRow;
+            }
+
+            $csv .= $data . $this->_csvLineDelimiter;
+        }
+
+        return rtrim($csv, $this->_csvLineDelimiter);
+    }

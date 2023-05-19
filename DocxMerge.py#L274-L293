@@ -1,0 +1,20 @@
+def replace_doc_text(file, replacements):
+    document = Document(file)
+    paragraphs = document.paragraphs
+
+    changes = False
+
+    for paragraph in paragraphs:
+        text = paragraph.text
+        for original, replace in replacements.items():
+            if original in replace and replace in text:
+                continue
+            if original in text:
+                changes = True
+                text = text.replace(original, replace)
+                paragraph.text = text
+
+    if changes:
+        print("changing {}".format(file))
+
+    document.save(file)

@@ -1,0 +1,16 @@
+function pickTime (e) {
+    var target = e.target;
+    if (!classes.contains(target, o.styles.timeOption)) {
+      return;
+    }
+    var value = momentum.moment(text(target), o.timeFormat);
+    setTime(ref, value);
+    refCal = ref.clone();
+    emitValues();
+    updateTime();
+    if ((!o.date && o.autoClose === true) || o.autoClose === 'time') {
+      hideConditionally();
+    } else {
+      hideTimeList();
+    }
+  }

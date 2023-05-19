@@ -1,0 +1,42 @@
+public function saveFile(array $fieldList, $path = null, $validate = true)
+    {
+        // if desired, validate before doing anything else
+        if ($validate) {
+            $this->validate($fieldList);
+        }
+
+        // preserve values of the fields to save
+        $saveFields    = array();
+        $currentConfig = $this->toArray();
+        foreach ($fieldList as $field) {
+            $saveFields[$field] = (isset($currentConfig[$field]))
+                ? $currentConfig[$field]
+                : null;
+        }
+
+        // load the current configuration file
+        try {
+            $this->loadFile($path);
+        } catch (ShopgateLibraryException $e) {
+            ShopgateLogger::getInstance()->log(
+                '-- Don\'t worry about the "error reading or writing configuration", that was just a routine check during saving.'
+            );
+        }
+
+        // merge old config with new values
+        $newConfig = array_merge($this->toArray(), $saveFields);
+
+        // default if no path to the configuration file is set
+        if (empty($path)) {
+            $path = $this->buildConfigFilePath();
+        }
+
+        // create the array definition string and save it to the file
+        $shopgateConfigFile = "<?php\n\$shopgate_config = " . var_export($newConfig, true) . ';';
+        if (!@file_put_contents($path, $shopgateConfigFile)) {
+            throw new ShopgateLibraryException(
+                ShopgateLibraryException::CONFIG_READ_WRITE_ERROR,
+                'The configuration file "' . $path . '" could not be saved.'
+            );
+        }
+    }

@@ -1,0 +1,10 @@
+func goCase(s string) string {
+	if len(s) == 0 {
+		panic(fmt.Sprintf("%q is not a valid identifier", s))
+	}
+
+	words := strings.Split(s, "_")
+	return pascalCase(len(words) == 1 /* all caps */, words...)
+	// goCase allows all caps only if the string is a single all caps word.
+	// That is, "FOO" is allowed but "FOO_BAR" is changed to "FooBar".
+}

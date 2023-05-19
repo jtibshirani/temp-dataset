@@ -1,0 +1,15 @@
+def summary(self, input_size=None, hashsummary=False):
+        """ Print a model summary """
+
+        if input_size is None:
+            print(self)
+            print("-" * 120)
+            number = sum(p.numel() for p in self.model.parameters())
+            print("Number of model parameters: {:,}".format(number))
+            print("-" * 120)
+        else:
+            summary(self, input_size)
+
+        if hashsummary:
+            for idx, hashvalue in enumerate(self.hashsummary()):
+                print(f"{idx}: {hashvalue}")

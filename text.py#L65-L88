@@ -1,0 +1,24 @@
+def apply_entities_as_html(text, entities):
+    """
+    Format text as HTML. Also take care of escaping special characters.
+    Returned value can be passed to :meth:`.Bot.sendMessage` with appropriate
+    ``parse_mode``.
+
+    :param text:
+        plain text
+
+    :param entities:
+        a list of `MessageEntity <https://core.telegram.org/bots/api#messageentity>`_ objects
+    """
+    escapes = {'<': '&lt;',
+               '>': '&gt;',
+               '&': '&amp;',}
+
+    formatters = {'bold':         lambda s,e: '<b>'+s+'</b>',
+                  'italic':       lambda s,e: '<i>'+s+'</i>',
+                  'text_link':    lambda s,e: '<a href="'+e['url']+'">'+s+'</a>',
+                  'text_mention': lambda s,e: '<a href="tg://user?id='+str(e['user']['id'])+'">'+s+'</a>',
+                  'code':         lambda s,e: '<code>'+s+'</code>',
+                  'pre':          lambda s,e: '<pre>'+s+'</pre>'}
+
+    return _apply_entities(text, entities, escapes, formatters)

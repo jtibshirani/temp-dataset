@@ -1,0 +1,3 @@
+def main():
+    runtest("AES - CTR Mode", AES.CTREnc, AES.CTRDec)
+    runtest("AES - GCM Mode", AES.GCMEnc, AES.GCMDec)

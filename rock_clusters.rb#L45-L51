@@ -1,0 +1,7 @@
+def calculate_closest_clusters
+      self.closest_clusters = {}
+      cluster_map.each do |cluster_key, cluster|
+        similarity = find_most_similar_cluster( cluster_key, cluster )
+        closest_clusters[cluster_key] = similarity if similarity
+      end
+    end

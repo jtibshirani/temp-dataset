@@ -1,0 +1,8 @@
+def read(self, read_size=-1):
+        """
+        Read given number of bytes from file.
+        :param read_size: Number of bytes to read. -1 to read all.
+        :return: Number of bytes read and data that was read.
+        """
+        read_str = self.file.read(read_size)
+        return len(read_str), read_str

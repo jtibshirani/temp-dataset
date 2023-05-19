@@ -1,0 +1,9 @@
+func (l Logger) Pretty(os ...interface{}) {
+	content := ""
+	for i := range os {
+		if ret, err := json.MarshalIndent(os[i], "", "\t"); err == nil {
+			content += string(ret) + "\n"
+		}
+	}
+	l.Output(2, PRETTY+content)
+}

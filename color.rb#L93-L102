@@ -1,0 +1,10 @@
+def to_standard_hex
+      color = @value.dup
+      color.insert(0, '#') unless color.start_with? '#'
+
+      # Convert shorthand hex to standard hex.
+      if color.size == 4
+        color.slice!(1, 3).chars { |char| color << char * 2 }
+      end
+      color
+    end

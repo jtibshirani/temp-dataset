@@ -1,0 +1,11 @@
+func (r *result) Summary() {
+	info := fmt.Sprintf(" %s.%-40s", r.typeName, r.method)
+	if r.skip {
+		color.Println(" @y⸚", info)
+	} else if r.Passed() {
+		color.Println(" @g✓", info)
+	} else {
+		color.Print(" @r×", info)
+		color.Printf("%2d\n", len(r.failures))
+	}
+}

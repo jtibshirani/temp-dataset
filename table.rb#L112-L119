@@ -1,0 +1,8 @@
+def headings= arrays
+      arrays = [arrays] unless arrays.first.is_a?(Array)
+      @headings = arrays.map do |array|
+        row = Row.new(self, array)
+        require_column_widths_recalc
+        row
+      end
+    end

@@ -1,0 +1,20 @@
+public function formatDate($show_hour = false, $show_min = false)
+    {
+        // Tria, Thermis 07, 4th AC 2546
+        $ig = '%s, %s %02d, %d%s %s %d';
+        $str = sprintf(
+            $ig,
+            $this->getDayName(),
+            $this->getMonthName(),
+            $this->getDate(),
+            $this->getCycle(),
+            $this->translateTh($this->getCycle()),
+            $this->translateAtysCycle(),
+            $this->getYear()
+        );
+        if ($show_hour) {
+            $str = $this->toTimeString($show_min) . ' - ' . $str;
+        }
+
+        return $str;
+    }

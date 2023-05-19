@@ -1,0 +1,15 @@
+function FormsAuthentication(options) {
+
+	this.options = {
+		validation: 'sha256',
+		validationKey: null,
+		validationHashLength: 256,
+		encryption: 'aes-192-cbc',
+		encryptionKey: null,
+		encryptionBlockSize: 128,
+		encryptionIv: new Buffer(16),
+		ramdomBlockSize : 24
+	};
+
+	this.initialize(options);
+}

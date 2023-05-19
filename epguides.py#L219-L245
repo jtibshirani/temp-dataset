@@ -1,0 +1,27 @@
+def _ExtractDataFromShowHtml(self, html):
+    """
+    Extracts csv show data from epguides html source.
+
+    Parameters
+    ----------
+      html : string
+        Block of html text
+
+    Returns
+    ----------
+       string
+        Show data extracted from html text in csv format.
+    """
+    htmlLines = html.splitlines()
+    for count, line in enumerate(htmlLines):
+      if line.strip() == r'<pre>':
+        startLine = count+1
+      if line.strip() == r'</pre>':
+        endLine = count
+
+    try:
+      dataList = htmlLines[startLine:endLine]
+      dataString = '\n'.join(dataList)
+      return dataString.strip()
+    except:
+      raise Exception("Show content not found - check EPGuides html formatting")

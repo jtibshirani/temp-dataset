@@ -1,0 +1,11 @@
+def advance_date(date, period, count = 1)
+      date = date.to_date
+      case period.to_sym
+      when :day
+        date.next_day(count)
+      when :month
+        date.next_month(count)
+      else
+        date.next_year(count)
+      end
+    end

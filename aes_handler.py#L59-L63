@@ -1,0 +1,5 @@
+def aes_ctr_encrypt(plain_text: bytes, key: bytes):
+        cipher = AES.new(key=key, mode=AES.MODE_CTR)
+        cipher_text = cipher.encrypt(plain_text)
+        nonce = cipher.nonce
+        return nonce, cipher_text

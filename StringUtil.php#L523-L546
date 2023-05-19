@@ -1,0 +1,24 @@
+public static function toHtml5($strString)
+	{
+		$arrPregReplace = array
+		(
+			'/<(br|hr|img)([^>]*) \/>/i'                  => '<$1$2>',             // Close stand-alone tags
+			'/ (cellpadding|cellspacing|border)="[^"]*"/' => '',                   // Remove deprecated attributes
+			'/ rel="lightbox(\[([^\]]+)\])?"/'            => ' data-lightbox="$2"' // see #4073
+		);
+
+		$arrStrReplace = array
+		(
+			'<u>'                                              => '<span style="text-decoration:underline">',
+			'</u>'                                             => '</span>',
+			' target="_self"'                                  => '',
+			' onclick="window.open(this.href); return false"'  => ' target="_blank"',
+			' onclick="window.open(this.href);return false"'   => ' target="_blank"',
+			' onclick="window.open(this.href); return false;"' => ' target="_blank"'
+		);
+
+		$strString = preg_replace(array_keys($arrPregReplace), $arrPregReplace, $strString);
+		$strString = str_ireplace(array_keys($arrStrReplace), $arrStrReplace, $strString);
+
+		return $strString;
+	}

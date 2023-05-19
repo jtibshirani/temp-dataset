@@ -1,0 +1,10 @@
+def lon_lat(value):
+    """
+    :param value: a pair of coordinates
+    :returns: a tuple (longitude, latitude)
+
+    >>> lon_lat('12 14')
+    (12.0, 14.0)
+    """
+    lon, lat = value.split()
+    return longitude(lon), latitude(lat)

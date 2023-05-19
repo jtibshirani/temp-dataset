@@ -1,0 +1,16 @@
+def optimize_Tc(self):
+        '''
+        determines the coalescent time scale that optimizes the coalescent likelihood of the tree
+        '''
+        from scipy.optimize import minimize_scalar
+        initial_Tc = self.Tc
+        def cost(Tc):
+            self.set_Tc(Tc)
+            return -self.total_LH()
+
+        sol = minimize_scalar(cost, bounds=[ttconf.TINY_NUMBER,10.0])
+        if "success" in sol and sol["success"]:
+            self.set_Tc(sol['x'])
+        else:
+            self.logger("merger_models:optimze_Tc: optimization of coalescent time scale failed: " + str(sol), 0, warn=True)
+            self.set_Tc(initial_Tc.y, T=initial_Tc.x)

@@ -1,0 +1,9 @@
+public function setChecked(array $checked)
+    {
+        foreach ($this->checkboxes as $checkbox) {
+            /* @var $checkbox Checkbox */
+            $checkbox->setChecked(in_array($checkbox->getName(), $checked));
+        }
+
+        return $this;
+    }

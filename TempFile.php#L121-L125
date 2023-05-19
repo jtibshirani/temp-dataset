@@ -1,0 +1,5 @@
+public function writeCsv(array $data): self
+	{
+		fputcsv($this->handler, $data, $this->delimiter, $this->enclosure, $this->escapeChar);
+		return $this;
+	}

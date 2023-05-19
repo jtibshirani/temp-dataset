@@ -1,0 +1,4 @@
+def _parse_url(url):
+    p = urlsplit(url)
+    query = {k: v[0] for k, v in parse_qs(p.query).items() if len(v) == 1}
+    return ''.join([p.netloc, p.path]), query

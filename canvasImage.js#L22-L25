@@ -1,0 +1,4 @@
+drawBuffer: function(buffer8, canvasImage){
+    canvasImage.imageData.data.set(buffer8);
+    canvasIMage.context.putImageData(canvasImage.imageData, 0, 0);
+  },

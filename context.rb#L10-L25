@@ -1,0 +1,16 @@
+def file_line_pointers
+      file = line = nil
+      c = self
+      until file
+        case c.irt_mode
+        when :binding
+          file = c.binding_file
+          line = c.binding_line_no
+        when :file
+          file = c.irb_path
+          line = c.last_line_no
+        end
+        c = c.parent_context
+      end
+      [file, line]
+    end

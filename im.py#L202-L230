@@ -1,0 +1,29 @@
+def _do_post(self, url, **kwargs):
+        """
+        Convinient method for POST requests
+        Returns http request status value from a POST request
+        """
+        #TODO:
+        # Add error handling. Check for HTTP status here would be much more conveinent than in each calling method
+        scaleioapi_post_headers = {'Content-type':'application/json','Version':'1.0'}
+        self.logger.debug("_do_post()")
+
+        if kwargs:
+            for key, value in kwargs.iteritems():
+                if key == 'headers':
+                    scaleio_post_headers = value
+                    print "Adding custom POST headers"
+                if key == 'files':
+                    upl_files = value
+                    print "Adding files to upload"
+        try:
+            response = self._session.post(url, headers=scaleioapi_post_headers, verify_ssl=self._im_verify_ssl, files=upl_files)
+            self.logger.debug("_do_post() - Response: " + "{}".format(response.text))
+            if response.status_code == requests.codes.ok:
+                return response
+            else:
+                self.logger.error("_do_post() - Response Code: " + "{}".format(response.status_code))
+                raise RuntimeError("_do_post() - HTTP response error" + response.status_code)
+        except:
+            raise RuntimeError("_do_post() - Communication error with ScaleIO gateway")
+        return response

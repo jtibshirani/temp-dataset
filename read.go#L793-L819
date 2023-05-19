@@ -1,0 +1,27 @@
+func (v Value) Reader() io.ReadCloser {
+	x, ok := v.data.(stream)
+	if !ok {
+		return &errorReadCloser{fmt.Errorf("stream not present")}
+	}
+	var rd io.Reader
+	rd = io.NewSectionReader(v.r.f, x.offset, v.Key("Length").Int64())
+	if v.r.key != nil {
+		rd = decryptStream(v.r.key, v.r.useAES, x.ptr, rd)
+	}
+	filter := v.Key("Filter")
+	param := v.Key("DecodeParms")
+	switch filter.Kind() {
+	default:
+		panic(fmt.Errorf("unsupported filter %v", filter))
+	case Null:
+		// ok
+	case Name:
+		rd = applyFilter(rd, filter.Name(), param)
+	case Array:
+		for i := 0; i < filter.Len(); i++ {
+			rd = applyFilter(rd, filter.Index(i).Name(), param.Index(i))
+		}
+	}
+
+	return ioutil.NopCloser(rd)
+}

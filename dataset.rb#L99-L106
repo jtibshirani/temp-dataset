@@ -1,0 +1,8 @@
+def csv_payload
+      csv_string = CSV.generate do |csv|
+        csv << (@data_header||[])
+        @data.each do |row|
+          csv << row
+        end
+      end
+    end

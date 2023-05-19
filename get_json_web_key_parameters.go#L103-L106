@@ -1,0 +1,4 @@
+func (o *GetJSONWebKeyParams) WithHTTPClient(client *http.Client) *GetJSONWebKeyParams {
+	o.SetHTTPClient(client)
+	return o
+}

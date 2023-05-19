@@ -1,0 +1,4 @@
+def decipher_cbc(key_str,input_str,iv: nil,strip_padding: true)
+      plain = unicipher_cbc(:decipher,key_str,CryptBuffer(input_str),iv).to_crypt_buffer
+      strip_padding ? plain.strip_padding : plain
+    end

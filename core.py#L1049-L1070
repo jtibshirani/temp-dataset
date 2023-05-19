@@ -1,0 +1,22 @@
+def to_excel(self, excel_writer, sheet_name='data',
+                 iamc_index=False, **kwargs):
+        """Write timeseries data to Excel format
+
+        Parameters
+        ----------
+        excel_writer: string or ExcelWriter object
+            file path or existing ExcelWriter
+        sheet_name: string, default 'data'
+            name of sheet which will contain `IamDataFrame.timeseries()` data
+        iamc_index: bool, default False
+            if True, use `['model', 'scenario', 'region', 'variable', 'unit']`;
+            else, use all `data` columns
+        """
+        if not isinstance(excel_writer, pd.ExcelWriter):
+            close = True
+            excel_writer = pd.ExcelWriter(excel_writer)
+        self._to_file_format(iamc_index)\
+            .to_excel(excel_writer, sheet_name=sheet_name, index=False,
+                      **kwargs)
+        if close:
+            excel_writer.close()

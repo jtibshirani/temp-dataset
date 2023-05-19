@@ -1,0 +1,7 @@
+def str_to_bool(s):
+    s = s.lower()
+    if s in ('true', 'yes', '1'):
+        return True
+    if s in ('false', 'no', '0'):
+        return False
+    raise ConversionError("failed to convert {0} to bool".format(s))

@@ -1,0 +1,5 @@
+$formEl.find(("input[name=\"" + name + "\"]")).each(function (index, el) {
+              var checkboxEl = el;
+              if (data[name].indexOf(el.value) >= 0) { checkboxEl.checked = true; }
+              else { checkboxEl.checked = false; }
+            });

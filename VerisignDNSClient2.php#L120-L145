@@ -1,0 +1,26 @@
+protected function httpPostJson($uri, $body)
+    {
+        $this->log[] = [
+                        'request' => [
+                                    'method' => 'POST',
+                                    'uri'    => $uri,
+                                    'body'   => $body,
+                                    ],
+                        ];
+        $response = \Httpful\Request::post($uri)
+                                                ->basicAuth($this->username, $this->password)
+                                                ->sendsAndExpects(\Httpful\Mime::JSON)
+                                                ->parseWith(function ($body) {
+                                                   return $body;
+                                                   //return \Metaclassing\Utility::decodeJson($body);
+                                                })
+                                                ->body($body)
+                                                ->send()
+                                                ->body;
+        $this->log[count($this->log) - 1]['response'] = $response;
+        //if ($response['success'] != true) {
+        //    throw new \Exception("post to {$uri} unsuccessful");
+        //}
+
+        return $response;
+    }

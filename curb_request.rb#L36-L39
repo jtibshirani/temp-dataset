@@ -1,0 +1,4 @@
+def query_parameters
+      query = URI.parse(request.url).query
+      return(query ? CGI.parse(query) : {})
+    end

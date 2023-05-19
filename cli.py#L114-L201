@@ -1,0 +1,88 @@
+def _run():
+    """Entry point for package and cli uses"""
+
+    args = parse_args()
+
+    # parse custom parameters
+    custom_meta = None
+    if args.custom_meta:
+        print "Adding custom parameters:"
+        custom_meta = {}
+        try:
+            for item in args.custom_meta.split(','):
+                key, value = item.split(':')
+                custom_meta[key] = value
+                print 'key: %s, value: %s' % (key, value)
+        except Exception as e:
+            sys.stderr.write("ERROR: Can not parse custom meta tags! %s\n" % (str(e)))
+
+    # we need to store some persistent info, so check if a config file
+    # exists (default location is ~/.centinel/config.ini). If the file
+    # does not exist, then create a new one at run time
+    configuration = centinel.config.Configuration()
+    if args.config:
+        configuration.parse_config(args.config)
+    else:
+        # if the file does not exist, then the default config file
+        # will be used
+        new_configuration = None
+        if os.path.exists(DEFAULT_CONFIG_FILE):
+            configuration.parse_config(DEFAULT_CONFIG_FILE)
+        else:
+            print 'Configuration file does not exist. Creating a new one.'
+            new_configuration = centinel.config.Configuration()
+
+        if not ('version' in configuration.params and
+                configuration.params['version']['version'] == centinel.__version__):
+            if not args.update_config:
+                print ('WARNING: configuration file is from '
+                       'a different version (%s) of '
+                       'Centinel. Run with --update-config to update '
+                       'it.' % (configuration.params['version']['version']))
+            else:
+                new_configuration = centinel.config.Configuration()
+                backup_path = DEFAULT_CONFIG_FILE + ".old"
+                new_configuration.update(configuration, backup_path)
+
+        if new_configuration is not None:
+            configuration = new_configuration
+            configuration.write_out_config(DEFAULT_CONFIG_FILE)
+            print 'New configuration written to %s' % (DEFAULT_CONFIG_FILE)
+            if args.update_config:
+                sys.exit(0)
+
+    if args.verbose:
+        if 'log' not in configuration.params:
+            configuration.params['log'] = dict()
+        configuration.params['log']['log_level'] = logging.DEBUG
+
+    # add custom meta values from CLI
+    if custom_meta is not None:
+        if 'custom_meta' in configuration.params:
+            configuration.params['custom_meta'].update(custom_meta)
+        else:
+            configuration.params['custom_meta'] = custom_meta
+
+    centinel.conf = configuration.params
+    client = centinel.client.Client(configuration.params)
+    client.setup_logging()
+    # disable cert verification if the flag is set
+    if args.no_verify:
+        configuration.params['server']['verify'] = False
+
+    user = centinel.backend.User(configuration.params)
+    # Note: because we have mutually exclusive arguments, we don't
+    # have to worry about multiple arguments being called
+    if args.sync:
+        centinel.backend.sync(configuration.params)
+    elif args.consent:
+        user.informed_consent()
+    elif args.daemonize:
+        # if we don't have a valid binary location, then exit
+        if not os.path.exists(args.binary):
+            print "Error: no binary found to daemonize"
+            exit(1)
+        centinel.daemonize.daemonize(args.auto_update, args.binary,
+            args.user)
+    else:
+        client.run()

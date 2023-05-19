@@ -1,0 +1,4 @@
+def group(self, group):
+        if group:
+            self.group_id = group.id
+            self._group = group

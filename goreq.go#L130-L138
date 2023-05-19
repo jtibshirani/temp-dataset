@@ -1,0 +1,9 @@
+func Gzip() *compression {
+	reader := func(buffer io.Reader) (io.ReadCloser, error) {
+		return gzip.NewReader(buffer)
+	}
+	writer := func(buffer io.Writer) (io.WriteCloser, error) {
+		return gzip.NewWriter(buffer), nil
+	}
+	return &compression{writer: writer, reader: reader, ContentEncoding: "gzip"}
+}

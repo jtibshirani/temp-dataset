@@ -1,0 +1,20 @@
+def hexadecimal(token):
+        """
+        Convert a strip of hexadecimal numbers into binary data.
+
+        @type  token: str
+        @param token: String to parse.
+
+        @rtype:  str
+        @return: Parsed string value.
+        """
+        token = ''.join([ c for c in token if c.isalnum() ])
+        if len(token) % 2 != 0:
+            raise ValueError("Missing characters in hex data")
+        data = ''
+        for i in compat.xrange(0, len(token), 2):
+            x = token[i:i+2]
+            d = int(x, 16)
+            s = struct.pack('<B', d)
+            data += s
+        return data

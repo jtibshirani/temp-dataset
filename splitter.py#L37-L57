@@ -1,0 +1,21 @@
+def write_csv_header(mol, csv_writer):
+    """
+	Write the csv header
+	"""
+
+    # create line list where line elements for writing will be stored
+    line = []
+
+    # ID
+    line.append('id')
+
+    # status
+    line.append('status')
+
+    # query labels
+    queryList = mol.properties.keys()
+    for queryLabel in queryList:
+        line.append(queryLabel)
+
+    # write line
+    csv_writer.writerow(line)

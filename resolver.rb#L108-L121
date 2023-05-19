@@ -1,0 +1,14 @@
+def resolve_tree
+      permutations = permutate_simplified_tree
+      permutations = filter_invalid_permutations(permutations)
+
+      # select highest versioned dependencies (for those specified by user)
+      user_deps = tree.dependencies.keys
+      result = select_highest_versioned_permutation(permutations, user_deps).flatten
+
+      if result.empty? && !tree.dependencies.empty?
+        error("Failed to satisfy dependency requirements")
+      else
+        result
+      end
+    end

@@ -1,0 +1,16 @@
+function createUniqueHash(hash, map) {
+    if(!map) return hash;
+    if(!map[hash]) {
+        map[hash] = 1;
+    }
+    else{
+        var nhash = hash;
+        while (map[nhash]) {
+            map[hash] = map[hash] + 1;
+            nhash = nhash + map[hash];
+        }
+        hash = nhash;
+        map[hash] = 1;
+    }
+    return hash;
+}

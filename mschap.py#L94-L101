@@ -1,0 +1,8 @@
+def convert_to_hex_string(string):
+    hex_str = ""
+    for c in string:
+        hex_tmp = hex(ord(c))[2:]
+        if len(hex_tmp) == 1:
+            hex_tmp = "0" + hex_tmp
+        hex_str += hex_tmp
+    return hex_str.upper()

@@ -1,0 +1,24 @@
+def ConsoleType(t=gtk.TextView):
+    class console_type(t, _Console):
+        __gsignals__ = {
+            'command': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+                        (object, )),
+            'key-press-event': 'override'}
+
+        def __init__(self, *args, **kwargs):
+            if gtk.pygtk_version[1] < 8:
+                gobject.GObject.__init__(self)
+            else:
+                t.__init__(self)
+            _Console.__init__(self, *args, **kwargs)
+
+        def do_command(self, code):
+            return _Console.do_command(self, code)
+
+        def do_key_press_event(self, event):
+            return _Console.do_key_press_event(self, event, t)
+
+    if gtk.pygtk_version[1] < 8:
+        gobject.type_register(console_type)
+
+    return console_type

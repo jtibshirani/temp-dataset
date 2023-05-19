@@ -1,0 +1,13 @@
+function normalizeHeaderToId(header) {
+  if (typeof header !== 'string') {
+    return '';
+  }
+
+  return header.toLowerCase()
+      .replace(/<.*>/g, '')         // html tags
+      .replace(/[\!\?\:\.\']/g, '') // special characters
+      .replace(/&#\d\d;/g, '')      // html entities
+      .replace(/\(.*\)/mg, '')      // stuff in parenthesis
+      .replace(/\s$/, '')           // trailing spaces
+      .replace(/\s+/g, '-');        // replace whitespaces with dashes
+}

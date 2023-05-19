@@ -1,0 +1,30 @@
+def get_nearest_indices(self, latitude, longitude):
+        """
+        Get nearest indices to (latitude, longitude).
+
+        Parmaeters
+        ----------
+        latitude : float
+            Latitude in degrees
+        longitude : float
+            Longitude in degrees
+
+        Returns
+        -------
+        idx_lat : int
+            index of nearest latitude
+        idx_lon : int
+            index of nearest longitude
+        """
+        # index of nearest latitude
+        idx_lat = int(round((latitude - 90.0) / self.delta_lat))
+        # avoid out of bounds latitudes
+        if idx_lat < 0:
+            idx_lat = 0  # if latitude == 90, north pole
+        elif idx_lat > self.lat_size:
+            idx_lat = self.lat_size  # if latitude == -90, south pole
+        # adjust longitude from -180/180 to 0/360
+        longitude = longitude % 360.0
+        # index of nearest longitude
+        idx_lon = int(round(longitude / self.delta_lon)) % self.lon_size
+        return idx_lat, idx_lon

@@ -1,0 +1,23 @@
+func DateFormat(format string, timestamp interface{}) (t string) { // timestamp
+	switch format {
+	case "Y-m-d H:i:s", "":
+		format = "2006-01-02 15:04:05"
+	case "Y-m-d H:i":
+		format = "2006-01-02 15:04"
+	case "y-m-d H:i":
+		format = "06-01-02 15:04"
+	case "m-d H:i":
+		format = "01-02 15:04"
+	case "Y-m-d":
+		format = "2006-01-02"
+	case "y-m-d":
+		format = "06-01-02"
+	case "m-d":
+		format = "01-02"
+	default:
+		format = ConvDateFormat(format)
+	}
+	sd := Int64(timestamp)
+	t = time.Unix(sd, 0).Format(format)
+	return
+}

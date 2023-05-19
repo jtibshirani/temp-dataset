@@ -1,0 +1,7 @@
+func (b *ctx) caseSensitive() bool {
+	if b.frozenConfig == nil {
+		// default is case-insensitive
+		return false
+	}
+	return b.frozenConfig.caseSensitive
+}

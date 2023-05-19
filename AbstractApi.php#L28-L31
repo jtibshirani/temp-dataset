@@ -1,0 +1,4 @@
+public function postJson(string $path, $parameters, array $headers = []) 
+    {
+        return $this->client->httpClient()->post($path, $parameters, HttpClient::JSON, $headers);
+    }

@@ -1,0 +1,6 @@
+def __call__(self, distribution_a):
+    # TODO(b/126056144): Remove reacquisition of distribution handle once we
+    # identify how/why Keras lost it.
+    if hasattr(distribution_a, '_tfp_distribution'):
+      distribution_a = distribution_a._tfp_distribution  # pylint: disable=protected-access
+    return self._kl_divergence_fn(distribution_a)

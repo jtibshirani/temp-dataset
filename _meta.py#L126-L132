@@ -1,0 +1,7 @@
+def convert_to_integer(self, str):
+        if str.startswith('0x') or str.startswith('0X'):
+            return int(str, 16)
+        elif str.startswith('2_'):
+            return int(str[2:], 2)
+        else:
+            return int(str)

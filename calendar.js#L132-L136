@@ -1,0 +1,5 @@
+export function formatDate(date, options) {
+  const { locale, dateTimeFormatOptions } = options;
+  const format = dateTimeFormat(locale, dateTimeFormatOptions);
+  return format.format(date);
+}

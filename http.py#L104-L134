@@ -1,0 +1,31 @@
+def read(self, size=-1):
+        """
+        Mimics the read call to a filehandle object.
+        """
+        logger.debug("reading with size: %d", size)
+        if self.response is None:
+            return b''
+
+        if size == 0:
+            return b''
+        elif size < 0 and len(self._read_buffer) == 0:
+            retval = self.response.raw.read()
+        elif size < 0:
+            retval = self._read_buffer.read() + self.response.raw.read()
+        else:
+            while len(self._read_buffer) < size:
+                logger.debug("http reading more content at current_pos: %d with size: %d", self._current_pos, size)
+                bytes_read = self._read_buffer.fill(self._read_iter)
+                if bytes_read == 0:
+                    # Oops, ran out of data early.
+                    retval = self._read_buffer.read()
+                    self._current_pos += len(retval)
+
+                    return retval
+
+            # If we got here, it means we have enough data in the buffer
+            # to return to the caller.
+            retval = self._read_buffer.read(size)
+
+        self._current_pos += len(retval)
+        return retval

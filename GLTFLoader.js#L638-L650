@@ -1,0 +1,13 @@
+function convertUint8ArrayToString( array ) {
+
+		var s = '';
+
+		for ( var i = 0; i < array.length; i ++ ) {
+
+			s += String.fromCharCode( array[ i ] );
+
+		}
+
+		return s;
+
+	}

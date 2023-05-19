@@ -1,0 +1,13 @@
+def zip_to_csv(zip_file)
+      csv = nil
+      @visualizer.unzip_status do
+        # Use Zip::File for rubyzip >= 1.0.0, Zip::ZipFile for older.
+        klass = defined?(Zip::File) ? Zip::File : Zip::ZipFile
+        klass.foreach(zip_file) do |entry|
+          File.extname(entry.name).downcase == '.csv' or next
+          csv = CSV.parse(entry.get_input_stream.read.encode("utf-8", "sjis"))
+          break
+        end
+      end
+      csv
+    end

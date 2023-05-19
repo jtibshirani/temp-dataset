@@ -1,0 +1,26 @@
+protected function sort(SS_List $list)
+    {
+        switch ($this->owner->SortItemsBy) {
+            
+            // Random Sort Order:
+            
+            case self::SORT_RANDOM:
+                
+                if ($list instanceof DataList) {
+                    return $list->sort(DB::get_conn()->random());
+                }
+                
+                $items = $list->toArray();
+                
+                shuffle($items);
+                
+                return ArrayList::create($items);
+                
+            // Default Sort Order:
+                
+            default:
+                
+                return $list;
+                
+        }
+    }

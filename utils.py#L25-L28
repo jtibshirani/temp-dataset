@@ -1,0 +1,4 @@
+def loadText(fname):
+    with codecs.open(fname, 'r', 'utf-8') as f:
+        data = f.read()
+        return normalize(data).split()

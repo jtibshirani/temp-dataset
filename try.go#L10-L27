@@ -1,0 +1,18 @@
+func TryToBool(i interface{}) (b bool, err error) {
+	switch v := i.(type) {
+	case nil:
+	case bool:
+		b = v
+	case *bool:
+		b = *v
+	case string:
+		b, err = strconv.ParseBool(v)
+	case *string:
+		b, err = strconv.ParseBool(*v)
+	case int, int8, int16, int32, int64:
+		b = v != 0
+	default:
+		err = castError(i, "bool")
+	}
+	return
+}

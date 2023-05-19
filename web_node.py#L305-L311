@@ -1,0 +1,7 @@
+def innerHTML(self, html: str) -> None:  # type: ignore
+        """Set innerHTML both on this node and related browser node."""
+        df = self._parse_html(html)
+        if self.connected:
+            self._set_inner_html_web(df.html)
+        self._empty()
+        self._append_child(df)

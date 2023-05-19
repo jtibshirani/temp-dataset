@@ -1,0 +1,3 @@
+func (s asciiString) substring(start, end int64) valueString {
+	return asciiString(s[start:end])
+}

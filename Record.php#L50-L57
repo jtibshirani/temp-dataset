@@ -1,0 +1,8 @@
+static function fromJson(object $map): self {
+    return new static(
+      isset($map->sourceFile) && is_string($map->sourceFile) ? $map->sourceFile : '',
+      isset($map->functions) && is_object($map->functions) ? FunctionCoverage::fromJson($map->functions) : null,
+      isset($map->branches) && is_object($map->branches) ? BranchCoverage::fromJson($map->branches) : null,
+      isset($map->lines) && is_object($map->lines) ? LineCoverage::fromJson($map->lines) : null
+    );
+  }

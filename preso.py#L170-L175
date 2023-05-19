@@ -1,0 +1,6 @@
+def sub_el(parent, tag, attrib=None):
+    attrib = attrib or {}
+    tag = get_nstag(tag)
+    attrib = update_attrib(attrib)
+    el = et.SubElement(parent, tag, attrib)  # , nsmap=NAMESPACES)
+    return el

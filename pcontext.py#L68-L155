@@ -1,0 +1,88 @@
+def read_csv(self, file_path, use_whole_file=False, names=None, skiprows=0,
+                 *args, **kwargs):
+        """Read a CSV file in and parse it into Pandas DataFrames. By default,
+        the first row from the first partition of that data is parsed and used
+        as the column names for the data from. If no 'names' param is
+        provided we parse the first row of the first partition of data and
+        use it for column names.
+
+        Parameters
+        ----------
+        file_path: string
+            Path to input. Any valid file path in Spark works here, eg:
+            'file:///my/path/in/local/file/system' or 'hdfs:/user/juliet/'
+        use_whole_file: boolean
+            Whether of not to use the whole file.
+        names: list of strings, optional
+        skiprows: integer, optional
+            indicates how many rows of input to skip. This will
+            only be applied to the first partition of the data (so if
+            #skiprows > #row in first partition this will not work). Generally
+            this shouldn't be an issue for small values of skiprows.
+        No other value of header is supported.
+        All additional parameters available in pandas.read_csv() are usable
+        here.
+
+        Returns
+        -------
+        A SparklingPandas DataFrame that contains the data from the
+        specified file.
+        """
+        def csv_file(partition_number, files):
+            # pylint: disable=unexpected-keyword-arg
+            file_count = 0
+            for _, contents in files:
+                # Only skip lines on the first file
+                if partition_number == 0 and file_count == 0 and _skiprows > 0:
+                    yield pandas.read_csv(
+                        sio(contents), *args,
+                        header=None,
+                        names=mynames,
+                        skiprows=_skiprows,
+                        **kwargs)
+                else:
+                    file_count += 1
+                    yield pandas.read_csv(
+                        sio(contents), *args,
+                        header=None,
+                        names=mynames,
+                        **kwargs)
+
+        def csv_rows(partition_number, rows):
+            # pylint: disable=unexpected-keyword-arg
+            in_str = "\n".join(rows)
+            if partition_number == 0:
+                return iter([
+                    pandas.read_csv(
+                        sio(in_str), *args, header=None,
+                        names=mynames,
+                        skiprows=_skiprows,
+                        **kwargs)])
+            else:
+                # could use .iterows instead?
+                return iter([pandas.read_csv(sio(in_str), *args, header=None,
+                                             names=mynames, **kwargs)])
+
+        # If we need to peak at the first partition and determine the column
+        # names
+        mynames = None
+        _skiprows = skiprows
+        if names:
+            mynames = names
+        else:
+            # In the future we could avoid this expensive call.
+            first_line = self.spark_ctx.textFile(file_path).first()
+            frame = pandas.read_csv(sio(first_line), **kwargs)
+            # pylint sees frame as a tuple despite it being a DataFrame
+            mynames = list(frame.columns)
+            _skiprows += 1
+
+        # Do the actual load
+        if use_whole_file:
+            return self.from_pandas_rdd(
+                self.spark_ctx.wholeTextFiles(file_path)
+                .mapPartitionsWithIndex(csv_file))
+        else:
+            return self.from_pandas_rdd(
+                self.spark_ctx.textFile(file_path)
+                    .mapPartitionsWithIndex(csv_rows))

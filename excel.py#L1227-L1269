@@ -1,0 +1,43 @@
+def compile_geometry(lat, lon, elev):
+    """
+    Take in lists of lat and lon coordinates, and determine what geometry to create
+    :param list lat: Latitude values
+    :param list lon: Longitude values
+    :param float elev: Elevation value
+    :return dict:
+    """
+    logger_excel.info("enter compile_geometry")
+    lat = _remove_geo_placeholders(lat)
+    lon = _remove_geo_placeholders(lon)
+
+    # 4 coordinate values
+    if len(lat) == 2 and len(lon) == 2:
+        logger_excel.info("found 4 coordinates")
+        geo_dict = geometry_linestring(lat, lon, elev)
+
+        # # 4 coordinate values
+        # if (lat[0] != lat[1]) and (lon[0] != lon[1]):
+        #     geo_dict = geometry_polygon(lat, lon)
+        # # 3 unique coordinates
+        # else:
+        #     geo_dict = geometry_multipoint(lat, lon)
+        #
+
+    # 2 coordinate values
+    elif len(lat) == 1 and len(lon) == 1:
+        logger_excel.info("found 2 coordinates")
+        geo_dict = geometry_point(lat, lon, elev)
+
+    # coordinate range. one value given but not the other.
+    elif (None in lon and None not in lat) or (len(lat) > 0 and len(lon) == 0):
+        geo_dict = geometry_range(lat, elev, "lat")
+
+    elif (None in lat and None not in lon) or (len(lon) > 0 and len(lat) == 0):
+        geo_dict = geometry_range(lat, elev, "lon")
+
+    # Too many points, or no points
+    else:
+        geo_dict = {}
+        logger_excel.warn("compile_geometry: invalid coordinates: lat: {}, lon: {}".format(lat, lon))
+    logger_excel.info("exit compile_geometry")
+    return geo_dict

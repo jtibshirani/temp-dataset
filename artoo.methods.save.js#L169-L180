@@ -1,0 +1,12 @@
+artoo.saveCsv = function(data, params) {
+    params = filenamePolymorphism(params);
+
+    data = (typeof data !== 'string') ?
+      artoo.writers.csv(data, params) :
+      data;
+
+    artoo.save(
+      data,
+      helpers.extend(params, {mime: 'csv', filename: 'data.csv'})
+    );
+  };

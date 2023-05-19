@@ -1,0 +1,14 @@
+def parse_html(data)
+      doc = Nokogiri::HTML.parse(data.body, nil, 'UTF-8')
+      return unless doc
+
+      enum_oembed_link(doc) do |link_rel|
+        discovered_uris << LinkPreview::URI.parse(link_rel, @options)
+      end
+
+      {
+        opengraph: parse_opengraph_video_data(doc),
+        opengraph_embed: parse_opengraph_embed_data(doc),
+        html: parse_html_data(doc)
+      }
+    end

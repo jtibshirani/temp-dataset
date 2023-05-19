@@ -1,0 +1,13 @@
+public function getDescriptionByStatusCode($code)
+    {
+        // Make sure the expected type supplied
+        $code = (int) $code;
+
+        if (isset($this->statuses[$code])) {
+            return $this->statuses[$code];
+        } else {
+            throw new OutOfRangeException(
+                sprintf('The status code "%s" is out of allowed range', $code)
+            );
+        }
+    }

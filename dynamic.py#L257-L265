@@ -1,0 +1,9 @@
+def summary(self):
+        print('Varying Keys: %r' % self.key)
+        print('Maximum steps allowed: %d' % self.max_steps)
+        self._trace_summary()
+        (val, arg) = (self.trace[-1])
+        if self._termination_info:
+            (success, best_val, arg) = self._termination_info
+            condition =  'Successfully converged.' if success else 'Maximum step limit reached.'
+            print("%s Minimum value of %r at %s=%r." % (condition, best_val, self.key, arg))

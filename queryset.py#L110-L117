@@ -1,0 +1,8 @@
+def distinct(self):
+        """
+        Only return distinct row. 
+        Return a new query set with distinct mark
+        """
+        new_query_set = self.clone()
+        new_query_set.query.distinct = True
+        return new_query_set

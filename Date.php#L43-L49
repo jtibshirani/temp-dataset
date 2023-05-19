@@ -1,0 +1,7 @@
+private function _ToDBString(System\Date $value = null)
+    {
+        if ($value === null)
+         return $value;
+        
+        return $value->ToString('Y-m-d');
+    }

@@ -1,0 +1,137 @@
+public function Generate ()
+	{
+		
+		// If there is a table but no namespace or name
+		
+		if ($this->get ('table') && (!$this->get ('namespace') || !$this->get ('name')))
+		{
+			
+			// Get namespace and name details from the table name
+			
+			list ($namespace, $class)	= $this->parser->convertToNamespaceAndClass ($this->get ('table'));
+			
+			// Set namespace and name
+			
+			if (!$this->get ('namespace'))
+			{
+				$this->set ('namespace', $namespace);
+			}
+			
+			if (!$this->get ('name'))
+			{
+				$this->set ('name', $class);
+			}
+			
+		}
+		
+		// Start script
+		
+		$this->addLine ('<?php');
+		$this->addLine ();
+		
+		// Add class comment
+		
+		$comment	= 
+			($this->get ('description')?	$this->get ('description') . "\n\n" : NULL) . 
+			($this->get ('author')?			$this->tabVals ('@author',		$this->get ('author'), 4, '') . "\n" : NULL) . 
+			($this->get ('email')?			$this->tabVals ('@email',		$this->get ('email'), 4, '') . "\n" : NULL) . 
+			($this->get ('link')?			$this->tabVals ('@link',		$this->get ('link'), 4, '') . "\n" : NULL) . 
+			($this->get ('copyright')?		$this->tabVals ('@copyright ',	$this->get ('copyright'), 4, '') . "\n" : NULL) . 
+			($this->get ('date_created')?	$this->tabVals ('@datecreated',	$this->get ('date_created'), 5, '') . "\n" : NULL);
+		
+		if (substr ($comment, -1) == "\n")
+		{
+			$comment	= substr ($comment, 0, -1);
+		}
+		
+		$this->phpdocComment ($comment);
+		$this->addLine ();
+		$this->phpdocComment ($this->generateProperties ());
+		$this->addLine ();
+		
+		// Define namespace
+		
+		$this->lineComment ('Define namespace');
+		$this->addLine ();
+		$this->addLine ('namespace ' . $this->get ('namespace') . ';');
+		$this->addLine ();
+		
+		// Start class
+		
+		$this->lineComment ('Start ' . $this->get ('name') . ' Class');
+		$this->addLine ();
+		$this->addLine ('class ' . $this->get ('name') . ' extends ' . $this->get ('extends'));
+		$this->addLine ('{');
+		$this->tabUp ();
+		$this->addLine ();
+		
+		// Database table
+
+		if ($this->get ('table'))
+		{
+			$this->phpdocComment ("Database table\n@var string");
+			$this->addLine ();
+			$this->addLine ('public static $dbTable	= \'' . $this->get ('table') . '\';');
+			$this->addLine ();
+		}
+		
+		// Get primary key
+		
+		$pk	= $this->getPk ();
+		
+		// If there is a primary key which is different to the default
+		
+		if (is_array ($pk) && $pk['Field'] !== self::$pk)
+		{
+			
+			// Set it
+			
+			$this->phpdocComment ("Primary key field\n@var string");
+			$this->addLine ();
+			$this->addLine ('public static $pk	= \'' . $pk['Field'] . '\';');
+			$this->addLine ();
+			
+		}
+		
+		// Attributes
+		
+		$this->phpdocComment ("Class attributes\n@var array");
+		$this->addLine ();
+		$this->generateAttributes ();
+		$this->addLine ();
+		
+		// Database connection
+		// Specify if not the default
+		
+		if ($this->get ('table') && $this->get ('database') != $this->db->getDatabaseName ())
+		{
+			
+			// Create new database tool
+
+			$db		= new Db;
+			
+			// Find database resource name from table name
+			
+			$dbName	= array_search ($this->get ('database'), $db->getDatabases ());
+			
+			// Set default class database resource
+			
+			$this->phpdocComment ("Default class resources\n@var array");
+			$this->addLine ();
+			$this->addLine ('protected static $defaultResources	= array (\'db\' => array (\'db\', \'' . $dbName . '\'));');
+			$this->addLine ();
+			
+		}
+		
+		// End class
+		
+		$this->tabDown ();
+		$this->addLine ('}');
+		$this->addLine ();
+		$this->lineComment ('End ' . $this->get ('name') . ' Class');
+		
+		// Return class
+		
+		return $this->class;
+		
+	}

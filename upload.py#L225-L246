@@ -1,0 +1,22 @@
+def _file_size(file_path, uncompressed=False):
+    """Return size of a single file, compressed or uncompressed"""
+    _, ext = os.path.splitext(file_path)
+
+    if uncompressed:
+        if ext in {".gz", ".gzip"}:
+            with gzip.GzipFile(file_path, mode="rb") as fp:
+                try:
+                    fp.seek(0, os.SEEK_END)
+                    return fp.tell()
+                except ValueError:
+                    # on python2, cannot seek from end and must instead read to end
+                    fp.seek(0)
+                    while len(fp.read(8192)) != 0:
+                        pass
+                    return fp.tell()
+        elif ext in {".bz", ".bz2", ".bzip", ".bzip2"}:
+            with bz2.BZ2File(file_path, mode="rb") as fp:
+                fp.seek(0, os.SEEK_END)
+                return fp.tell()
+
+    return os.path.getsize(file_path)

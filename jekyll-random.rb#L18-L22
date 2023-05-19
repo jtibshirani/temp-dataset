@@ -1,0 +1,5 @@
+def random_item(x, items)
+         index = random_number(x, 0, items.size)
+
+         items[index]
+      end

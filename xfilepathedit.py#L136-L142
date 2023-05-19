@@ -1,0 +1,7 @@
+def copyFilepath( self ):
+        """
+        Copies the current filepath contents to the current clipboard.
+        """
+        clipboard = QApplication.instance().clipboard()
+        clipboard.setText(self.filepath())
+        clipboard.setText(self.filepath(), clipboard.Selection)

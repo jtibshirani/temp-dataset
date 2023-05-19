@@ -1,0 +1,11 @@
+def _to_string(self):
+        enum_name = None
+        value = self._get_calculated_value(self.value)
+        for enum, enum_value in vars(self.enum_type).items():
+            if value == enum_value:
+                enum_name = enum
+                break
+        if enum_name is None:
+            return "(%d) UNKNOWN_ENUM" % value
+        else:
+            return "(%d) %s" % (value, enum_name)

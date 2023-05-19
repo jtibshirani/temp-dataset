@@ -1,0 +1,6 @@
+def encrypt(self, data):
+        if self.iv is None:
+            cipher = pyAES.new(self.key, self.mode)
+        else:
+            cipher = pyAES.new(self.key, self.mode, self.iv)
+        return cipher.encrypt(pad_data(AES.str_to_bytes(data)))

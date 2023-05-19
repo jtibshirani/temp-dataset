@@ -1,0 +1,6 @@
+def valid_status_code?(status_code, allowed_status_codes)
+      return true if status_code == 200
+      return true if status_code / 100 == 3
+      return true if allowed_status_codes.include?(status_code)
+      false
+    end

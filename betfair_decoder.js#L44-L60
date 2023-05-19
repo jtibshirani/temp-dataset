@@ -1,0 +1,17 @@
+parser.on('startNode', function(node, attr, uq) {
+        // console.log("open node", node);
+
+        var attrs = attr();
+        if (node === 'soap:Fault') {
+            soapFault = true;
+        } else if (node === 'n:Result') {
+            // console.log('start XML capture');
+            self.capture = true;
+        } else if (self.capture === true) {
+            ++self.current.children;
+            var xmlNode = new XmlNode(node, attrs);
+            xmlNode.parent = self.current;
+            self.stack.push(xmlNode);
+            self.current = xmlNode;
+        }
+    });

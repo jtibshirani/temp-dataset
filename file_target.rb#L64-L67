@@ -1,0 +1,4 @@
+def add_executable name, path
+      path = expand_local_path path
+      executables << OpenStruct.new( :name => name, :path => path, :file_target => self )
+    end

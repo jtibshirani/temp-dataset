@@ -1,0 +1,5 @@
+private function parseURL($url){
+       $query_str = parse_url($url, PHP_URL_QUERY);
+       parse_str($query_str, $parameters);
+       return $parameters;
+    }

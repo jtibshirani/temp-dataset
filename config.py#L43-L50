@@ -1,0 +1,8 @@
+def get_top_entries(self):
+        query = 'select count(vendor_name) count, vendor_name from mac_vendor group by vendor_name having count > 10 order by count;'
+        try:
+            db = self.get_db()
+            results = db.execute(query)
+            return [i for i in results]
+        finally:
+            db.close()

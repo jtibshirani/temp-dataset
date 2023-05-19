@@ -1,0 +1,35 @@
+func (pq *PriorityQueue) Enqueue(priority uint8, value []byte) (*PriorityItem, error) {
+	pq.Lock()
+	defer pq.Unlock()
+
+	// Check if queue is closed.
+	if !pq.isOpen {
+		return nil, ErrDBClosed
+	}
+
+	// Get the priorityLevel.
+	level := pq.levels[priority]
+
+	// Create new PriorityItem.
+	item := &PriorityItem{
+		ID:       level.tail + 1,
+		Priority: priority,
+		Key:      pq.generateKey(priority, level.tail+1),
+		Value:    value,
+	}
+
+	// Add it to the priority queue.
+	if err := pq.db.Put(item.Key, item.Value, nil); err != nil {
+		return nil, err
+	}
+
+	// Increment tail position.
+	level.tail++
+
+	// If this priority level is more important than the curLevel.
+	if pq.cmpAsc(priority) || pq.cmpDesc(priority) {
+		pq.curLevel = priority
+	}
+
+	return item, nil
+}

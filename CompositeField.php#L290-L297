@@ -1,0 +1,8 @@
+public function setReadonly($readonly)
+    {
+        parent::setReadonly($readonly);
+        foreach ($this->getChildren() as $child) {
+            $child->setReadonly($readonly);
+        }
+        return $this;
+    }

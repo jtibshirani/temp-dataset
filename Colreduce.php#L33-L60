@@ -1,0 +1,28 @@
+protected function doTransform(Matrix $mA, $extra = null)
+    {
+        if ($mA->is('empty')) {
+            return new Matrix([]);
+        }
+
+        /** @noinspection PhpInternalEntityUsedInspection */
+        $this->assertParameterIsArray($extra, 'Second operand is not an array');
+
+        if (empty($extra)) {
+            throw new MatrixException('Second operand does not contain col indicator');
+        }
+        $col = intval($extra[0]);
+        $availableCols = $mA->columns();
+        if ($col<1 || $col > $availableCols) {
+            throw new MatrixException('Col indicator out of bounds');
+        }
+
+        $numCols = (isset($extra[1]) ? intval($extra[1]) : 1);
+        if ($numCols < 1 || ($numCols+$col-1) > $availableCols) {
+            throw new MatrixException('Numcols out of bounds');
+        }
+
+        $fT = new Transpose();
+        $fR = new Rowreduce();
+
+        return $fT($fR($fT($mA), [$col, $numCols]));
+    }

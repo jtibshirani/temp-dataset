@@ -1,0 +1,10 @@
+def skip_header(lines)
+      return 0 unless @header_regexes
+      next_line = 0
+      @header_regexes.each do |regex|
+        line = lines[next_line]
+        raise "Header line #{next_line} missing" unless line.match(regex)
+        next_line += 1
+      end
+      next_line
+    end

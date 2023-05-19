@@ -1,0 +1,19 @@
+function getHeatmap(tracks) {
+    var heatmap = [];
+    _.each(tracks, function(track) {
+        var idxStart = Math.floor(track.startTime / HEATMAP_SEGMENT), idxEnd = Math.ceil(track.endTime / HEATMAP_SEGMENT);
+        idxEnd = Math.min(MAX_HEATMAP_LEN, idxEnd); /* Protection - sometimes we have buggy tracks which end in Infinity */
+
+        for (var i=idxStart; i<idxEnd; i++) {
+          if (i<0) continue;
+          if (! heatmap[i]) heatmap[i] = 0;
+          USE_BOOLEAN ? heatmap[i] = 1 : heatmap[i]++;
+        }
+    });
+
+    /* Heatmap: Fill in the blanks */
+    for (var i = 0; i!=heatmap.length; i++) 
+      if (! heatmap[i]) heatmap[i] = 0;   
+
+    return heatmap;
+}

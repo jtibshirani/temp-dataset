@@ -1,0 +1,4 @@
+def CTREnc(key, plaintext):
+        iv = os.urandom(AES.block_size)
+        cipher = _cipher(_aes(key), _ctrmode(iv), backend=_backend).encryptor()
+        return iv + cipher.update(plaintext) + cipher.finalize()

@@ -1,0 +1,31 @@
+def summary(model, print_layer_links, print_barracuda_json, print_tensors):
+    def array_without_brackets(arr):
+        return str(arr)[1:-1] # array to string without brackets
+
+    if print_layer_links:
+        for l in model.layers:
+            print(l.name, " <= ", l.inputs)
+
+    if print_barracuda_json:
+        print(to_json(model))
+
+    if model.globals:
+        if isinstance(model.globals, dict):
+            model.globals = {x.name:x.shape for x in model.globals}
+        print("GLOBALS:", array_without_brackets(model.globals))
+
+    for l in model.layers:
+        if isinstance(model.inputs, dict):
+            ins = {i:model.inputs[i] for i in l.inputs if i in model.inputs}
+        else:
+            ins = [i for i in l.inputs if i in model.inputs]
+        if ins:
+            print("IN: %s => '%s'" % (array_without_brackets(ins), l.name))
+    for mem_in, mem_out in zip(model.memories[1::3], model.memories[2::3]):
+        print("MEM: '%s' => '%s'" % (mem_in, mem_out))
+    print("OUT:", array_without_brackets(model.outputs))
+
+    if (print_tensors):
+        for l in model.layers:
+            for x in l.tensors:
+                print(x.name, x.shape, x.data.dtype, x.data)

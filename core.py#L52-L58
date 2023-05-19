@@ -1,0 +1,7 @@
+def copy_file(self, from_path, to_path):
+        """ Copy file. """
+        if not op.exists(op.dirname(to_path)):
+            self.make_directory(op.dirname(to_path))
+
+        shutil.copy(from_path, to_path)
+        logging.debug('File copied: {0}'.format(to_path))

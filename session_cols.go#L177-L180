@@ -1,0 +1,4 @@
+func (session *Session) Distinct(columns ...string) *Session {
+	session.statement.Distinct(columns...)
+	return session
+}

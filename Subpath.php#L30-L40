@@ -1,0 +1,11 @@
+public function executable(Executable $executable = null)
+    {
+        if (func_num_args() > 0) {
+            if (!$executable instanceof Closure && !$executable instanceof Executable) {
+                throw new App\Exception("Object is not a closure or instance of Coast\App\Executable");
+            }
+            $this->_executable = $executable;
+            return $this;
+        }
+        return $this->_executable;
+    }

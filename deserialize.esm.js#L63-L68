@@ -1,0 +1,6 @@
+function __deserializeContent(buffer, start, options) {
+	let type, data;
+	({ anchor: start, value: type } = __deserializeType(buffer, start, options));
+	({ anchor: start, value: data } = __deserializeData(type, buffer, start, options));
+	return { anchor: start, value: data };
+}

@@ -1,0 +1,13 @@
+def replace_text(filepath, to_replace, replacement):
+        """
+        Replaces a string in a given file with another string
+
+        :param file: the file in which the string has to be replaced
+        :param to_replace: the string to be replaced in the file
+        :param replacement: the string which replaces 'to_replace' in the file
+        """
+        with open(filepath) as file:
+            s = file.read()
+        s = s.replace(to_replace, replacement)
+        with open(filepath, 'w') as file:
+            file.write(s)

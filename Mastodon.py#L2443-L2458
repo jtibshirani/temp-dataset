@@ -1,0 +1,16 @@
+def __datetime_to_epoch(self, date_time):
+        """
+        Converts a python datetime to unix epoch, accounting for
+        time zones and such.
+
+        Assumes UTC if timezone is not given.
+        """
+        date_time_utc = None
+        if date_time.tzinfo is None:
+            date_time_utc = date_time.replace(tzinfo=pytz.utc)
+        else:
+            date_time_utc = date_time.astimezone(pytz.utc)
+
+        epoch_utc = datetime.datetime.utcfromtimestamp(0).replace(tzinfo=pytz.utc)
+
+        return (date_time_utc - epoch_utc).total_seconds()

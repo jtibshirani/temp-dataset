@@ -1,0 +1,13 @@
+def group(self):
+        """(re-)group all logevents by the given group."""
+        if hasattr(self, 'group_by'):
+            group_by = self.group_by
+        else:
+            group_by = self.default_group_by
+            if self.args['group'] is not None:
+                group_by = self.args['group']
+
+        self.groups = Grouping(self.logevents, group_by)
+        self.groups.move_items(None, 'others')
+        self.groups.sort_by_size(group_limit=self.args['group_limit'],
+                                 discard_others=self.args['no_others'])

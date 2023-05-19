@@ -1,0 +1,9 @@
+public function getCurrentDate(): Calendar
+	{
+		if ($this->currentDate) {
+			return $this->currentDate;
+		}
+
+		$date = new Calendar('now', null, $this->configuration);
+		return $date;
+	}

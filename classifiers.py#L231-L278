@@ -1,0 +1,48 @@
+def bin1d(x, bins):
+    """
+    Place values of a 1-d array into bins and determine counts of values in
+    each bin
+
+    Parameters
+    ----------
+    x : array
+        (n, 1), values to bin
+    bins : array
+           (k,1), upper bounds of each bin (monotonic)
+
+    Returns
+    -------
+    binIds : array
+             1-d array of integer bin Ids
+
+    counts : int
+            number of elements of x falling in each bin
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import mapclassify as mc
+    >>> x = np.arange(100, dtype = 'float')
+    >>> bins = [25, 74, 100]
+    >>> binIds, counts = mc.classifiers.bin1d(x, bins)
+    >>> binIds
+    array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+           0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+           1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+           1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+           2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2])
+    >>> counts
+    array([26, 49, 25])
+    """
+    left = [-float("inf")]
+    left.extend(bins[0:-1])
+    right = bins
+    cuts = list(zip(left, right))
+    k = len(bins)
+    binIds = np.zeros(x.shape, dtype='int')
+    while cuts:
+        k -= 1
+        l, r = cuts.pop(-1)
+        binIds += (x > l) * (x <= r) * k
+    counts = np.bincount(binIds, minlength=len(bins))
+    return (binIds, counts)

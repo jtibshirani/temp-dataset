@@ -1,0 +1,18 @@
+async def generate(request):
+    start = time()
+    config = {}
+    for k, v in request.headers.items():
+        if k.startswith('Pdf-') or k.startswith('Pdf_'):
+            config[k[4:].lower()] = v.lower()
+    data = await request.read()
+    if not data:
+        logger.info('Request with no body data')
+        raise web.HTTPBadRequest(text='400: no HTML data to convert to PDF in request body\n')
+    try:
+        pdf_content = await app['apydf'].generate_pdf(data.decode(), **config)
+    except RuntimeError as e:
+        logger.info('Error generating PDF, time %0.2fs, config: %s', time() - start, config)
+        return web.Response(text=str(e) + '\n', status=418)
+    else:
+        logger.info('PDF generated in %0.2fs, html-len %d, pdf-len %d', time() - start, len(data), len(pdf_content))
+        return web.Response(body=pdf_content, content_type='application/pdf')

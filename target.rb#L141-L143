@@ -1,0 +1,3 @@
+def count_parameter_permutations
+      @parameters.each_pair.map{ |k, v| v }.reduce(1) { |n, arr| n * arr.size }
+    end

@@ -1,0 +1,17 @@
+def __camel_case(word):
+        """
+        Convert underscore naming into camel case naming
+        :param str word:
+        :return str:
+        """
+        word = word.lower()
+        if '_' in word:
+            split_word = word.split('_')
+        else:
+            split_word = word.split()
+        if len(split_word) > 0:
+            for i, word in enumerate(split_word):
+                if i > 0:
+                    split_word[i] = word.title()
+        strings = ''.join(split_word)
+        return strings

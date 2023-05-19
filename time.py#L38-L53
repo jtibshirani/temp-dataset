@@ -1,0 +1,16 @@
+def convert(self,
+                auto=None,
+                datetime=None,
+                timezone=None,
+                timestamp=None,
+                yyyymmdd=None,
+                yyyymmddhhiiss=None,
+                ms=False):
+        return self.helper.datetime.convert(
+            auto=auto,
+            datetime=datetime,
+            timezone=timezone,
+            timestamp=timestamp,
+            yyyymmdd=yyyymmdd,
+            yyyymmddhhiiss=yyyymmddhhiiss,
+            ms=ms)

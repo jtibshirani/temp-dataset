@@ -1,0 +1,16 @@
+public static function enabledSqlLog($connectName = '')
+    {
+
+        if ($connectName && $connectionData = self::getConnectionData($connectName)) {
+
+        }// 获取活动链接名的数据库连接信息
+        else if($connectionData = self::getConnectionData(self::getActiveConnectName($connectName))) {
+
+        } else {
+            return null;
+        }
+        
+        if (!$connectionData->getLogger()) {
+            $connectionData->setLogger(new \Doctrine\DBAL\Logging\DebugStack());
+        }
+    }

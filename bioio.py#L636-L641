@@ -1,0 +1,6 @@
+def padWord(word, length=25):
+    if len(word) > length:
+        return word[:length]
+    if len(word) < length:
+        return word + " "*(length-len(word))
+    return word

@@ -1,0 +1,7 @@
+def get_fixed_bits_from_header(out_header)
+      size = out_header.bytesize
+
+      # Fixed 32 bits to represent the int. We return a string
+      # representation: e.g, "00000000000000000000000000011110"
+      Array.new(32) { |i| size[i] }.reverse!.join
+    end

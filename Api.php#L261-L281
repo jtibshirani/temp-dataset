@@ -1,0 +1,21 @@
+private function htmlEncode($data)
+    {
+        if (empty($data)) {
+            return null;
+        }
+
+        $safeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890._-";
+
+        $result = "";
+        for ($i = 0; $i < strlen($data); $i++) {
+            if (strstr($safeChars, $data[$i])) {
+                $result .= $data[$i];
+            } else if ("7F" >= $var = bin2hex(substr($data, $i, 1))) {
+                $result .= "&#x" . $var . ";";
+            } else {
+                $result .= $data[$i];
+            }
+        }
+
+        return $result;
+    }

@@ -1,0 +1,27 @@
+def sort(
+            this, args
+    ):  # todo: this assumes array continous (not sparse) - fix for sparse arrays
+        cmpfn = get_arg(args, 0)
+        if not GetClass(this) in ('Array', 'Arguments'):
+            return to_object(this, args.space)  # do nothing
+        arr_len = js_arr_length(this)
+        if not arr_len:
+            return this
+        arr = [
+            (this.get(unicode(e)) if this.has_property(unicode(e)) else None)
+            for e in xrange(arr_len)
+        ]
+        if not is_callable(cmpfn):
+            cmpfn = None
+        cmp = lambda a, b: sort_compare(a, b, cmpfn)
+        if six.PY3:
+            key = functools.cmp_to_key(cmp)
+            arr.sort(key=key)
+        else:
+            arr.sort(cmp=cmp)
+        for i in xrange(arr_len):
+            if arr[i] is None:
+                this.delete(unicode(i))
+            else:
+                this.put(unicode(i), arr[i])
+        return this

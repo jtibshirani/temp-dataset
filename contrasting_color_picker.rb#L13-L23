@@ -1,0 +1,11 @@
+def pick(randomizer = Random.new)
+      pick = palette.sample(random: randomizer)
+      
+      try = 0
+      while colors.any? { |c| c.similar?(pick) } && try <= MAX_RETRIES
+        try += 1
+        pick = palette.sample(random: randomizer)
+      end
+      
+      pick.to_s
+    end

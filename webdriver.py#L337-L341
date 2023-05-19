@@ -1,0 +1,5 @@
+def check_checkbox(step, value):
+    with AssertContextManager(step):
+        check_box = find_field(world.browser, 'checkbox', value)
+        if not check_box.is_selected():
+            check_box.click()

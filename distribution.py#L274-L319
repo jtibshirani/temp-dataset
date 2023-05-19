@@ -1,0 +1,46 @@
+def anderson(*args, dist='norm'):
+    """Anderson-Darling test of distribution.
+
+    Parameters
+    ----------
+    sample1, sample2,... : array_like
+        Array of sample data. May be different lengths.
+    dist : string
+        Distribution ('norm', 'expon', 'logistic', 'gumbel')
+
+    Returns
+    -------
+    from_dist : boolean
+        True if data comes from this distribution.
+    sig_level : float
+        The significance levels for the corresponding critical values in %.
+        (See :py:func:`scipy.stats.anderson` for more details)
+
+    Examples
+    --------
+    1. Test that an array comes from a normal distribution
+
+    >>> from pingouin import anderson
+    >>> x = [2.3, 5.1, 4.3, 2.6, 7.8, 9.2, 1.4]
+    >>> anderson(x, dist='norm')
+    (False, 15.0)
+
+    2. Test that two arrays comes from an exponential distribution
+
+    >>> y = [2.8, 12.4, 28.3, 3.2, 16.3, 14.2]
+    >>> anderson(x, y, dist='expon')
+    (array([False, False]), array([15., 15.]))
+    """
+    from scipy.stats import anderson as ads
+    k = len(args)
+    from_dist = np.zeros(k, 'bool')
+    sig_level = np.zeros(k)
+    for j in range(k):
+        st, cr, sig = ads(args[j], dist=dist)
+        from_dist[j] = True if (st > cr).any() else False
+        sig_level[j] = sig[np.argmin(np.abs(st - cr))]
+
+    if k == 1:
+        from_dist = bool(from_dist)
+        sig_level = float(sig_level)
+    return from_dist, sig_level

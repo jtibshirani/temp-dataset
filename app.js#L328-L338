@@ -1,0 +1,11 @@
+recommend: function(item) {
+          var list = _listing.slice(0);
+          return $q.when(list
+            .filter(function(entity) {
+              return entity.item !== item;
+            })
+            .sort(function() {
+              return Math.random() > 0.5;
+            })
+            .splice(0,6));
+        }

@@ -1,0 +1,8 @@
+def compile_erb(erb_file, dst_file=nil)
+      new_file_path = dst_file || erb_file.gsub(/\.erb$/,'')
+      @logger.debug "Compiling erb #{erb_file} to #{new_file_path}"
+
+      File.open(new_file_path, "w"){|f|
+        f.write(ERB.new(File.read(File.expand_path(erb_file))).result(binding))
+      }
+    end

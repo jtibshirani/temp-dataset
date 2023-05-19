@@ -1,0 +1,15 @@
+def extract_zip(work_dir)
+      if File.directory?(@backup_path)
+        Dir["#{@backup_path}/**/*"].each do |f_path|
+          f_path=File.join(work_dir, f.name)
+        end
+      else
+        Zip::File.open(@backup_path) do |zip_file|
+          zip_file.each do |f|
+            f_path=File.join(work_dir, f.name)
+            FileUtils.mkdir_p(File.dirname(f_path))
+            zip_file.extract(f, f_path) unless File.exist?(f_path)
+          end
+        end
+      end
+    end

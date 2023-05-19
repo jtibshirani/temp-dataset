@@ -1,0 +1,14 @@
+public function update(array $data){
+
+        $clipboard = $this->clipboard->findOrFail($data['id']);
+		
+		if( ! $clipboard )
+		{
+			return false;
+		}
+
+        $clipboard->content_id = $data['content_id'];
+		$clipboard->save();
+		
+		return $clipboard;
+	}

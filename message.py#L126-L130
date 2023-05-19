@@ -1,0 +1,5 @@
+def convert_MAC_to_int(addr):
+    reverse_bytes_str = addr.split(':')
+    reverse_bytes_str.reverse()
+    addr_str = "".join(reverse_bytes_str)
+    return int(addr_str, 16)

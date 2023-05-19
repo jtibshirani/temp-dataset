@@ -1,0 +1,13 @@
+def series_with_permutation(self, other):
+        """Compute the series product with another channel permutation circuit
+
+        Args:
+            other (CPermutation):
+
+        Returns:
+            Circuit: The composite permutation circuit (could also be the
+                identity circuit for n channels)
+        """
+        combined_permutation = tuple([self.permutation[p]
+                                      for p in other.permutation])
+        return CPermutation.create(combined_permutation)

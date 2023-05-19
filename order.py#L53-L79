@@ -1,0 +1,27 @@
+def sort(posts: List[Post], by: str) -> List[Post]:
+    by_val  = by.replace("asc_", "").replace("desc_", "")
+
+    in_dict = (ORDER_NUM   if by_val in ORDER_NUM   else
+               ORDER_DATE  if by_val in ORDER_DATE  else
+               ORDER_FUNCS if by_val in ORDER_FUNCS else None)
+
+    if not in_dict:
+        raise ValueError(
+            f"Got {by_val!r} as ordering method, must be one of: %s" %
+            ", ".join(set(ORDER_NUM) | set(ORDER_DATE) | set(ORDER_FUNCS))
+        )
+
+    if in_dict == ORDER_FUNCS:
+        posts.sort(key=ORDER_FUNCS[by], reverse=(by != "random"))
+        return posts
+
+    by_full = by if by.startswith("asc_") or by.startswith("desc_") else \
+              f"%s_{by}" % in_dict[by][0]
+
+    def sort_key(post: Post) -> int:
+        key = in_dict[by_val][1]
+        key = post.info[key] if not callable(key) else key(post.info)
+        return pend.parse(key) if in_dict == ORDER_DATE else key
+
+    posts.sort(key=sort_key, reverse=by_full.startswith("desc_"))
+    return posts

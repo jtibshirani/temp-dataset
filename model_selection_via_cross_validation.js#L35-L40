@@ -1,0 +1,6 @@
+function LabeledDocument(id, text, label)
+    {
+        this.id=id;
+        this.text=text;
+        this.label=label;
+    }

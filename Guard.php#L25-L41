@@ -1,0 +1,17 @@
+public function filterArray(array $items)
+    {
+        $filteredArray = [];
+        foreach ($items as $key => $item) {
+            $filtered = $this->filter($item);
+
+            if ($filtered !== false) {
+                if (is_numeric($key)) {
+                    $filteredArray[] = $filtered;
+                } else {
+                    $filteredArray[$key] = $filtered;
+                }
+            }
+        }
+
+        return $filteredArray;
+    }

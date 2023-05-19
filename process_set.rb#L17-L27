@@ -1,0 +1,11 @@
+def parse_process(process)
+      if process[:count]
+        parse_process_cluster(process)
+      else
+        parse_single_process(
+          process[:name],
+          process[:config],
+          process_monitors(process),
+        )
+      end
+    end

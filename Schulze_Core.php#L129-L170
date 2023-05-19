@@ -1,0 +1,42 @@
+protected function makeRanking () : void
+    {       
+        $result = [];
+
+        // Calculate ranking
+        $done = array ();
+        $rank = 1;
+
+        while (count($done) < $this->_selfElection->countCandidates()) :
+            $to_done = [];
+
+            foreach ( $this->_StrongestPaths as $candidate_key => $challengers_key ) :
+                if ( in_array($candidate_key, $done, true) ) :
+                    continue;
+                endif;
+
+                $winner = true;
+
+                foreach ($challengers_key as $beaten_key => $beaten_value) :
+                    if ( in_array($beaten_key, $done, true) ) :
+                        continue;
+                    endif;
+
+                    if ( $beaten_value < $this->_StrongestPaths[$beaten_key][$candidate_key] ) :
+                        $winner = false;
+                    endif;
+                endforeach;
+
+                if ($winner) :
+                    $result[$rank][] = $candidate_key;
+
+                    $to_done[] = $candidate_key;
+                endif;
+            endforeach;
+
+            $done = array_merge($done, $to_done);
+
+            $rank++;
+        endwhile;
+
+        $this->_Result = $this->createResult($result);
+    }

@@ -1,0 +1,30 @@
+priority: function preloadPriority(next) {
+
+      //ensure priority is pre loaded before post(save)
+      const priorityId =
+        (this.priority ? this.priority._id : this.priority);
+
+      //prefetch existing priority
+      if (priorityId) {
+
+        Priority
+          .getById(priorityId, function (error, priority) {
+
+            //assign existing priority
+            if (priority) {
+              this.priority = priority;
+            }
+
+            //return
+            next(error, this);
+
+          }.bind(this));
+
+      }
+
+      //continue
+      else {
+        next();
+      }
+
+    }.bind(this)

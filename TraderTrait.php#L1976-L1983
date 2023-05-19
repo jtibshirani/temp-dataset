@@ -1,0 +1,8 @@
+public static function linearreg_angle(array $real, int $timePeriod = null): array
+    {
+        $timePeriod = $timePeriod ?? 14;
+        $return     = trader_linearreg_angle($real, $timePeriod);
+        static::checkForError();
+
+        return $return;
+    }

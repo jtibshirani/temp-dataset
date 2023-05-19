@@ -1,0 +1,7 @@
+def json_pretty_print(s):
+    '''pretty print JSON'''
+    s = json.loads(s)
+    return json.dumps(s,
+                      sort_keys=True,
+                      indent=4,
+                      separators=(',', ': '))

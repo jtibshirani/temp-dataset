@@ -1,0 +1,7 @@
+}).on('end', function () {
+      if (isZip) {
+        var zip = new Zip(dest);
+        zip.extractAllTo(path.dirname(dest), true);
+      }
+      resolve();
+    }).pipe(fs.createWriteStream(dest));

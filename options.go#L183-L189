@@ -1,0 +1,7 @@
+func Checkbox(name string, checked bool) *Field {
+	ret := FieldWithType(name, formcommon.CHECKBOX)
+	if checked {
+		ret.AddTag("checked")
+	}
+	return ret
+}

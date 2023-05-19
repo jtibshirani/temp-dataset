@@ -1,0 +1,40 @@
+def median(self, values, axis=0, average=True):
+        """compute the median value over each group.
+
+        Parameters
+        ----------
+        values : array_like, [keys, ...]
+            values to compute the median of per group
+        axis : int, optional
+            alternative reduction axis for values
+        average : bool, optional
+            when average is true, the average of the two central values is taken for groups with an even key-count
+
+        Returns
+        -------
+        unique: ndarray, [groups]
+            unique keys
+        reduced : ndarray, [groups, ...]
+            value array, reduced over groups
+        """
+        mid_2 = self.index.start + self.index.stop
+        hi = (mid_2    ) // 2
+        lo = (mid_2 - 1) // 2
+
+        #need this indirection for lex-index compatibility
+        sorted_group_rank_per_key = self.index.sorted_group_rank_per_key
+
+        def median1d(slc):
+            #place values at correct keys; preconditions the upcoming lexsort
+            slc    = slc[self.index.sorter]
+            #refine value sorting within each keygroup
+            sorter = np.lexsort((slc, sorted_group_rank_per_key))
+            slc    = slc[sorter]
+            return (slc[lo]+slc[hi]) / 2 if average else slc[hi]
+
+        values = np.asarray(values)
+        if values.ndim>1:   #is trying to skip apply_along_axis somewhat premature optimization?
+            values = np.apply_along_axis(median1d, axis, values)
+        else:
+            values = median1d(values)
+        return self.unique, values

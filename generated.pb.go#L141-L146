@@ -1,0 +1,6 @@
+func (m *AllowedHostPath) GetReadOnly() bool {
+	if m != nil && m.ReadOnly != nil {
+		return *m.ReadOnly
+	}
+	return false
+}

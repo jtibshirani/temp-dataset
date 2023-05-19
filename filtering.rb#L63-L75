@@ -1,0 +1,13 @@
+def uniq
+      filter("uniq") do |yielder|
+        seen = Set.new
+        each do |element|
+          key = if block_given?
+            yield element
+          else
+            element
+          end
+          yielder.call(element) if seen.add?(key)
+        end
+      end
+    end

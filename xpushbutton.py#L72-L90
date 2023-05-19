@@ -1,0 +1,19 @@
+def setShowRichText(self, state):
+        """
+        Sets whether or not to display rich text for this button.
+        
+        :param      state | <bool>
+        """
+        self._showRichText = state
+        text = self.text()
+        
+        if state:
+            label = self.richTextLabel()
+            label.setText(text)
+            label.show()
+            super(XPushButton, self).setText('')
+        else:
+            if self._richTextLabel:
+                self._richTextLabel.hide()
+            
+            super(XPushButton, self).setText(text)

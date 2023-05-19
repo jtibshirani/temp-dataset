@@ -1,0 +1,51 @@
+def _ConvertToTimestamp(self, date, time):
+    """Converts date and time strings into a timestamp.
+
+    Recent versions of Office Scan write a log field with a Unix timestamp.
+    Older versions may not write this field; their logs only provide a date and
+    a time expressed in the local time zone. This functions handles the latter
+    case.
+
+    Args:
+      date (str): date as an 8-character string in the YYYYMMDD format.
+      time (str): time as a 3 or 4-character string in the [H]HMM format or a
+          6-character string in the HHMMSS format.
+
+    Returns:
+      dfdatetime_time_elements.TimestampElements: the parsed timestamp.
+
+    Raises:
+      ValueError: if the date and time values cannot be parsed.
+    """
+    # Check that the strings have the correct length.
+    if len(date) != 8:
+      raise ValueError(
+          'Unsupported length of date string: {0!s}'.format(repr(date)))
+
+    if len(time) < 3 or len(time) > 4:
+      raise ValueError(
+          'Unsupported length of time string: {0!s}'.format(repr(time)))
+
+    # Extract the date.
+    try:
+      year = int(date[:4], 10)
+      month = int(date[4:6], 10)
+      day = int(date[6:8], 10)
+    except (TypeError, ValueError):
+      raise ValueError('Unable to parse date string: {0!s}'.format(repr(date)))
+
+    # Extract the time. Note that a single-digit hour value has no leading zero.
+    try:
+      hour = int(time[:-2], 10)
+      minutes = int(time[-2:], 10)
+    except (TypeError, ValueError):
+      raise ValueError('Unable to parse time string: {0!s}'.format(repr(date)))
+
+    time_elements_tuple = (year, month, day, hour, minutes, 0)
+    date_time = dfdatetime_time_elements.TimeElements(
+        time_elements_tuple=time_elements_tuple)
+    date_time.is_local_time = True
+    # TODO: add functionality to dfdatetime to control precision.
+    date_time._precision = dfdatetime_definitions.PRECISION_1_MINUTE  # pylint: disable=protected-access
+
+    return date_time

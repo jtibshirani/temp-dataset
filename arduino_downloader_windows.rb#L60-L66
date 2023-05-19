@@ -1,0 +1,7 @@
+def extract
+      Zip::File.open(package_file) do |zip|
+        zip.each do |file|
+          file.extract(file.name)
+        end
+      end
+    end

@@ -1,0 +1,10 @@
+def gzipped_tarball
+      gz = StringIO.new("")
+      z = Zlib::GzipWriter.new(gz, compression_level)
+      z.write(tarball.string)
+      z.close
+
+      # z was closed to write the gzip footer, so
+      # now we need a new StringIO
+      StringIO.new(gz.string)
+    end

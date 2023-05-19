@@ -1,0 +1,6 @@
+def establish_postgres_connection(name = 'default')
+      if database_config[name]
+        ActiveRecord::Base.establish_connection(database_config[name][env].merge('database' => 'postgres',
+                                                                                 'schema_search_path' => 'public'))
+      end
+    end

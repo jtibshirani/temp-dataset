@@ -1,0 +1,14 @@
+private function hasValidSEnding($word)
+    {
+        $lastLetter = Utf8::substr($word, -1, 1);
+        if (in_array($lastLetter, array('b', 'c', 'd', 'f', 'g', 'h', 'j', 'l', 'm', 'n', 'o', 'p', 'r', 't', 'v', 'y', 'z'))) {
+            return true;
+        }
+        if ($lastLetter == 'k') {
+            $beforeLetter = Utf8::substr($word, -2, 1);
+            if (!in_array($beforeLetter, self::$vowels)) {
+                return true;
+            }
+        }
+        return false;
+    }

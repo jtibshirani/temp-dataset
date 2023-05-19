@@ -1,0 +1,18 @@
+func DistanceFromPointToLineString(layout geom.Layout, p geom.Coord, line []float64) float64 {
+	if len(line) < 2 {
+		panic(fmt.Sprintf("Line array must contain at least one vertex: %v", line))
+	}
+	// this handles the case of length = 1
+	firstPoint := line[0:2]
+	minDistance := internal.Distance2D(p, firstPoint)
+	stride := layout.Stride()
+	for i := 0; i < len(line)-stride; i += stride {
+		point1 := geom.Coord(line[i : i+2])
+		point2 := geom.Coord(line[i+stride : i+stride+2])
+		dist := DistanceFromPointToLine(p, point1, point2)
+		if dist < minDistance {
+			minDistance = dist
+		}
+	}
+	return minDistance
+}

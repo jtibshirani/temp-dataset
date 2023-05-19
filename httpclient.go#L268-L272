@@ -1,0 +1,5 @@
+func postJson(url string, path string, headers map[string]string, jsonStruct interface{}) (*http.Response, []byte, error) {
+	//err has already been caught
+	data, _ := json.Marshal(jsonStruct)
+	return postData(url, path, headers, data)
+}

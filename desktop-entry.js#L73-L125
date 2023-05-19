@@ -1,0 +1,53 @@
+lineReader.eachLine(entry, function readLine(line) {
+		// ignore comments and empty lines
+		var Sline = S(line);
+		if(Sline.startsWith('#') || Sline.trim().isEmpty()){
+			return;
+		}
+		
+		if (Sline.startsWith('[') && Sline.endsWith(']')) {
+			// we've got a new header here
+			var header = Sline.between('[', ']').s;
+			
+			// if the header is [Desktop Entry], it must be the first header
+			if ('Desktop Entry'.localeCompare(currentHeader) && currentHeaderContents !== null && !model['Desktop Entry']) { // FIXME const
+				hasError = true;
+				onError('Invalid Desktop Entry: the Desktop Entry must be the first header.'); // FIXME const + NLS
+				return false; // stop reading
+			}
+			var currentHeader = header.trim();
+			// each new header ends the previous one
+			currentHeaderContents = [];
+			model[currentHeader] = currentHeaderContents;
+		} else {
+			// regular line: key = value
+			if (currentHeaderContents === null) {
+				// reading an entry without a header first denotes an invalid Desktop Entry
+				hasError = true;
+				onError('Invalid Desktop Entry: no top level header.'); // FIXME NLS
+				return false; // stop reading
+			}
+
+
+			var tokens = Sline.s.split('=');
+			if (tokens.length < 2) {
+				// we expect key = value lines here
+				hasError = true;
+				onError('Invalid Desktop Entry: ' + Sline.s + ' not a valid Entry format.'); // FIXME NLS
+				return false; // stop reading
+			}
+
+			// /!\ ignore space around '=' sign
+			var key = tokens.shift().trim();
+
+			// FIXME handle key[locale] patterns
+			if (!key.match(/[a-zA-Z0-9\-]+/g)) { // FIXME put in cache as a RegExp object
+				hasError = true;
+				onError('Invalid Desktop Entry: invalid key: ' + key + ' (must match [a-zA-Z0-9\-])'); // FIXME NLS
+				return false; // stop reading
+			}
+
+			var value = tokens.join('=').trim();
+			currentHeaderContents[key] = value;
+		}
+	}).then(function fileDone(){

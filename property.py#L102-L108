@@ -1,0 +1,7 @@
+def create_with(
+            cls, event: str = None, observable: T.Union[str, Observable] = None
+    ) -> T.Callable[..., "ObservableProperty"]:
+        """Creates a partial application of ObservableProperty with
+        event and observable preset."""
+
+        return functools.partial(cls, event=event, observable=observable)

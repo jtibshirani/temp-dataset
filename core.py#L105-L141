@@ -1,0 +1,37 @@
+def fit_model(regressor_type,
+              regressor_kwargs,
+              tf_matrix,
+              target_gene_expression,
+              early_stop_window_length=EARLY_STOP_WINDOW_LENGTH,
+              seed=DEMON_SEED):
+    """
+    :param regressor_type: string. Case insensitive.
+    :param regressor_kwargs: a dictionary of key-value pairs that configures the regressor.
+    :param tf_matrix: the predictor matrix (transcription factor matrix) as a numpy array.
+    :param target_gene_expression: the target (y) gene expression to predict in function of the tf_matrix (X).
+    :param early_stop_window_length: window length of the early stopping monitor.
+    :param seed: (optional) random seed for the regressors.
+    :return: a trained regression model.
+    """
+    regressor_type = regressor_type.upper()
+
+    assert tf_matrix.shape[0] == len(target_gene_expression)
+
+    def do_sklearn_regression():
+        regressor = SKLEARN_REGRESSOR_FACTORY[regressor_type](random_state=seed, **regressor_kwargs)
+
+        with_early_stopping = is_oob_heuristic_supported(regressor_type, regressor_kwargs)
+
+        if with_early_stopping:
+            regressor.fit(tf_matrix, target_gene_expression, monitor=EarlyStopMonitor(early_stop_window_length))
+        else:
+            regressor.fit(tf_matrix, target_gene_expression)
+
+        return regressor
+
+    if is_sklearn_regressor(regressor_type):
+        return do_sklearn_regression()
+    # elif is_xgboost_regressor(regressor_type):
+    #     raise ValueError('XGB regressor not yet supported')
+    else:
+        raise ValueError('Unsupported regressor type: {0}'.format(regressor_type))

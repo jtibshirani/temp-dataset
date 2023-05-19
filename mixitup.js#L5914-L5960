@@ -1,0 +1,47 @@
+parseSortString: function(sortString, command) {
+            var self        = this,
+                rules       = sortString.split(' '),
+                current     = command,
+                rule        = [],
+                i           = -1;
+
+            // command.sortString = sortString;
+
+            for (i = 0; i < rules.length; i++) {
+                rule = rules[i].split(':');
+
+                current.sortString  = rules[i];
+                current.attribute   = h.dashCase(rule[0]);
+                current.order       = rule[1] || 'asc';
+
+                switch (current.attribute) {
+                    case 'default':
+                        // treat "default" as sorting by no attribute
+
+                        current.attribute = '';
+
+                        break;
+                    case 'random':
+                        // treat "random" as an order not an attribute
+
+                        current.attribute   = '';
+                        current.order       = 'random';
+
+                        break;
+                }
+
+                if (!current.attribute || current.order === 'random') break;
+
+                if (i < rules.length - 1) {
+                    // Embed reference to the next command
+
+                    current.next = new mixitup.CommandSort();
+
+                    h.freeze(current);
+
+                    current = current.next;
+                }
+            }
+
+            return self.callFilters('commandsParseSort', command, arguments);
+        },

@@ -1,0 +1,5 @@
+def underline(self, text): # Print an underline text
+		if self._windows():
+			return text
+		else:
+			return self.UNDERLINE + text + self.NORMAL

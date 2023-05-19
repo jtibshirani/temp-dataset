@@ -1,0 +1,2 @@
+def median(self, *args, **kwargs):
+        return np.median(self.rri, *args, **kwargs)

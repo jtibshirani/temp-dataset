@@ -1,0 +1,6 @@
+def extract_impression_from_file(file_path):
+    # TODO: domain specific, move to propper location
+    with open(file_path, "r", encoding='utf8') as f:
+        text = f.read()
+
+    return extract_impression_from_text(text)

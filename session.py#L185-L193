@@ -1,0 +1,9 @@
+def _set_cookie(self, name, value):
+        cookie_domain = self._config.cookie_domain
+        cookie_path = self._config.cookie_path
+        cookie_expires = self._config.cookie_expires
+        if self._config.secure:
+            return self.handler.set_secure_cookie(
+                name, value, expires_days=cookie_expires / (3600 * 24), domain=cookie_domain, path=cookie_path)
+        else:
+            return self.handler.set_cookie(name, value, expires=cookie_expires, domain=cookie_domain, path=cookie_path)

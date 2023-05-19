@@ -1,0 +1,8 @@
+protected function setSummary(array $summary = [])
+    {
+        if ($summary instanceof Summary) {
+            //do nothing
+        } elseif (is_array($summary)) {
+            $this->summary = new Summary($summary);
+        }
+    }

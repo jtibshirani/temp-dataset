@@ -1,0 +1,10 @@
+def get_json_filters(args):
+    jsonfilters = []
+    if hasattr(args, 'include_names_json'):
+        splitnames = args.include_names_json.split(",")
+        for iname in splitnames:
+            splitnameeq = iname.split("=") # 1-element array if = not present; 2-element array if present
+            splitnameeq = list(filter(None, splitnameeq))
+            jsonfilters.append(splitnameeq)
+    jsonfilters = list(filter(None, jsonfilters))
+    return jsonfilters

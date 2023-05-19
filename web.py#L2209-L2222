@@ -1,0 +1,14 @@
+def reverse_url(self, name: str, *args: Any) -> str:
+        """Returns a URL path for handler named ``name``
+
+        The handler must be added to the application as a named `URLSpec`.
+
+        Args will be substituted for capturing groups in the `URLSpec` regex.
+        They will be converted to strings if necessary, encoded as utf8,
+        and url-escaped.
+        """
+        reversed_url = self.default_router.reverse_url(name, *args)
+        if reversed_url is not None:
+            return reversed_url
+
+        raise KeyError("%s not found in named urls" % name)

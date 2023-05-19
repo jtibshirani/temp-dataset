@@ -1,0 +1,9 @@
+def update_token
+      # download main page
+      html = fetch_main(no_cache: true)
+      # extract tkk from html
+      @tkk = extract_tkk(html)
+      # compile desktop module javascript
+      @js_context = compile_js(html)
+      @token_updated_at = Time.now
+    end

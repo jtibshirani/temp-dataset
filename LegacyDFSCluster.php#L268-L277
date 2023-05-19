@@ -1,0 +1,10 @@
+protected function mapArrayToSPIBinaryFile(array $properties)
+    {
+        $spiBinaryFile = new SPIBinaryFile();
+        $spiBinaryFile->id = $properties['id'];
+        $spiBinaryFile->size = $properties['size'];
+        $spiBinaryFile->mtime = new DateTime('@' . $properties['mtime']);
+        $spiBinaryFile->mimeType = $properties['datatype'];
+
+        return $spiBinaryFile;
+    }

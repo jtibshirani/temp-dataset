@@ -1,0 +1,18 @@
+def onNewMasterDetectedMessage(self, data):
+        master = None
+        try:
+            if isinstance(data, six.binary_type):
+                data = data.decode('utf-8')
+
+            parsed = json.loads(data)
+            if parsed and "address" in parsed:
+                ip = parsed["address"].get("ip")
+                port = parsed["address"].get("port")
+                if ip and port:
+                    master = "%s:%s" % (ip, port)
+        except Exception:
+            logger.exception("No JSON content, probably connecting "
+                             "to older Mesos version.")
+
+        if master:
+            self.change_master(master)

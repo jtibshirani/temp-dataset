@@ -1,0 +1,12 @@
+def observe(observable, persistent: true)
+      # register for observable updates, and set initial value
+      if value = observable.add_observer(self, persistent: persistent)
+        debug { "observe #{observable} => #{value}" }
+
+        add(observable, value)
+      else
+        debug { "observe #{observable}..." }
+
+        add(observable)
+      end
+    end

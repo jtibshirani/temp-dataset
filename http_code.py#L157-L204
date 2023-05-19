@@ -1,0 +1,48 @@
+def get(self):
+        """
+        Return the HTTP code status.
+
+        :return: The matched and formatted status code.
+        :rtype: str|int|None
+        """
+        if PyFunceble.HTTP_CODE["active"]:
+            # The http status code extraction is activated.
+
+            # We get the http status code.
+            http_code = self._access()
+
+            # We initiate a variable which will save the list of allowed
+            # http status code.
+            list_of_valid_http_code = []
+
+            for codes in [
+                PyFunceble.HTTP_CODE["list"]["up"],
+                PyFunceble.HTTP_CODE["list"]["potentially_down"],
+                PyFunceble.HTTP_CODE["list"]["potentially_up"],
+            ]:
+                # We loop throught the list of http status code.
+
+                # We extend the list of valid with the currently read
+                # codes.
+                list_of_valid_http_code.extend(codes)
+
+            if http_code not in list_of_valid_http_code or http_code is None:
+                # * The extracted http code is not in the list of valid http code.
+                # or
+                # * The extracted http code is equal to `None`.
+
+                # We return 3 star in order to mention that we were not eable to extract
+                # the http status code.
+                return "*" * 3
+
+            # * The extracted http code is in the list of valid http code.
+            # or
+            # * The extracted http code is not equal to `None`.
+
+            # We return the extracted http status code.
+            return http_code
+
+        # The http status code extraction is activated.
+
+        # We return None.
+        return None

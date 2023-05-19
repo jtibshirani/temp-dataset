@@ -1,0 +1,7 @@
+private static function __doubleUnderlineBorder($string)
+    {
+        $border          = new Border(Border::TYPE_UNDERLINE, '=');
+        $borderedElement = new BorderedElement($string, $border);
+
+        return $borderedElement->render();
+    }

@@ -1,0 +1,4 @@
+func (s *CustomErrorResponse) SetResponseCode(v string) *CustomErrorResponse {
+	s.ResponseCode = &v
+	return s
+}

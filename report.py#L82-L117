@@ -1,0 +1,36 @@
+def extract_context_data(self):
+        """
+        Returns the contents of a AWS Lambda context.
+
+        :returns: A dict of relevant context data.
+        :rtype: dict
+        """
+        data = {}
+        for k, v in {
+            # camel case names in the report to align with AWS standards
+            "functionName": "function_name",
+            "functionVersion": "function_version",
+            "memoryLimitInMB": "memory_limit_in_mb",
+            "invokedFunctionArn": "invoked_function_arn",
+            "awsRequestId": "aws_request_id",
+            "logGroupName": "log_group_name",
+            "logStreamName": "log_stream_name",
+        }.items():
+            if hasattr(self.context, v):
+                data[k] = getattr(self.context, v)
+        if (
+            hasattr(self.context, "invoked_function_arn")
+            and "AWS_SAM_LOCAL" in os.environ
+        ):
+            data["invokedFunctionArn"] = (
+                "arn:aws:lambda:local:0:function:%s"
+                % data.get("functionName", "unknown")
+            )
+        if hasattr(self.context, "get_remaining_time_in_millis") and callable(
+            self.context.get_remaining_time_in_millis
+        ):
+            data[
+                "getRemainingTimeInMillis"
+            ] = self.context.get_remaining_time_in_millis()
+        data["traceId"] = os.getenv("_X_AMZN_TRACE_ID", "")
+        return data

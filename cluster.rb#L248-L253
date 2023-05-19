@@ -1,0 +1,6 @@
+def describe_group(group_id)
+      response = get_group_coordinator(group_id: group_id).describe_groups(group_ids: [group_id])
+      group = response.groups.first
+      Protocol.handle_error(group.error_code)
+      group
+    end

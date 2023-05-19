@@ -1,0 +1,8 @@
+LogiaFactory.setDateFormat = function (format) {
+    var newDateFormat = format;
+    if(typeof newDateFormat !== "string"){
+        newDateFormat = "";
+        console.error(("[LOGIA] Invalid 'dateFormat' value: " + format +". Using default date format...").red);
+    }
+    RUNTIME_CONFIG.dateFormat = newDateFormat;
+};

@@ -1,0 +1,9 @@
+function getParents(node) {
+    var result = [];
+    var parent = node.parent;
+    while (parent != null) {
+        result.push(parent);
+        parent = parent.parent;
+    }
+    return result;
+}

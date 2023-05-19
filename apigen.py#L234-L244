@@ -1,0 +1,11 @@
+def _deserialize(kwargs):
+    def deserialize(item):
+        if isinstance(item[1], str):
+            try:
+                data = json.loads(item[1])  # load as json
+            except:
+                data = item[1].decode('utf-8')  # must be a string
+        else:
+            data = item[1]  # already deserialized (method default value)
+        return (item[0], data)
+    return dict(map(deserialize, kwargs.items()))

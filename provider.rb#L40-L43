@@ -1,0 +1,4 @@
+def tin
+      cda_id_tin = ids.where(namingSystem: TAX_ID_OID).first
+      cda_id_tin ? cda_id_tin.value : nil
+    end

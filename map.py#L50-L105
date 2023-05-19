@@ -1,0 +1,56 @@
+def maps(map_id=None, lang="en"):
+    """This resource returns details about maps in the game, including details
+    about floor and translation data on how to translate between world
+    coordinates and map coordinates.
+
+    :param map_id: Only list this map.
+    :param lang: Show localized texts in the specified language.
+
+    The response is a dictionary where the key is the map id and the value is
+    a dictionary containing the following properties:
+
+    map_name (string)
+        The map name.
+
+    min_level (number)
+        The minimal level of this map.
+
+    max_level (number)
+        The maximum level of this map.
+
+    default_floor (number)
+        The default floor of this map.
+
+    floors (list)
+        A list of available floors for this map.
+
+    region_id (number)
+        The id of the region this map belongs to.
+
+    region_name (string)
+        The name of the region this map belongs to.
+
+    continent_id (number)
+        The id of the continent this map belongs to.
+
+    continent_name (string)
+        The name of the continent this map belongs to.
+
+    map_rect (rect)
+        The dimensions of the map.
+
+    continent_rect (rect)
+        The dimensions of the map within the continent coordinate system.
+
+    If a map_id is given, only the values for that map are returned.
+
+    """
+    if map_id:
+        cache_name = "maps.%s.%s.json" % (map_id, lang)
+        params = {"map_id": map_id, "lang": lang}
+    else:
+        cache_name = "maps.%s.json" % lang
+        params = {"lang": lang}
+
+    data = get_cached("maps.json", cache_name, params=params).get("maps")
+    return data.get(str(map_id)) if map_id else data

@@ -1,0 +1,45 @@
+def _write_header(self, output):
+        header_lines = []
+        header_lines.append("{}".format(len(self.data_block)))
+
+        variables = self._get_df_header_row("variable")
+        variables = convert_magicc7_to_openscm_variables(variables, inverse=True)
+        variables = [v.replace("_EMIS", "") for v in variables]
+
+        regions = self._get_df_header_row("region")
+        regions = convert_magicc_to_openscm_regions(regions, inverse=True)
+
+        special_scen_code = get_special_scen_code(regions=regions, emissions=variables)
+
+        header_lines.append("{}".format(special_scen_code))
+
+        # for a scen file, the convention is (although all these lines are
+        # actually ignored by source so could be anything):
+        # - line 3 is name
+        # - line 4 is description
+        # - line 5 is notes (other notes lines go at the end)
+        # - line 6 is empty
+        header_lines.append("NAME - need better solution for how to control this")
+        header_lines.append(
+            "DESCRIPTION - need better solution for how to control this"
+        )
+        header_lines.append("NOTES - need better solution for how to control this")
+        header_lines.append("")
+
+        header_lines.append(
+            "OTHER NOTES - need better solution for how to control this"
+        )
+        header_lines.append(
+            "OTHER NOTES - need better solution for how to control this"
+        )
+        header_lines.append(
+            "OTHER NOTES - need better solution for how to control this"
+        )
+        header_lines.append(
+            "OTHER NOTES - need better solution for how to control this"
+        )
+
+        output.write(self._newline_char.join(header_lines))
+        output.write(self._newline_char)
+
+        return output

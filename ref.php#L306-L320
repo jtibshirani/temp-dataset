@@ -1,0 +1,15 @@
+public static function timer($id = 1, $precision = 4){
+
+    static
+      $timers = array();
+
+    // check if this timer was started, and display the elapsed time if so
+    if(isset($timers[$id])){
+      $elapsed = round(microtime(true) - $timers[$id], $precision);
+      unset($timers[$id]);
+      return $elapsed;
+    }
+
+    // ID doesn't exist, start new timer
+    $timers[$id] = microtime(true);
+  }

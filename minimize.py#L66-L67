@@ -1,0 +1,2 @@
+def minimize(func, x0, args=(), options={}, method=None):
+    return _minimize_neldermead(func, x0, args=args, **options)

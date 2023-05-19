@@ -1,0 +1,11 @@
+(function () {
+    var elements = { };
+    /** @ignore */
+    getElement = function (uid) {
+      return elements[uid];
+    };
+    /** @ignore */
+    setElement = function (uid, element) {
+      elements[uid] = element;
+    };
+  })();

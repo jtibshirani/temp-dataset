@@ -1,0 +1,40 @@
+def read_line(self, line):
+        """
+        Match a line of input according to the format specified and return a
+        tuple of the resulting values
+        """
+
+        if not self._read_line_init:
+            self.init_read_line()
+
+        match = self._re.match(line)
+        assert match is not None, f"Format mismatch (line = {line})"
+
+        matched_values = []
+        for i in range(self._re.groups):
+            cvt_re = self._match_exps[i]
+            cvt_div = self._divisors[i]
+            cvt_fn = self._in_cvt_fns[i]
+            match_str = match.group(i + 1)
+
+            match0 = re.match(cvt_re, match_str)
+            if match0 is not None:
+                if cvt_fn == "float":
+                    if "." in match_str:
+                        val = float(match_str)
+                    else:
+                        val = int(match_str) / cvt_div
+                elif cvt_fn == "int":
+                    val = int(match_str)
+                else:
+                    sys.stderr.write(
+                        f"Unrecognized conversion function: {cvt_fn}\n"
+                    )
+            else:
+                sys.stderr.write(
+                    f"Format conversion failed: {match_str}\n"
+                )
+
+            matched_values.append(val)
+
+        return tuple(matched_values)

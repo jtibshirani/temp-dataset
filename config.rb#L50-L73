@@ -1,0 +1,24 @@
+def read_from_file
+      paths_checked = []
+
+      CONFIG_PATHS.each do |path|
+
+        # Filtering some garbage
+        next if path.nil? or path.strip.empty?
+
+        # Feeding the user feedback in case of failure
+        paths_checked << path
+
+        # Time for the dirty work, let's parse the config file and feed our
+        # internal hash
+        if File.exists? path
+          config = YAML.load_file path
+          config.each_pair do |key, value|
+            self[key.upcase.to_s] = value
+          end
+          return
+        end
+      end
+
+      return paths_checked
+    end

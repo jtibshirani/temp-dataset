@@ -1,0 +1,14 @@
+private static function validateCustomError(array &$filters, string $field)
+    {
+        $customError = null;
+        if (array_key_exists('error', $filters)) {
+            $customError = $filters['error'];
+            if (!is_string($customError) || trim($customError) === '') {
+                throw new InvalidArgumentException("error for field '{$field}' was not a non-empty string");
+            }
+
+            unset($filters['error']);//unset so its not used as a filter
+        }
+
+        return $customError;
+    }

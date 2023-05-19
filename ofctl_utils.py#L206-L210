@@ -1,0 +1,5 @@
+def to_match_packet_type(value):
+    if isinstance(value, (list, tuple)):
+        return str_to_int(value[0]) << 16 | str_to_int(value[1])
+    else:
+        return str_to_int(value)

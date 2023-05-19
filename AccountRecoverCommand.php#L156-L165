@@ -1,0 +1,10 @@
+private function findNodesWithoutParents()
+    {
+        // get nodes that have no parent but depth > 0
+        $qb = $this->accountRepository->createQueryBuilder('c2')
+            ->select('count(c2.id)')
+            ->leftJoin('c2.parent', 'c1')
+            ->where('c2.depth <> 0 AND c2.parent IS NULL');
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }

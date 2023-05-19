@@ -1,0 +1,29 @@
+def read_properties(entry):
+    stream = entry.get('properties')
+    if stream is None:
+        raise Exception("can not find properties")
+
+    s = stream.open()
+    # read the whole stream
+    f = BytesIO(s.read())
+
+    byte_order = read_u8(f)
+    if byte_order != 0x4c:
+        raise NotImplementedError("be byteorder")
+    version = read_u8(f)
+    entry_count = read_u16le(f)
+
+    props = []
+    for i in range(entry_count):
+        pid = read_u16le(f)
+        format = read_u16le(f)
+        byte_size = read_u16le(f)
+
+        props.append([pid, format, byte_size])
+
+    property_entries = {}
+    for pid, format, byte_size in props:
+        data = f.read(byte_size)
+        property_entries[pid] = data
+
+    return property_entries

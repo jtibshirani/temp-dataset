@@ -1,0 +1,9 @@
+protected function getCurrentProcessStepByProcessId($processId)
+    {
+        $processManager = $this->container->get('vespolina.process_manager');
+        $process = $processManager->findProcessById($processId);
+        if ($process) {
+
+            return $process->getCurrentProcessStep();
+        }
+    }

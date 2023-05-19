@@ -1,0 +1,40 @@
+BB.gmap.controller.prototype.add_place = function(ident, data) {
+    if (!data) {
+        this.error('Missing parameter BB.gmap.controller.prototype.add_place ( ident, data ) : ( ' + ident + ', ' + data + ' )');
+        return this;
+    }
+
+    // Every place should have is uniq ident
+    if (typeof data.type != 'string') {
+        this.error('Missing parameter "type" in BB.gmap.controller.prototype.add_place');
+        return this;
+    }
+
+    // Set ident.
+    data.ident = ident;
+
+    var type = data.type;
+
+
+    switch (type) {
+        case 'marker':
+            var marker = new BB.gmap.marker(data, this);
+            this.set_place('markers', ident, marker);
+            break;
+
+        case 'richmarker':
+            var marker = new BB.gmap.richmarker(data, this);
+            this.set_place('markers', ident, marker);
+            break;
+
+        case 'line':
+            this.set_place('lines', ident, new BB.gmap.line(data, this));
+            break;
+
+        case 'polygon':
+            this.set_place('polygons', ident, new BB.gmap.polygon(data, this));
+            break;
+    }
+
+    return this;
+};

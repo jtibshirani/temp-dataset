@@ -1,0 +1,21 @@
+def _normalized_distro_name(distro):
+    distro = distro.lower()
+    if distro.startswith(('redhat', 'red hat')):
+        return 'redhat'
+    elif distro.startswith(('scientific', 'scientific linux')):
+        return 'scientific'
+    elif distro.startswith('oracle'):
+        return 'oracle'
+    elif distro.startswith(('suse', 'opensuse', 'sles')):
+        return 'suse'
+    elif distro.startswith('centos'):
+        return 'centos'
+    elif distro.startswith('linuxmint'):
+        return 'ubuntu'
+    elif distro.startswith('virtuozzo'):
+        return 'virtuozzo'
+    elif distro.startswith('arch'):
+        return 'arch'
+    elif distro.startswith(('alt', 'altlinux', 'basealt', 'alt linux')):
+        return 'alt'
+    return distro

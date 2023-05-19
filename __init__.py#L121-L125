@@ -1,0 +1,5 @@
+def _urlencode(self, url):
+      if is_python3():
+        return urllib.parse.urlencode(url)
+      else:
+        return urllib.urlencode(url)

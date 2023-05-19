@@ -1,0 +1,6 @@
+public function addProperty($name, callable $factory, $memoize = false)
+    {
+        $this->properties[$name] = ['factory' => \Closure::bind($factory, $this, $this), 'memoize' => $memoize];
+
+        return $this;
+    }

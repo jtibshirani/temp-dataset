@@ -1,0 +1,7 @@
+public static <T> T[] requireNotEmpty(final T[] array, final String argumentName) {
+        requireNonNull(array, "array");
+        if(array.length == 0) {
+            throw new IllegalArgumentException(String.format(NOT_EMPTY_MSG_FORMAT, array));
+        }
+        return array;
+    }

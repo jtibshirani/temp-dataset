@@ -1,0 +1,16 @@
+def open_locale_file(file)
+      if file[:type] == ".yml"
+        parsed_file = open_yaml(file[:path])
+      elsif file[:type] == ".rb"
+        parsed_file = open_rb(file[:path], file[:lang])
+      else
+        # Just incase something has slipped through, at least tell the user that it won't be processed.
+        MissingText::Warning.create(
+          filename: file[:path],
+          warning_type: MissingText::Warning::FILE_TYPE_ERROR,
+          missing_text_batch_id: self.current_batch_id
+          )
+        parsed_file = {}
+      end
+      parsed_file
+    end

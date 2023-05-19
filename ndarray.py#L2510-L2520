@@ -1,0 +1,11 @@
+def distinct_counts(self):
+        """Return counts for each distinct haplotype."""
+
+        # hash the haplotypes
+        k = [hash(self.values[:, i].tobytes()) for i in range(self.shape[1])]
+
+        # count and sort
+        # noinspection PyArgumentList
+        counts = sorted(collections.Counter(k).values(), reverse=True)
+
+        return np.asarray(counts)

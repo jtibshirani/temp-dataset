@@ -1,0 +1,3 @@
+app.use(function(req, res, next) {
+	throw new utils.ErrorCustom(httpStatusCodes.NOT_FOUND, httpStatusCodes.getStatusText(httpStatusCodes.NOT_FOUND), 1);
+});

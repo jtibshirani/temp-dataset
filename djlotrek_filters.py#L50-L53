@@ -1,0 +1,4 @@
+def regex_match(value, regex):
+    pattern = re.compile(regex)
+    if pattern.match(value):
+        return True

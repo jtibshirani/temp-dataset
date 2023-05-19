@@ -1,0 +1,19 @@
+copyToClipboardNode.addEventListener('click', function (event) {
+      var clipboardCopyNode = document.querySelector('.clipboard-copy')
+
+      event.preventDefault()
+      clipboardCopyNode.value = output.styles
+      clipboardCopyNode.select()
+
+      try {
+        document.execCommand('copy')
+        copyToClipboardNode.innerText = copyToClipboardNode.dataset.successLabel
+      } catch (e) {
+        console.error(e)
+        copyToClipboardNode.innerText = copyToClipboardNode.dataset.errorLabel
+      }
+
+      setTimeout(function () {
+        copyToClipboardNode.innerText = copyToClipboardNode.dataset.originalLabel
+      }, COPY_TO_CLIPBOARD_RESET_DELAY)
+    })

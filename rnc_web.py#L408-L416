@@ -1,0 +1,9 @@
+def get_png_img_html(blob: Union[bytes, memoryview],
+                     extra_html_class: str = None) -> str:
+    """
+    Converts a PNG blob to an HTML IMG tag with embedded data.
+    """
+    return """<img {}src="{}" />""".format(
+        'class="{}" '.format(extra_html_class) if extra_html_class else "",
+        get_png_data_url(blob)
+    )

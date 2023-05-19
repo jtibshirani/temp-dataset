@@ -1,0 +1,6 @@
+const write = async function(filename, compress, result) {
+  const content = JSON.stringify(result);
+
+  const data = compress ? await gzip(content) : content;
+  return await writeFile(filename + (compress ? ".gz" : ""), data);
+};

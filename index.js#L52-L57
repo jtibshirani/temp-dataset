@@ -1,0 +1,6 @@
+function getTimeElapsed (prevTime) {
+  const currentTime = new Date()
+  const a = currentTime.getTime() - prevTime.getTime()
+
+  return Math.floor(a / 1000)
+}

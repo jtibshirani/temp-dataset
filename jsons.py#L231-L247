@@ -1,0 +1,17 @@
+def get_csv_from_json(d):
+    """
+    Get CSV values when mixed into json data. Pull out the CSV data and put it into a dictionary.
+    :param dict d: JSON with CSV values
+    :return dict: CSV values. (i.e. { CSVFilename1: { Column1: [Values], Column2: [Values] }, CSVFilename2: ... }
+    """
+    logger_jsons.info("enter get_csv_from_json")
+    csv_data = OrderedDict()
+
+    if "paleoData" in d:
+        csv_data = _get_csv_from_section(d, "paleoData", csv_data)
+
+    if "chronData" in d:
+        csv_data = _get_csv_from_section(d, "chronData", csv_data)
+
+    logger_jsons.info("exit get_csv_from_json")
+    return csv_data

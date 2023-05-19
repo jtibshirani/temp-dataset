@@ -1,0 +1,14 @@
+def _dt_to_epoch(self, dt):
+        """
+        Convert a offset-aware datetime to POSIX time.
+        """
+        if PY2:
+            # The input datetime is from botocore unmarshalling and it is
+            # offset-aware so the timedelta of subtracting this time
+            # to 01/01/1970 using the same tzinfo gives us
+            # Unix Time (also known as POSIX Time).
+            time_delta = dt - datetime(1970, 1, 1).replace(tzinfo=dt.tzinfo)
+            return int(time_delta.total_seconds())
+        else:
+            # Added in python 3.3+ and directly returns POSIX time.
+            return int(dt.timestamp())

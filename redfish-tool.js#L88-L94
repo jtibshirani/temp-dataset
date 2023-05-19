@@ -1,0 +1,7 @@
+.then(function(response){
+            if (response.httpStatusCode > 206) {
+                logger.error('HTTP Error', response);
+                throw new RedfishError(response.body);
+            }
+            return response;
+        });

@@ -1,0 +1,15 @@
+def dimension_reduce(results)
+      # calculate the weighted Euclidean distance from optimal
+      # d(p, q) = \sqrt{(p_1 - q_1)^2 + (p_2 - q_2)^2+...+(p_n - q_n)^2}
+      # here the max value is sqrt(n) where n is no. of results,
+      #   min value (optimum) is 0
+      total = 0
+      results.each_value do |value|
+        o = value[:optimum]
+        w = value[:weighting]
+        a = value[:result]
+        m = value[:max]
+        total += w * (((o - a) / m)**2) if m != 0
+      end
+      Math.sqrt(total) / results.length
+    end

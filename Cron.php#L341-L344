@@ -1,0 +1,4 @@
+public function getNextRunDate($currentTime = 'now', $nth = 0, $allowCurrentDate = false)
+    {
+        return $this->getCronExpression()->getNextRunDate($currentTime, $nth, $allowCurrentDate);
+    }

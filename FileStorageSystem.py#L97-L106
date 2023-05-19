@@ -1,0 +1,10 @@
+def __read_properties(self):
+        properties = dict()
+        if self.__filepath and os.path.exists(self.__filepath):
+            try:
+                with open(self.__filepath, "r") as fp:
+                    properties = json.load(fp)
+            except Exception:
+                os.replace(self.__filepath, self.__filepath + ".bak")
+        # migrations go here
+        return properties

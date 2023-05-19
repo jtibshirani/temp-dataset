@@ -1,0 +1,7 @@
+Instance.prototype.getPid = function (callback) {
+  if (this.options.process) {
+    getProcessId(this.options.process, callback);
+  } else {
+    callback(null, this.process.pid);
+  }
+};

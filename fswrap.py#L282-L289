@@ -1,0 +1,8 @@
+def read_all(self, encoding='utf-8'):
+        """
+        Reads from the file and returns the content as a string.
+        """
+        logger.info("Reading everything from %s" % self)
+        with codecs.open(self.path, 'r', encoding) as fin:
+            read_text = fin.read()
+        return read_text

@@ -1,0 +1,15 @@
+def prepare(self, html):
+        # Clean up faulty HTML before parsing.
+        html = html.replace("<br/>", "<br />")
+        html = html.replace("<hr/>", "<hr />")
+        # Display list items with an asterisk.
+        #html = html.replace("li>", "li>*")
+        html = re.sub(r"<li.*?>", "\n<li>* ", html)
+        #html = html.replace("li>\n", "li>")
+        # Make sure there is a space between elements.
+        html = html.replace("><", "> <")
+        # Linebreaks in the source should not end up in the output.
+        if not self.linebreaks:
+        	html = html.replace("\r", "\n")
+        	html = html.replace("\n", " ")
+        return html

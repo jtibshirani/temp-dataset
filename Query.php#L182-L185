@@ -1,0 +1,4 @@
+public function fuzzy(string $fieldName = null, string $value = null): Fuzzy
+    {
+        return new Fuzzy($fieldName, $value);
+    }

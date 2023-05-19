@@ -1,0 +1,47 @@
+func (b *XMLBase) ResolveHTML(relHTML string) (string, error) {
+	if b.CurrentBase() == "" {
+		return relHTML, nil
+	}
+
+	htmlReader := strings.NewReader(relHTML)
+
+	doc, err := html.Parse(htmlReader)
+	if err != nil {
+		return relHTML, err
+	}
+
+	var visit func(*html.Node)
+
+	// recursively traverse HTML resolving any relative URIs in attributes
+	visit = func(n *html.Node) {
+		if n.Type == html.ElementNode {
+			for i, a := range n.Attr {
+				if htmlURIAttrs[a.Key] {
+					absVal, err := b.ResolveURL(a.Val)
+					if err == nil {
+						n.Attr[i].Val = absVal
+					}
+					break
+				}
+			}
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			visit(c)
+		}
+	}
+
+	visit(doc)
+	var w bytes.Buffer
+	err = html.Render(&w, doc)
+	if err != nil {
+		return relHTML, err
+	}
+
+	// html.Render() always writes a complete html5 document, so strip the html
+	// and body tags
+	absHTML := w.String()
+	absHTML = strings.TrimPrefix(absHTML, "<html><head></head><body>")
+	absHTML = strings.TrimSuffix(absHTML, "</body></html>")
+
+	return absHTML, err
+}

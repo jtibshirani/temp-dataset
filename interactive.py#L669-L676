@@ -1,0 +1,8 @@
+def get_process_id_from_prefix(self):
+        if self.cmdprefix:
+            pid = self.input_process(self.cmdprefix)
+        else:
+            if self.lastEvent is None:
+                raise CmdError("no current process set")
+            pid = self.lastEvent.get_pid()
+        return pid

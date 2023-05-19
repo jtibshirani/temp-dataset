@@ -1,0 +1,34 @@
+DbWrkrMongoDB.prototype.connect = function connect(done) {
+  const self = this;
+
+  const cnStr = util.format('mongodb://%s:%s/%s',
+    this.host,
+    this.port,
+    this.dbName
+  );
+
+  // var cnStr = `mongodb://${this.host}:${this.port}/${this.dbName}`;
+  mongoClient.connect(cnStr, {w: 1}, function (err, db) {
+    if (err) return done(err);
+
+    self.db = db;
+    self.dbSubscriptions = self.db.collection('wrkr_subscriptions');
+    self.dbQitems = self.db.collection('wrkr_qitems');
+
+    self.dbSubscriptions.createIndex({event: 1}, checkIndexResult);
+
+    self.dbQitems.createIndex({name: 1, tid: 1}, checkIndexResult);
+    self.dbQitems.createIndex({queue: 1, created: 1}, {
+      partialFilterExpression: {
+        when: {$exists: 1}
+      }
+    }, checkIndexResult);
+
+    return done(null);
+
+    function checkIndexResult(err, result) {
+      if (err) return done(err);
+      debug('created index', result);
+    }
+  });
+};

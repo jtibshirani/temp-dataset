@@ -1,0 +1,16 @@
+def serialize(self):
+        from itertools import chain
+        result = Stream()
+        result << self.version.to_bytes(4, 'little')
+
+        if self.network.tx_timestamp:
+            result << self.timestamp.to_bytes(4, 'little')
+
+        result << Parser.to_varint(len(self.ins))
+        # the most efficient way to flatten a list in python
+        result << bytearray(chain.from_iterable(txin.serialize() for txin in self.ins))
+        result << Parser.to_varint(len(self.outs))
+        # the most efficient way to flatten a list in python
+        result << bytearray(chain.from_iterable(txout.serialize() for txout in self.outs))
+        result << self.locktime
+        return result.serialize()

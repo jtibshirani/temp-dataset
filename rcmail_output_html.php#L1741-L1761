@@ -1,0 +1,21 @@
+public function form_tag($attrib, $content = null)
+    {
+        if ($this->env['extwin']) {
+            $hiddenfield = new html_hiddenfield(array('name' => '_extwin', 'value' => '1'));
+            $hidden = $hiddenfield->show();
+        }
+        else if ($this->framed || $this->env['framed']) {
+            $hiddenfield = new html_hiddenfield(array('name' => '_framed', 'value' => '1'));
+            $hidden = $hiddenfield->show();
+        }
+
+        if (!$content) {
+            $attrib['noclose'] = true;
+        }
+
+        return html::tag('form',
+            $attrib + array('action' => $this->app->comm_path, 'method' => "get"),
+            $hidden . $content,
+            array('id','class','style','name','method','action','enctype','onsubmit')
+        );
+    }

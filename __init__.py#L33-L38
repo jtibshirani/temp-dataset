@@ -1,0 +1,6 @@
+def compress(s):
+    zbuf = cStringIO.StringIO()
+    zfile = gzip.GzipFile(mode='wb', compresslevel=6, fileobj=zbuf)
+    zfile.write(s)
+    zfile.close()
+    return zbuf.getvalue()

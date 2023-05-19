@@ -1,0 +1,5 @@
+func (j *Job) HTML() template.HTML {
+	var buffer bytes.Buffer
+	html.Render(&buffer, j.Doc)
+	return template.HTML(buffer.String())
+}

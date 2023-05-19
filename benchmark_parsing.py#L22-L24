@@ -1,0 +1,3 @@
+def format_date_list(dates):
+    format = dateformat.DateFormat("YYYY-MM-DD hh:mm:ss")
+    return [format.format(date) for date in dates]

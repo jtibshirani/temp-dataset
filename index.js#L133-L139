@@ -1,0 +1,7 @@
+function prepareHtml() {
+    var htmlLang = options.html.type;
+    var inputFilename = fileMap.html[htmlLang]();
+    var outputFilename = fileMap.html[htmlLang](options.html.file);
+    // HTML files require templating through marked.js so add `true` param
+    return getTemplateFile(inputFilename, outputFilename, true);
+  }

@@ -1,0 +1,27 @@
+protected function lessMatrix(Matrix $b) : self
+    {
+        if ($b->m() !== $this->m) {
+            throw new DimensionalityMismatchException('Matrix A requires'
+                . " $this->m rows but Matrix B has {$b->m()}.");
+        }
+
+        if ($b->n() !== $this->n) {
+            throw new DimensionalityMismatchException('Matrix A requires'
+                . " $this->n columns but Matrix B has {$b->n()}.");
+        }
+
+        $c = [];
+
+        foreach ($this->a as $i => $rowA) {
+            $rowB = $b[$i];
+            $temp = [];
+
+            foreach ($rowA as $j => $value) {
+                $temp[] = $value < $rowB[$j] ? 1 : 0;
+            }
+
+            $c[] = $temp;
+        }
+
+        return self::quick($c);
+    }

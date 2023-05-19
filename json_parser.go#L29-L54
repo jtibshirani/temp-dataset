@@ -1,0 +1,26 @@
+func ParseJSONFromFileOrString(fileOrJSON string) (map[string]interface{}, error) {
+	var jsonMap map[string]interface{}
+	var err error
+	var bytes []byte
+
+	if fileOrJSON == "" {
+		return nil, nil
+	}
+
+	if fileExists(fileOrJSON) {
+		bytes, err = readJSONFile(fileOrJSON)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		bytes = []byte(fileOrJSON)
+	}
+
+	jsonMap, err = parseJSON(bytes)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return jsonMap, nil
+}

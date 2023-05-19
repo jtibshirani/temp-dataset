@@ -1,0 +1,8 @@
+func DedupImports(imports ...string) string {
+	data := sort.StringSlice(imports)
+	sort.Sort(data)
+	n := set.Uniq(data)
+	imports = data[:n]
+
+	return fmt.Sprintf("\t\"%s\"", strings.Join(imports, "\"\n\t\""))
+}

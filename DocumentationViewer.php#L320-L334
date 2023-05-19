@@ -1,0 +1,15 @@
+public function httpError($status, $message = null)
+    {
+        $this->init();
+
+        $class = get_class($this);
+        $body = $this->customise(
+            new ArrayData(
+                array(
+                'Message' => $message
+                )
+            )
+        )->renderWith(array("{$class}_error", $class));
+
+        return new SS_HTTPResponse($body, $status);
+    }

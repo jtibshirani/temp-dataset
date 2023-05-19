@@ -1,0 +1,10 @@
+public function extract($field)
+    {
+        $extract = array();
+        foreach ($this->docs as $doc) {
+            $data = $doc->get($field);
+            if (!empty($data)) $extract[] = $data->getValue();
+        }
+
+        return $extract;
+    }

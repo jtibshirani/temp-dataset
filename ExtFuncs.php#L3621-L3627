@@ -1,0 +1,7 @@
+public static function GetCurrentDate( $context )
+	{
+		$res = DateValue::fromDate( false, new \DateTime( "@" . $context->RunningContext->now ) );
+		$res->IsLocal = false;
+		$res->Value->microseconds = 0;
+		return $res;
+	}

@@ -1,0 +1,10 @@
+def line coordinates={}
+      last_state = @state[:up]
+
+      up
+      move *coordinates[:from]
+      down
+      move *coordinates[:to]
+
+      @state[:up] = last_state
+    end

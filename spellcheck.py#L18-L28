@@ -1,0 +1,11 @@
+def correct_word(word_string):
+    '''
+    Finds all valid one and two letter corrections for word_string, returning the word
+    with the highest relative probability as type str.
+    '''
+    if word_string is None:
+        return ""
+    elif isinstance(word_string, str):
+        return max(find_candidates(word_string), key=find_word_prob)
+    else:
+        raise InputError("string or none type variable not passed as argument to correct_word")

@@ -1,0 +1,5 @@
+def prettyprint(d):
+        """Print dicttree in Json-like format. keys are sorted
+        """
+        print(json.dumps(d, sort_keys=True, 
+                         indent=4, separators=("," , ": ")))

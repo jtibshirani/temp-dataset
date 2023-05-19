@@ -1,0 +1,9 @@
+def __init__(self, *, buffering='bytes'):
+        self._buffer = b''
+        self._lf = 0
+
+        self._buffering = buffering
+        if buffering == 'line':
+            self.read = self._readline
+        else:
+            self.read = self._read

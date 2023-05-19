@@ -1,0 +1,11 @@
+public function checkBox($name = null, $description = null, $isChecked = false): CheckBox
+    {
+        $isChecked = $this->getFieldValue($name, $isChecked);
+        $element = new CheckBox($this->formState);
+
+        return $element
+            ->nameIf($name, $name)
+            ->idIf($name, field_name_to_id($name, 'wrapper'))
+            ->description($description)
+            ->checked($isChecked);
+    }

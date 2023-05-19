@@ -1,0 +1,35 @@
+function _encryption_algorithm_to_crypt_instance($algorithm)
+    {
+        switch ($algorithm) {
+            case '3des-cbc':
+                return new TripleDES();
+            case '3des-ctr':
+                return new TripleDES(Base::MODE_CTR);
+            case 'aes256-cbc':
+            case 'aes192-cbc':
+            case 'aes128-cbc':
+                return new Rijndael();
+            case 'aes256-ctr':
+            case 'aes192-ctr':
+            case 'aes128-ctr':
+                return new Rijndael(Base::MODE_CTR);
+            case 'blowfish-cbc':
+                return new Blowfish();
+            case 'blowfish-ctr':
+                return new Blowfish(Base::MODE_CTR);
+            case 'twofish128-cbc':
+            case 'twofish192-cbc':
+            case 'twofish256-cbc':
+            case 'twofish-cbc':
+                return new Twofish();
+            case 'twofish128-ctr':
+            case 'twofish192-ctr':
+            case 'twofish256-ctr':
+                return new Twofish(Base::MODE_CTR);
+            case 'arcfour':
+            case 'arcfour128':
+            case 'arcfour256':
+                return new RC4();
+        }
+        return null;
+    }

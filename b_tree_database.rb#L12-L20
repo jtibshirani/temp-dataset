@@ -1,0 +1,9 @@
+def optimize(options)
+      try( options[:tune] ? :tune : :optimize,
+           options.fetch(:lmemb,  0).to_i,
+           options.fetch(:nmemb,  0).to_i,
+           options.fetch(:bnum,   0).to_i,
+           options.fetch(:apow,  -1).to_i,
+           options.fetch(:fpow,  -1).to_i,
+           cast_to_enum_int(options.fetch(:opts, 0xFF), :opt) )
+    end

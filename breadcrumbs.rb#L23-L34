@@ -1,0 +1,12 @@
+def all_parents
+      parents = []
+
+      direct_parent = content_item.parent
+      while direct_parent
+        parents << direct_parent
+
+        direct_parent = direct_parent.parent
+      end
+
+      parents
+    end

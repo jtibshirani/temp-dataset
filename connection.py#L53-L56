@@ -1,0 +1,4 @@
+def connect(self):
+        self.close()
+        self._connect = pymysql.connect(**self._db_options)
+        self._connect.autocommit(True)

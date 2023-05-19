@@ -1,0 +1,41 @@
+def DisjoinCalendars(self, cutoff):
+    """Forces the old and new calendars to be disjoint about a cutoff date.
+
+    This truncates the service periods of the old schedule so that service
+    stops one day before the given cutoff date and truncates the new schedule
+    so that service only begins on the cutoff date.
+
+    Args:
+      cutoff: The cutoff date as a string in YYYYMMDD format. The timezone
+              is the same as used in the calendar.txt file.
+    """
+
+    def TruncatePeriod(service_period, start, end):
+      """Truncate the service period to into the range [start, end].
+
+      Args:
+        service_period: The service period to truncate.
+        start: The start date as a string in YYYYMMDD format.
+        end: The end date as a string in YYYYMMDD format.
+      """
+      service_period.start_date = max(service_period.start_date, start)
+      service_period.end_date = min(service_period.end_date, end)
+      dates_to_delete = []
+      for k in service_period.date_exceptions:
+        if (k < start) or (k > end):
+          dates_to_delete.append(k)
+      for k in dates_to_delete:
+        del service_period.date_exceptions[k]
+
+    # find the date one day before cutoff
+    year = int(cutoff[:4])
+    month = int(cutoff[4:6])
+    day = int(cutoff[6:8])
+    cutoff_date = datetime.date(year, month, day)
+    one_day_delta = datetime.timedelta(days=1)
+    before = (cutoff_date - one_day_delta).strftime('%Y%m%d')
+
+    for a in self.feed_merger.a_schedule.GetServicePeriodList():
+      TruncatePeriod(a, 0, before)
+    for b in self.feed_merger.b_schedule.GetServicePeriodList():
+      TruncatePeriod(b, cutoff, '9'*8)

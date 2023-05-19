@@ -1,0 +1,5 @@
+check_box_tag: function( name, value, options, checked ) {
+        options = options || {};
+        if(checked) options.checked = "checked";
+        return this.input_field_tag(name, value, 'checkbox', options);
+    },

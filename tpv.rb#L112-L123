@@ -1,0 +1,12 @@
+def encrypt_3DES(data, key)
+        cipher = OpenSSL::Cipher::Cipher.new('DES3')
+        cipher.encrypt
+        cipher.key = key
+        cipher.padding = 0
+        block_length = 8
+        data_str = data
+        data_str += "\0" until data_str.bytesize % block_length == 0
+        output = cipher.update(data_str)
+        output << cipher.final
+        output
+      end

@@ -1,0 +1,13 @@
+def path_parents(path, root = nil)
+      root = "#{root}#{File::SEPARATOR}" if root
+      parents = []
+
+      loop do
+        parent = File.dirname(path)
+        break if parent == path
+        break if root && !path.start_with?(root)
+        parents << path = parent
+      end
+
+      parents
+    end

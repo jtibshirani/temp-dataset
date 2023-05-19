@@ -1,0 +1,4 @@
+def find_integer(value, from, length)
+      @match_length = size_t
+      find_string([value].pack(size_t == 4 ? 'L*' : 'Q*'), from, length)
+    end

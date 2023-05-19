@@ -1,0 +1,12 @@
+def update_website(self, website):
+        self.connect()
+        website = self.server.update_website(
+            self.session_id,
+            website['name'],
+            website['ip'],
+            website['https'],
+            website['subdomains'],
+            website['certificate'],
+            *website['website_apps']
+        )
+        return website

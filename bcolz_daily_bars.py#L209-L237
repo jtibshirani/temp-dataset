@@ -1,0 +1,29 @@
+def write_csvs(self,
+                   asset_map,
+                   show_progress=False,
+                   invalid_data_behavior='warn'):
+        """Read CSVs as DataFrames from our asset map.
+
+        Parameters
+        ----------
+        asset_map : dict[int -> str]
+            A mapping from asset id to file path with the CSV data for that
+            asset
+        show_progress : bool
+            Whether or not to show a progress bar while writing.
+        invalid_data_behavior : {'warn', 'raise', 'ignore'}
+            What to do when data is encountered that is outside the range of
+            a uint32.
+        """
+        read = partial(
+            read_csv,
+            parse_dates=['day'],
+            index_col='day',
+            dtype=self._csv_dtypes,
+        )
+        return self.write(
+            ((asset, read(path)) for asset, path in iteritems(asset_map)),
+            assets=viewkeys(asset_map),
+            show_progress=show_progress,
+            invalid_data_behavior=invalid_data_behavior,
+        )

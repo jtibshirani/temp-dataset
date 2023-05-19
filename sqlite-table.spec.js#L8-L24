@@ -1,0 +1,17 @@
+beforeEach(function (next) {
+    db = new sqlite3.Database(':memory:');
+    var sql = 'CREATE TABLE user(' +
+      'id INTEGER PRIMARY KEY, ' +
+      'firstName TEXT NOT NULL,' +
+      'lastName TEXT NOT NULL)';
+
+    db.run(sql, function (err) {
+      if (err) {
+        next(err);
+      } else {
+        table = new SQLiteTable(db);
+        table.tableName = 'user';
+        next();
+      }
+    });
+  });

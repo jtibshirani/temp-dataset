@@ -1,0 +1,3 @@
+def distribution(stat, value, opts=EMPTY_OPTIONS)
+      send_stats stat, value, DISTRIBUTION_TYPE, opts
+    end

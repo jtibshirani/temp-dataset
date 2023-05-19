@@ -1,0 +1,7 @@
+func (r Network_Subnet_IpAddress) GetByIpAddress(ipAddress *string) (resp datatypes.Network_Subnet_IpAddress, err error) {
+	params := []interface{}{
+		ipAddress,
+	}
+	err = r.Session.DoRequest("SoftLayer_Network_Subnet_IpAddress", "getByIpAddress", params, &r.Options, &resp)
+	return
+}

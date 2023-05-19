@@ -1,0 +1,448 @@
+componentDidMount: function() {
+    var self = this;
+    var clipboard = new Clipboard('.w-copy-text');
+    clipboard.on('error', function(e) {
+      alert('Copy failed.');
+    });
+    clipboard = new Clipboard('.w-copy-text-with-tips');
+    clipboard.on('error', function(e) {
+      message.error('Copy failed.');
+    });
+    clipboard.on('success', function(e) {
+      message.success('Copied clipboard.');
+    });
+    var preventDefault = function(e) {
+      e.preventDefault();
+    };
+    events.on('rulesChanged', function() {
+      self.rulesChanged = true;
+      self.showReloadRules();
+    });
+    events.on('updateGlobal', function() {
+      self.setState({});
+    });
+    events.on('valuesChanged', function() {
+      self.valuesChanged = true;
+      self.showReloadValues();
+    });
+    events.on('disableAllPlugins', function(e) {
+      self.disableAllPlugins(e);
+    });
+    events.on('showFiles', function(_, data) {
+      self.files = self.files || data;
+      self.showFiles();
+    });
+
+    $(document)
+      .on( 'dragleave', preventDefault)
+      .on( 'dragenter', preventDefault)
+      .on( 'dragover', preventDefault)
+      .on('drop', function(e) {
+        e.preventDefault();
+        var files = e.originalEvent.dataTransfer.files;
+        var file = files && files[0];
+        if (!file) {
+          return;
+        }
+        if ($('.w-files-dialog.in').length) {
+          return events.trigger('uploadFile', file);
+        }
+        var data;
+        var name = self.state.name;
+        var target = $(e.target);
+        if (name === 'network') {
+          if (target.closest('.w-frames-composer').length) {
+            return;
+          }
+          if (/\.log$/i.test(file.name)) {
+            if (file.size > MAX_LOG_SIZE) {
+              return alert('The file size cannot exceed 2m.');
+            }
+            util.readFileAsText(file, function(logs) {
+              logs = util.parseLogs(logs);
+              if (!logs) {
+                return;
+              }
+              if (dataCenter.uploadLogs !== null) {
+                dataCenter.uploadLogs = logs;
+              }
+              events.trigger('showLog');
+              events.trigger('uploadLogs', {logs: logs});
+            });
+            return;
+          }
+          data = new FormData();
+          data.append('importSessions', files[0]);
+          self.uploadSessionsForm(data);
+        } if (target.closest('.w-divider-left').length) {
+          if (name === 'rules') {
+            data = new FormData();
+            data.append('rules', files[0]);
+            self.rulesForm = data;
+            self.refs.confirmImportRules.show();
+          } else if (name === 'values') {
+            data = new FormData();
+            data.append('values', files[0]);
+            self.valuesForm = data;
+            self.refs.confirmImportValues.show();
+          }
+        }
+      });
+    var removeItem = function(e) {
+      var target = e.target;
+      if ( target.nodeName == 'A'
+          && $(target).parent().hasClass('w-list-data')) {
+        self.state.name == 'rules' ? self.removeRules() : self.removeValues();
+      }
+      e.preventDefault();
+    };
+    $(window).on('hashchange', function() {
+      var pageName = self.state.networkMode ? 'network' : getPageName();
+      if (!pageName || pageName.indexOf('rules') != -1) {
+        self.showRules();
+      } else if (pageName.indexOf('values') != -1) {
+        self.showValues();
+      } else if (pageName.indexOf('plugins') != -1) {
+        self.showPlugins();
+      } else {
+        self.showNetwork();
+      }
+    }).on('keyup', function(e) {
+      if (e.keyCode == 27) {
+        self.hideOptions();
+        var dialog = $('.modal');
+        if (typeof dialog.modal == 'function') {
+          dialog.modal('hide');
+        }
+      }
+    }).on('keydown', function(e) {
+      e.keyCode == 46 && removeItem(e);
+      if (!e.ctrlKey && !e.metaKey) {
+        if (e.keyCode === 112) {
+          e.preventDefault();
+          window.open('https://avwo.github.io/whistle/webui/' + self.state.name + '.html');
+        } else if (e.keyCode === 116) {
+          e.preventDefault();
+        }
+        return;
+      }
+      if (e.keyCode === 77) {
+        self.toggleLeftMenu();
+      }
+      var isNetwork = self.state.name === 'network';
+      if (isNetwork && e.keyCode == 88) {
+        if (!util.isFocusEditor() && !$(e.target).closest('.w-frames-list').length) {
+          self.clear();
+        }
+      }
+      e.keyCode == 68 && removeItem(e);
+      var modal = self.state.network;
+      if (isNetwork && e.keyCode === 83) {
+        e.preventDefault();
+        if ($('.modal.in').length) {
+          if ($(ReactDOM.findDOMNode(self.refs.chooseFileType)).is(':visible')) {
+            self.exportBySave();
+          }
+          return;
+        }
+        var nodeName = e.target.nodeName;
+        if (nodeName === 'INPUT' || nodeName === 'TEXTAREA') {
+          return;
+        }
+        var hasSelected = modal && modal.hasSelected();
+        if (hasSelected) {
+          $(ReactDOM.findDOMNode(self.refs.chooseFileType)).modal('show');
+          setTimeout(function() {
+            ReactDOM.findDOMNode(self.refs.sessionsName).focus();
+          }, 500);
+        }
+        return;
+      }
+
+      if (isNetwork && e.keyCode === 73) {
+        self.importSessions(e);
+        e.preventDefault();
+      }
+    });
+
+    function getKey(url) {
+      if (!(url = url && url.trim())) {
+        return;
+      }
+
+      var index = url.indexOf('://') + 3;
+      url = index != -1 ? url.substring(index) : url;
+      if (url.indexOf('{') !== 0) {
+        return;
+      }
+
+      index = url.lastIndexOf('}');
+      return index > 1 ? url.substring(1, index) : null;
+    }
+
+    var isEditor = function() {
+      var name = self.state.name;
+      return name === 'rules' || name === 'values';
+    };
+
+    $(document.body).on('mouseenter', LINK_SELECTOR, function(e) {
+      if (!isEditor() || !(e.ctrlKey || e.metaKey)) {
+        return;
+      }
+      var elem = $(this);
+      if (elem.hasClass('cm-js-http-url') || elem.hasClass('cm-string')
+        || elem.hasClass('cm-js-at') || getKey(elem.text())) {
+        elem.addClass('w-is-link');
+      }
+    }).on('mouseleave', LINK_SELECTOR, function(e) {
+      $(this).removeClass('w-is-link');
+    }).on('mousedown', LINK_SELECTOR, function(e) {
+      if (!isEditor() || !(e.ctrlKey || e.metaKey)) {
+        return;
+      }
+      var elem = $(this);
+      var text = elem.text();
+      if (elem.hasClass('cm-js-at')) {
+        if (AT_LINK_RE.test(text)) {
+          window.open((RegExp.$1 || 'http:') + RegExp.$2);
+        }
+        return;
+      }
+      if (elem.hasClass('cm-string')) {
+        if (LINK_RE.test(text)) {
+          window.open((RegExp.$1 || 'http:') + RegExp.$2);
+        }
+        return;
+      }
+      if (elem.hasClass('cm-js-http-url')) {
+        if (!/^https?:\/\//i.test(text)) {
+          text = 'http:' + (text[0] === '/' ? '' : '//') + text;
+        }
+        window.open(text);
+        return;
+      }
+      var name = getKey(text);
+      if (name) {
+        self.showAndActiveValues({name: name});
+        return;
+      }
+    });
+
+    if (self.state.name == 'network') {
+      self.startLoadData();
+    }
+    dataCenter.on('settings', function(data) {
+      var state = self.state;
+      if (state.interceptHttpsConnects !== data.interceptHttpsConnects
+        || state.disabledAllRules !== data.disabledAllRules
+        || state.allowMultipleChoice !== data.allowMultipleChoice
+        || state.disabledAllPlugins !== data.disabledAllPlugins) {
+        state.interceptHttpsConnects = data.interceptHttpsConnects;
+        state.disabledAllRules = data.disabledAllRules;
+        state.allowMultipleChoice = data.allowMultipleChoice;
+        state.disabledAllPlugins = data.disabledAllPlugins;
+        protocols.setPlugins(state);
+        self.setState({});
+      }
+    });
+    dataCenter.on('rules', function(data) {
+      var modal = self.state.rules;
+      var newSelectedNames = data.list;
+      if (!data.defaultRulesIsDisabled && newSelectedNames.indexOf('Default') === -1) {
+        newSelectedNames.unshift('Default');
+      }
+      var selectedNames = modal.getSelectedNames();
+      if (compareSelectedNames(selectedNames, newSelectedNames)) {
+        return;
+      }
+      self.reselectRules(data, true);
+      self.setState({});
+    });
+    dataCenter.on('serverInfo', function(data) {
+      self.serverInfo = data;
+    });
+
+    events.on('executeComposer', function() {
+      self.autoRefresh && self.autoRefresh();
+    });
+
+    var getFocusItemList = function(curItem) {
+      if (!curItem || curItem.selected) {
+        return;
+      }
+      return [curItem];
+    };
+
+    events.on('replaySessions', function(e, curItem, shiftKey) {
+      var modal = self.state.network;
+      var list = getFocusItemList(curItem) || (modal && modal.getSelectedList());
+      var len = list && list.length;
+      if (shiftKey && len === 1) {
+        self.replayList = list;
+        self.refs.setReplayCount.show();
+        setTimeout(function() {
+          var input = ReactDOM.findDOMNode(self.refs.replayCount);
+          input.select();
+          input.focus();
+        }, 300);
+        return;
+      }
+      self.replay(e, list);
+    });
+
+    events.on('importSessions', self.importSessions);
+    events.on('filterSessions', self.showSettings);
+    events.on('exportSessions', function(e, curItem) {
+      self.exportData(e, getFocusItemList(curItem));
+    });
+    events.on('abortRequest', function(e, curItem) {
+      self.abort(getFocusItemList(curItem));
+    });
+    events.on('uploadSessions', function(e, data) {
+      var sessions = getFocusItemList(data && data.curItem);
+      var upload = data && data.upload;
+      if (typeof upload === 'function') {
+        if (!sessions) {
+          var modal = self.state.network;
+          sessions = modal && modal.getSelectedList();
+          if (sessions && sessions.length) {
+            sessions = $.extend(true, [], sessions);
+          }
+        }
+        sessions && upload(sessions);
+      }
+    });
+    events.on('removeIt', function(e, item) {
+      var modal = self.state.network;
+      if (item && modal) {
+        modal.remove(item);
+        self.setState({});
+      }
+    });
+    events.on('removeOthers', function(e, item) {
+      var modal = self.state.network;
+      if (item && modal) {
+        if (item.selected) {
+          modal.removeUnselectedItems();
+        } else {
+          modal.removeOthers(item);
+        }
+        self.setState({});
+      }
+    });
+    events.on('clearAll', self.clear);
+    events.on('removeSelected', function() {
+      var modal = self.state.network;
+      if (modal) {
+        modal.removeSelectedItems();
+        self.setState({});
+      }
+    });
+    events.on('removeUnselected', function() {
+      var modal = self.state.network;
+      if (modal) {
+        modal.removeUnselectedItems();
+        self.setState({});
+      }
+    });
+    events.on('saveRules', function(e, item) {
+      if (item.changed || !item.selected) {
+        self.selectRules(item);
+      } else {
+        self.unselectRules(item);
+      }
+    });
+    events.on('saveValues', function(e, item) {
+      self.saveValues(item);
+    });
+    events.on('renameRules', function(e, item) {
+      self.showEditRules(item);
+    });
+    events.on('renameValues', function(e, item) {
+      self.showEditValues(item);
+    });
+    events.on('deleteRules', function(e, item) {
+      setTimeout(function() {
+        self.removeRules(item);
+      }, 0);
+    });
+    events.on('deleteValues', function(e, item) {
+      setTimeout(function() {
+        self.removeValues(item);
+      }, 0);
+    });
+    events.on('createRules', self.showCreateRules);
+    events.on('createValues', self.showCreateValues);
+    events.on('exportRules', self.exportData);
+    events.on('exportValues', self.exportData);
+    events.on('importRules', self.importRules);
+    events.on('importValues', self.importValues);
+    var timeout;
+    $(document).on('visibilitychange', function() {
+      clearTimeout(timeout);
+      if (document.hidden) {
+        return;
+      }
+      timeout = setTimeout(function() {
+        var atBottom = self.scrollerAtBottom && self.scrollerAtBottom();
+        self.setState({}, function() {
+          atBottom && self.autoRefresh();
+        });
+      }, 100);
+    });
+
+    setTimeout(function() {
+      dataCenter.checkUpdate(function(data) {
+        if (data && data.showUpdate) {
+          self.setState({
+            version: data.version,
+            latestVersion: data.latestVersion
+          }, function() {
+            $(ReactDOM.findDOMNode(self.refs.showUpdateTipsDialog)).modal('show');
+          });
+        }
+      });
+    }, 10000);
+
+    dataCenter.getLogIdList = this.getLogIdListFromRules;
+
+    dataCenter.on('plugins', function(data) {
+      var pluginsOptions = self.createPluginsOptions(data.plugins);
+      var oldPluginsOptions = self.state.pluginsOptions;
+      var oldDisabledPlugins = self.state.disabledPlugins;
+      var disabledPlugins = data.disabledPlugins;
+      if (pluginsOptions.length == oldPluginsOptions.length) {
+        var hasUpdate;
+        for (var i = 0, len = pluginsOptions.length; i < len; i++) {
+          var plugin = pluginsOptions[i];
+          var oldPlugin = oldPluginsOptions[i];
+          if (plugin.name != oldPlugin.name
+            || plugin.latest !== oldPlugin.latest || plugin.mtime != oldPlugin.mtime
+            || (oldDisabledPlugins[plugin.name] != disabledPlugins[plugin.name])) {
+            hasUpdate = true;
+            break;
+          }
+        }
+        if (!hasUpdate) {
+          return;
+        }
+      }
+      var pluginsState = {
+        plugins: data.plugins,
+        disabledPlugins: data.disabledPlugins,
+        pluginsOptions: pluginsOptions
+      };
+      protocols.setPlugins(pluginsState);
+      self.setState(pluginsState);
+    });
+    try {
+      var onReady = window.parent.onWhistleReady;
+      if (typeof onReady === 'function') {
+        onReady({
+          url: location.href,
+          importSessions: self.importAnySessions,
+          importHarSessions: self.importHarSessions
+        });
+      }
+    } catch(e) {}
+  },

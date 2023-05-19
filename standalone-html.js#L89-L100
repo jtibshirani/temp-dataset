@@ -1,0 +1,12 @@
+function minifyFile(resHtml, outputPath) {
+	var resHtml = minify(resHtml, opt, function (err) {
+		if (err) {
+			console.error('error will processing file.');
+		}
+	});
+
+	console.log('');
+	console.log('Output file name : ' + outputPath);
+	console.log('');
+	writeFile(resHtml, outputPath);
+}

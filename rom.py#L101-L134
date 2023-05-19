@@ -1,0 +1,34 @@
+def extract_zip(self):
+        assert self.FILE_COUNT>0
+        try:
+            with zipfile.ZipFile(self.archive_path, "r") as zip:
+                namelist = zip.namelist()
+                print("namelist():", namelist)
+                if len(namelist) != self.FILE_COUNT:
+                    msg = (
+                        "Wrong archive content?!?"
+                        " There exists %i files, but it should exist %i."
+                        "Existing names are: %r"
+                    ) % (len(namelist), self.FILE_COUNT, namelist)
+                    log.error(msg)
+                    raise RuntimeError(msg)
+
+                for filename in namelist:
+                    content = zip.read(filename)
+                    dst = self.file_rename(filename)
+
+                    out_filename=os.path.join(self.ROM_PATH, dst)
+                    with open(out_filename, "wb") as f:
+                        f.write(content)
+
+                    if dst == filename:
+                        print("%r extracted" % out_filename)
+                    else:
+                        print("%r extracted to %r" % (filename, out_filename))
+
+                    self.post_processing(out_filename)
+
+        except BadZipFile as err:
+            msg = "Error extracting archive %r: %s" % (self.archive_path, err)
+            log.error(msg)
+            raise BadZipFile(msg)

@@ -1,0 +1,5 @@
+def filter_array_by_labels(all_issues)
+      filtered_issues = include_issues_by_labels(all_issues)
+      filtered_issues = exclude_issues_by_labels(filtered_issues)
+      exclude_issues_without_labels(filtered_issues)
+    end

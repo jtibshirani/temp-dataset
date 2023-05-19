@@ -1,0 +1,22 @@
+function extractLatestVersion(source) {
+        var deferred = kew.defer();
+        try {
+            fs.mkdirsSync(destination, '0775');
+            fs.chmodSync(destination, '0775');
+
+            // unzip file
+            var zip = new AdmZip(source);
+            zip.extractAllTo(destination, true);
+
+            // fix execution rights
+            glob.sync('**/bin/sonar-runner*', {cwd: destination, root: '/'}).forEach(function (file) {
+                fs.chmodSync(destination + path.sep + file, '0777');
+            });
+
+            deferred.resolve(destination)
+        } catch (err) {
+            console.error('Error extracting zip');
+            exit(1);
+        }
+        return deferred.promise
+    }

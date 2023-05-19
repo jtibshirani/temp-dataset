@@ -1,0 +1,12 @@
+def _replace_in_file(self, dir_name, filename, args):
+        path = os.path.join(dir_name, filename)
+        with open(path, "r") as f:
+            s = f.read()
+        s = s.replace("{%PROJECT_ID%}", args.id)
+        s = s.replace("{%PROJECT_ID_UPPER%}", self._upper_slug)
+        s = s.replace("{%PROJECT_ID_LOWER%}", self._lower_slug)
+        s = s.replace("{%PROJECT_NAME%}", args.name)
+        s = s.replace("{%PROJECT_GITHUB_USER%}", args.github_user)
+
+        with open(path, "w") as f:
+            f.write(s)

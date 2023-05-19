@@ -1,0 +1,7 @@
+def to_csv
+      CSV.generate do |csv|
+        rows! do |columns, model, x|
+          csv << columns
+        end
+      end
+    end

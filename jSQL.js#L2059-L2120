@@ -1,0 +1,62 @@
+cookieAPI: function(){
+		var self = this;
+
+		var setCookie = function(cname, cvalue) {
+			var d = new Date();
+			d.setTime(d.getTime() + 864000000000);
+			var expires = "expires="+d.toUTCString();
+			document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+		};
+
+		var getCookie = function(cname) {
+			var name = cname + "=";
+			var ca = document.cookie.split(';');
+			for(var i = 0; i < ca.length; i++) {
+				var c = ca[i];
+				while (c.charAt(0) == ' ') c = c.substring(1);
+				if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+			}
+			return "";
+		};
+
+		self.init = function(modelData, successCallback){
+			if("function" !== typeof successCallback) successCallback = function(){};
+			for(var i=0, db; db=modelData[i]; i++) self.insert(db.name, db.rows);
+			successCallback();
+		};
+
+		self.insert = function(model, rows, successCallback){
+			if("function" !== typeof successCallback) successCallback = function(){};
+			var data;
+			try{ data = JSON.parse(getCookie(model)); }
+			catch(e){ data = []; }
+			if(!Array.isArray(data)) data = [];
+			for(var n=0; n<rows.length; n++) data.push(rows[n]);
+			var newData = JSON.stringify(data);
+			setCookie(model, newData);
+			// Make sure the data fits in the cookie, 
+			// else revert and throw an error
+			if(getCookie(model) !== newData){
+				var i=100;
+				while(i-- && getCookie(model) !== newData){
+					data.pop();
+					newData = JSON.stringify(data);
+					setCookie(model, newData);
+				}
+				return _throw(new jSQL_Error("0067"));
+			}
+			successCallback();
+		};
+
+		self.delete = function(model, successCallback){
+			if("function" !== typeof successCallback) successCallback = function(){};
+			setCookie(model, JSON.stringify([]));
+			successCallback();
+		};
+
+		self.select = function(model, successCallback){
+			if("function" !== typeof successCallback) successCallback = function(){};
+			var data = JSON.parse(getCookie(model));
+			successCallback(data);
+		};
+	},

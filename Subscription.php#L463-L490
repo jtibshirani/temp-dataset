@@ -1,0 +1,28 @@
+protected function decrypt($message)
+    {
+
+        if (!$this->subscribed()) {
+            throw new Exception('No subscription');
+        }
+
+        if ($this->_subscription['deliveryMode']['encryption'] && $this->_subscription['deliveryMode']['encryptionKey']) {
+
+            $aes = new PubNubCrypto($this->_subscription['deliveryMode']['encryptionKey']);
+
+            $message = $aes->unPadPKCS7(
+                openssl_decrypt(
+                    base64_decode($message),
+                    'AES-128-ECB',
+                    base64_decode($this->_subscription['deliveryMode']['encryptionKey']),
+                    OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING
+                ),
+                128
+            );
+
+            $message = Utils::json_parse($message, true); // PUBNUB itself always decode as array
+
+        }
+
+        return $message;
+
+    }

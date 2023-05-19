@@ -1,0 +1,20 @@
+def parse_lat_lon(query_params):
+    lat = query_params.get('lat', None)
+    lon = query_params.get('lon', None)
+    if not lat and not lon:
+        return None
+
+    if not lat or not lon:
+        raise ParseError("you must supply both 'lat' and 'lon'")
+    try:
+        lat = float(lat)
+        lon = float(lon)
+    except ValueError:
+        raise ParseError("'lat' and 'lon' must be floating point numbers")
+
+    point = Point(lon, lat, srid=DEFAULT_SRID)
+    if DEFAULT_SRID != DATABASE_SRID:
+        ct = CoordTransform(SpatialReference(DEFAULT_SRID),
+                            SpatialReference(DATABASE_SRID))
+        point.transform(ct)
+    return point

@@ -1,0 +1,15 @@
+func (cm AsStandard) Convert() (*metadata.MSystem, error) {
+	ms := &metadata.MSystem{}
+	ms.Date = metadata.DateTime(cm.MSystem.Date)
+	ms.Version = metadata.Version(cm.MSystem.Version)
+	ms.System.ID = cm.MSystem.System.ID
+	ms.System.Description = cm.MSystem.System.Description
+	ms.System.MetadataID = cm.MSystem.System.MetadataID
+	ms.System.TimeZoneOffset = cm.MSystem.System.TimeZoneOffset
+	ms.System.Comments = cm.MSystem.Comments
+	// TODO figure out how compact system sub-elements exists
+	ms.System.MForeignKey = cm.MForeignKey()
+	ms.System.MResource = cm.MResource()
+	ms.System.MFilter = cm.MFilter()
+	return ms, nil
+}

@@ -1,0 +1,7 @@
+def unzip path, target
+      Zip::File.open(path) do |zip_file|
+        zip_file.each do |file|
+          zip_file.extract(file, File.join(target, file.name))
+        end
+      end
+    end

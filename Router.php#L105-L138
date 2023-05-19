@@ -1,0 +1,34 @@
+public function encodeUrl(array $params = [])
+    {
+        //pusty url
+        $url = '';
+        //aplikacja rout
+        foreach ($this->getRoutes() as $route) {
+            /* @var $route \Mmi\Mvc\RouterConfigRoute */
+            $result = (new RouterMatcher)->tryRouteForParams($route, array_merge($route->default, $params));
+            //dopasowano routę
+            if ($result['applied']) {
+                $url = '/' . $result['url'];
+                $matched = $result['matched'];
+                break;
+            }
+        }
+        //czyszczenie dopasowanych z routy
+        foreach (isset($matched) ? $matched : [] as $match => $value) {
+            unset($params[$match]);
+        }
+        //usuwanie kontrolera jeśli index
+        if (isset($params['controller']) && $params['controller'] == 'index') {
+            unset($params['controller']);
+        }
+        //usuwanie akcji jeśli index
+        if (isset($params['action']) && $params['action'] == 'index') {
+            unset($params['action']);
+        }
+        //jeśli puste parametry
+        if (empty($params)) {
+            return $url;
+        }
+        //budowanie zapytania
+        return $url . ($url == '/' ? '?' : '/?') . http_build_query($params);
+    }

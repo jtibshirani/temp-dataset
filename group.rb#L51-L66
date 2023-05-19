@@ -1,0 +1,16 @@
+def query_group_groups(group_id,fields=nil)
+      req = { }
+      req[:fields] = fields if fields
+
+      data = Array.new
+      begin
+        data = @sdk.all_group_groups(group_id,req)
+      rescue LookerSDK::NotFound => e
+        return []
+      rescue LookerSDK::ClientError => e
+        say_error "Unable to get all_group_groups(#{group_id},#{JSON.pretty_generate(req)})"
+        say_error e.message
+        raise
+      end
+      data
+    end

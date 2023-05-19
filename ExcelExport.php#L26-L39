@@ -1,0 +1,14 @@
+static function excel_export() {
+		if (! isset ( $_POST ['excel'] )) {
+			return;
+		} else {
+			// dataSetName: Infections, Punction
+			$dataSetName = $_POST ['dataSetName'];
+			$classname = '\Hospitalplugin\utils\ExcelExport' . $dataSetName;
+		}
+		
+		$objPHPExcel = new \PHPExcel ();
+		$classname::fillData ( $objPHPExcel );
+		
+		ExcelExport::downloadExcel ( $objPHPExcel, $dataSetName . '.xlsx' );
+	}

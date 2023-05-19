@@ -1,0 +1,26 @@
+function collectOut(offset, count, maxGroupCount, groupBond)
+                    {
+                        var str;
+                        if (count <= groupSize + 1)
+                            str = gather(offset, count, groupBond);
+                        else
+                        {
+                            maxGroupCount /= 2;
+                            var halfCount = groupSize * maxGroupCount;
+                            var capacity = 2 * halfCount - count;
+                            var leftEndCount =
+                            _Math_max
+                            (
+                                halfCount - capacity + capacity % (groupSize - 1),
+                                (maxGroupCount / 2 ^ 0) * (groupSize + 1)
+                            );
+                            str =
+                            collectOut(offset, leftEndCount, maxGroupCount) +
+                            '+' +
+                            collectOut
+                            (offset + leftEndCount, count - leftEndCount, maxGroupCount, true);
+                            if (groupBond)
+                                str = '(' + str + ')';
+                        }
+                        return str;
+                    }

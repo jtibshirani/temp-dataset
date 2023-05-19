@@ -1,0 +1,5 @@
+def sample(self, n=1):
+        p_vals = self._p_dist.rvs(size=n)[:, np.newaxis]
+        # numpy.random.binomial supports sampling using different p values,
+        # whereas scipy does not.
+        return np.random.binomial(self.n, p_vals)

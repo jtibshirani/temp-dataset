@@ -1,0 +1,14 @@
+def _get_html(self, html_filename):
+        path, fn = os.path.split(__file__)
+        with open(os.path.join(path, html_filename)) as f:
+            html = f.read()
+
+        to_replace = [(m.groupdict()['filename'], html[m.start(): m.end()])
+                      for m in self.SCRIPT_TAG.finditer(html)]
+
+        for filename, tag in to_replace:
+            with open(os.path.join(path, filename)) as scriptfile:
+                html = html.replace(
+                    tag, '<script>{}</script>'.format(scriptfile.read()))
+
+        return html

@@ -1,0 +1,7 @@
+def concat_enum(enum_enum)
+      Enumerator.new do |yielder|
+        enum_enum.each do |enum|
+          enum.each { |i| yielder << i }
+        end
+      end
+    end

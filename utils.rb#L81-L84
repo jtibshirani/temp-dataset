@@ -1,0 +1,4 @@
+def days_in_month(month, year = current_time.year)
+      date = ::Date.new(year, month, 1)
+      ((date >> 1) - date).to_i
+    end

@@ -1,0 +1,33 @@
+def compute_planetary
+      dp, de = 0.0, 0.0
+
+      begin
+        l   = compute_l_mhb2000(@jc)
+        f   = compute_f_mhb2000(@jc)
+        d   = compute_d_mhb2000_2(@jc)
+        om  = compute_om_mhb2000(@jc)
+        pa  = compute_pa_iers2003(@jc)
+        lme = compute_lme_iers2003(@jc)
+        lve = compute_lve_iers2003(@jc)
+        lea = compute_lea_iers2003(@jc)
+        lma = compute_lma_iers2003(@jc)
+        lju = compute_lju_iers2003(@jc)
+        lsa = compute_lsa_iers2003(@jc)
+        lur = compute_lur_iers2003(@jc)
+        lne = compute_lne_mhb2000(@jc)
+        Const::NUT_PL.map do |x|
+          x[0, 14] + x[14..-1].map { |y| y.to_s.sub(/\./, "").to_i }
+        end.reverse.each do |x|
+          arg = (x[ 0] * l   + x[ 2] * f   + x[ 3] * d   + x[ 4] * om  +
+                 x[ 5] * lme + x[ 6] * lve + x[ 7] * lea + x[ 8] * lma +
+                 x[ 9] * lju + x[10] * lsa + x[11] * lur + x[12] * lne +
+                 x[13] * pa) % Const::PI2
+          sarg, carg = Math.sin(arg), Math.cos(arg)
+          dp += x[14] * sarg + x[15] * carg
+          de += x[16] * sarg + x[17] * carg
+        end
+        return [dp * Const::U2R, de * Const::U2R]
+      rescue => e
+        raise
+      end
+    end

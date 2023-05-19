@@ -1,0 +1,12 @@
+private function prepareSortOrders()
+    {
+        $sortOrders = [];
+
+        foreach ($this->_orders as $attribute => $direction) {
+            $sortParams = ['direction' => $direction];
+            $sortField = $attribute;
+            $sortOrders[$sortField] = $sortParams;
+        }
+
+        return $sortOrders;
+    }

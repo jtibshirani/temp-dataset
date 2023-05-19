@@ -1,0 +1,4 @@
+def create_label_widget(self, text=None):
+        label_widget = LabelWidget(self.__ui)
+        label_widget.text = text
+        return label_widget

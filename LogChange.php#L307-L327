@@ -1,0 +1,21 @@
+private function fieldImage($key, $value, array $fields)
+    {
+        $before = Json::parse($value[0]);
+        $after = Json::parse($value[1]);
+
+        return [
+            'type'   => $fields[$key]['type'],
+            'before' => [
+                'render' => [
+                    'file'  => $before['file'],
+                    'title' => $before['title'],
+                ],
+            ],
+            'after'  => [
+                'render' => [
+                    'file'  => $after['file'],
+                    'title' => $after['title'],
+                ],
+            ],
+        ];
+    }

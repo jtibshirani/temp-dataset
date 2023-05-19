@@ -1,0 +1,24 @@
+func (c *Cleaner) cleanBadTags(doc *goquery.Document, pattern *regexp.Regexp, selectors *[]string) *goquery.Document {
+	body := doc.Find("html")
+	children := body.Children()
+	children.Each(func(i int, s *goquery.Selection) {
+		for _, selector := range *selectors {
+			naughtyList := s.Find("*[" + selector + "]")
+			count := 0
+			naughtyList.Each(func(j int, node *goquery.Selection) {
+				attribute, _ := node.Attr(selector)
+				if pattern.MatchString(attribute) {
+					if c.config.debug {
+						log.Printf("Cleaning: Removing node with %s: %s\n", selector, c.config.parser.name(selector, node))
+					}
+					c.config.parser.removeNode(node)
+					count++
+				}
+			})
+			if c.config.debug && count > 0 {
+				log.Printf("%d naughty %s elements found", count, selector)
+			}
+		}
+	})
+	return doc
+}

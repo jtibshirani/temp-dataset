@@ -1,0 +1,18 @@
+def normal_distribution(self, pos, sample):
+        """returns the value of normal distribution, given the weight's sample and target position
+        
+        Parameters
+        ----------
+        pos: int
+            the epoch number of the position you want to predict
+        sample: list
+            sample is a (1 * NUM_OF_FUNCTIONS) matrix, representing{w1, w2, ... wk}
+
+        Returns
+        -------
+        float
+            the value of normal distribution
+        """
+        curr_sigma_sq = self.sigma_sq(sample)
+        delta = self.trial_history[pos - 1] - self.f_comb(pos, sample)
+        return np.exp(np.square(delta) / (-2.0 * curr_sigma_sq)) / np.sqrt(2 * np.pi * np.sqrt(curr_sigma_sq))

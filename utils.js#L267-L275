@@ -1,0 +1,9 @@
+function postJson({ url, payload, contentType, useBearer }) {
+  return ajax({
+    url,
+    method: 'post',
+    body: JSON.stringify( payload || {} ),
+    contentType,
+    useBearer
+  })
+}

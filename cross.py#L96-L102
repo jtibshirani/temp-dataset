@@ -1,0 +1,7 @@
+def permutations(x):
+  if len(x) > 1:
+    for permutation in permutations(x[1:]):
+      # Stick the first digit in every position.
+      for i in xrange(len(permutation)+1):
+        yield permutation[:i] + x[0:1] + permutation[i:]
+  else: yield x

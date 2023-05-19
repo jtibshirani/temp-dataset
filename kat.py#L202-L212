@@ -1,0 +1,11 @@
+def _format_sort(self, sort, order):
+		sorting = ""
+		if sort:
+			self.sort = sort
+			sorting = "?field=" + self.sort
+			if order:
+				self.order = order
+			else:
+				self.order = Sorting.Order.DESC
+			sorting = sorting + "&sorder=" + self.order
+		return sorting

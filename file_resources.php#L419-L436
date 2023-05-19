@@ -1,0 +1,18 @@
+final public function fileGetCSV(
+		$delimiter = ',',
+		$enclosure = '"',
+		$escape = '\\'
+	)
+	{
+		$rows = [];
+		$this->rewind();
+
+		while (! $this->feof()) {
+			$row = $this->fgetcsv(0, $delimiter, $enclosure, $escape);
+			if ($row !== false) {
+				array_push($rows, $row);
+			}
+			unset($row);
+		}
+		return $rows;
+	}

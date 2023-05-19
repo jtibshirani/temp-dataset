@@ -1,0 +1,2 @@
+def to_json_string(dict_to_convert):
+    return json.dumps(dict_to_convert, ensure_ascii=False, default=json_handler, indent=4, separators=(',', ': '))

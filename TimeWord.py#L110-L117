@@ -1,0 +1,8 @@
+def isHttpWord(self, word):
+        if(len(word) < 5):
+            return False
+        else:
+            if(word[0] == ord('h') and word[1] == ord('t') and word[2] == ord('t') and word[3] == ord('p')):
+                return True
+            else:
+                return False

@@ -1,0 +1,5 @@
+def read_config_file(filename)
+      contents = ""
+      File.open(filename, "r") { |f| contents = f.read() } if File.exists?(filename)
+      contents
+    end

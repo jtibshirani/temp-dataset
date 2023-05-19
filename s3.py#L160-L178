@@ -1,0 +1,19 @@
+def get_website(bucket_name, **conn):
+    try:
+        result = get_bucket_website(Bucket=bucket_name, **conn)
+    except ClientError as e:
+        if "NoSuchWebsiteConfiguration" not in str(e):
+            raise e
+        return None
+
+    website = {}
+    if result.get("IndexDocument"):
+        website["IndexDocument"] = result["IndexDocument"]
+    if result.get("RoutingRules"):
+        website["RoutingRules"] = result["RoutingRules"]
+    if result.get("RedirectAllRequestsTo"):
+        website["RedirectAllRequestsTo"] = result["RedirectAllRequestsTo"]
+    if result.get("ErrorDocument"):
+        website["ErrorDocument"] = result["ErrorDocument"]
+
+    return website

@@ -1,0 +1,26 @@
+toArray: function(csv, options, callback) {
+      var options = (options !== undefined ? options : {});
+      var config = {};
+      config.callback = ((callback !== undefined && typeof(callback) === 'function') ? callback : false);
+      config.separator = 'separator' in options ? options.separator : $.csv.defaults.separator;
+      config.delimiter = 'delimiter' in options ? options.delimiter : $.csv.defaults.delimiter;
+      var state = (options.state !== undefined ? options.state : {});
+
+      // setup
+      var options = {
+        delimiter: config.delimiter,
+        separator: config.separator,
+        onParseEntry: options.onParseEntry,
+        onParseValue: options.onParseValue,
+        state: state
+      }
+
+      var entry = $.csv.parsers.parseEntry(csv, options);
+
+      // push the value to a callback if one is defined
+      if(!config.callback) {
+        return entry;
+      } else {
+        config.callback('', entry);
+      }
+    },

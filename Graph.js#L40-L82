@@ -1,0 +1,43 @@
+var Graph = function (directed) {
+    /**
+     * 是否是有向图
+     * @type {boolean}
+     * @private
+     */
+    this._directed = directed || false;
+
+    /**
+     * @type {Array.<module:echarts/data/Graph.Node>}
+     * @readOnly
+     */
+    this.nodes = [];
+
+    /**
+     * @type {Array.<module:echarts/data/Graph.Edge>}
+     * @readOnly
+     */
+    this.edges = [];
+
+    /**
+     * @type {Object.<string, module:echarts/data/Graph.Node>}
+     * @private
+     */
+    this._nodesMap = {};
+    /**
+     * @type {Object.<string, module:echarts/data/Graph.Edge>}
+     * @private
+     */
+    this._edgesMap = {};
+
+    /**
+     * @type {module:echarts/data/List}
+     * @readOnly
+     */
+    this.data;
+
+    /**
+     * @type {module:echarts/data/List}
+     * @readOnly
+     */
+    this.edgeData;
+};

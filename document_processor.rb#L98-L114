@@ -1,0 +1,17 @@
+def normalize_url(url)
+      return nil if !url || url.length == 0
+
+      begin
+        url = URI.parse(url)
+      rescue URI::InvalidURIError => e
+        return nil
+      end
+
+      if url.host
+        url = url
+      else
+        url = URI.join(@document.url, url)
+      end
+
+      url
+    end

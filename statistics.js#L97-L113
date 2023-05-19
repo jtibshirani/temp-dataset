@@ -1,0 +1,17 @@
+Array.prototype.median = function ()
+{
+    var length = this.length;
+
+    if (length % 2 == 1) // Odd
+    {
+        var middle = Math.floor(length / 2);
+        var median = this.sortNumber()[middle];
+    }
+    else // Even
+    {
+        var middle = length / 2;
+        var sorted = this.sortNumber();
+        var median = (sorted[middle-1] + sorted[middle]) / 2;
+    }
+    return median;
+}

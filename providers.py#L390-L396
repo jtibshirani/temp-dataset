@@ -1,0 +1,7 @@
+def _sort(self, items, sort, language='en', reverse=False):
+        if sort is None:
+            sort = 'id'
+        if sort == 'sortlabel':
+            sort='label'
+        items.sort(key=lambda item: item[sort], reverse=reverse)
+        return items

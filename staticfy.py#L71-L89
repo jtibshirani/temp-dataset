@@ -1,0 +1,19 @@
+def get_elements(html_file, tags):
+    """
+    Extract all the elements we're interested in.
+
+    Returns a list of tuples with the attribute as first item
+    and the list of elements as the second item.
+    """
+    with open(html_file) as f:
+        document = BeautifulSoup(f, 'html.parser')
+
+        def condition(tag, attr):
+            # Don't include external links
+            return lambda x: x.name == tag \
+                and not x.get(attr, 'http').startswith(('http', '//'))
+
+        all_tags = [(attr, document.find_all(condition(tag, attr)))
+                    for tag, attr in tags]
+
+        return all_tags

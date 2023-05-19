@@ -1,0 +1,27 @@
+exports.create = function(dtlsVersion, cookie) {
+    // validate inputs
+    //
+    // dtlsVersion
+    if (!enums.isVersionValid(dtlsVersion)) {
+        throw new RangeError();
+    }
+    // cookie
+    if (typeof cookie === "undefined") {
+        throw new TypeError();
+    } else if (cookie === null) {
+        // null cookie (i.e. no cookie) is NOT acceptable
+        throw new TypeError();
+    } else if (!Array.isArray(cookie)) {
+        throw new TypeError();
+    } else if (cookie.length > enums.getMaximumCookieLength(dtlsVersion)) {
+        throw new RangeError();
+    }
+
+    // create and initialize the new HelloVerifyRequestMessage object
+    let result = new HelloVerifyRequestMessage();
+    result.dtlsVersion = dtlsVersion;
+    result.cookie = cookie;
+
+    // return the new HelloVerifyRequestMessage object
+    return result;
+}

@@ -1,0 +1,17 @@
+static function optimize($optimize = null)
+	{
+		static $_optimize = false;
+		static $set = false;
+
+		if (!is_null($optimize)) {
+			$_optimize = (bool) $optimize;
+			$set = true;
+		} elseif (!$set) {
+			// backwards compatibility
+			if (defined('ADODB_SESSION_OPTIMIZE')) {
+				return true;
+			}
+		}
+
+		return $_optimize;
+	}

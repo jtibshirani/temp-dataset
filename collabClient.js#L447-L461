@@ -1,0 +1,15 @@
+issueNextPing: function() {
+			var self = this;
+			if (this.socketPingTimeout) {
+				clearTimeout(this.socketPingTimeout);
+			}
+			this.socketPingTimeout = setTimeout(function() {
+				self.socketPingTimeout = 0;
+				if (self.socket) {
+					self.socket.send(JSON.stringify({
+						type: 'ping'
+					}));
+					self.issueNextPing();
+				}
+			}, SOCKET_PING_TIMEOUT);
+		},

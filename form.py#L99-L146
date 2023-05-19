@@ -1,0 +1,48 @@
+def set_checkbox(self, data, uncheck_other_boxes=True):
+        """Set the *checked*-attribute of input elements of type "checkbox"
+        specified by ``data`` (i.e. check boxes).
+
+        :param data: Dict of ``{name: value, ...}``.
+            In the family of checkboxes whose *name*-attribute is ``name``,
+            check the box whose *value*-attribute is ``value``. All boxes in
+            the family can be checked (unchecked) if ``value`` is True (False).
+            To check multiple specific boxes, let ``value`` be a tuple or list.
+        :param uncheck_other_boxes: If True (default), before checking any
+            boxes specified by ``data``, uncheck the entire checkbox family.
+            Consider setting to False if some boxes are checked by default when
+            the HTML is served.
+        """
+        for (name, value) in data.items():
+            # Case-insensitive search for type=checkbox
+            checkboxes = self.find_by_type("input", "checkbox", {'name': name})
+            if not checkboxes:
+                raise InvalidFormMethod("No input checkbox named " + name)
+
+            # uncheck if requested
+            if uncheck_other_boxes:
+                self.uncheck_all(name)
+
+            # Wrap individual values (e.g. int, str) in a 1-element tuple.
+            if not isinstance(value, list) and not isinstance(value, tuple):
+                value = (value,)
+
+            # Check or uncheck one or more boxes
+            for choice in value:
+                choice_str = str(choice)  # Allow for example literal numbers
+                for checkbox in checkboxes:
+                    if checkbox.attrs.get("value", "on") == choice_str:
+                        checkbox["checked"] = ""
+                        break
+                    # Allow specifying True or False to check/uncheck
+                    elif choice is True:
+                        checkbox["checked"] = ""
+                        break
+                    elif choice is False:
+                        if "checked" in checkbox.attrs:
+                            del checkbox.attrs["checked"]
+                        break
+                else:
+                    raise LinkNotFoundError(
+                        "No input checkbox named %s with choice %s" %
+                        (name, choice)
+                    )

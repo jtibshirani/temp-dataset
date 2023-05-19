@@ -1,0 +1,12 @@
+def get_dates(self):
+        today = datetime.date.today()
+        day = today
+        if 'week_start' in self.request.GET:
+            param = self.request.GET.get('week_start')
+            try:
+                day = datetime.datetime.strptime(param, '%Y-%m-%d').date()
+            except:
+                pass
+        week_start = utils.get_week_start(day)
+        week_end = week_start + relativedelta(days=6)
+        return today, week_start, week_end

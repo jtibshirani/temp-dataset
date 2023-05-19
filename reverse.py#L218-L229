@@ -1,0 +1,12 @@
+def _build_url_silent(self, _name, **kwargs):
+        subreverse = self
+        used_args = set()
+        for part in _name.split('.'):
+            if not subreverse._ready and subreverse._need_arguments:
+                used_args |= subreverse.url_arguments
+                subreverse = subreverse(**kwargs)
+            subreverse = getattr(subreverse, part)
+        if not subreverse._ready and subreverse._is_endpoint:
+            used_args |= subreverse.url_arguments
+            subreverse = subreverse(**kwargs)
+        return used_args, subreverse

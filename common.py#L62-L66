@@ -1,0 +1,5 @@
+def upscale_float_image(img, as_uint16):
+    if as_uint16:
+        return np.asarray((img * 65535), np.uint16)
+
+    return np.asarray((img * 255), np.uint8)

@@ -1,0 +1,12 @@
+def read(*args)
+      case args.size
+      when 0
+        read_all
+      when 1
+        read_part(args[0].to_i, "")
+      when 2
+        read_part(args[0].to_i, args[1])
+      else
+        raise ArgumentError, "wrong number of arguments (#{args.size} for 0 .. 2)"
+      end
+    end

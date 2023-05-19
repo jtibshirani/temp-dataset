@@ -1,0 +1,18 @@
+function convertToUint8Array(thing) {
+				return new Promise(function (resolve, reject) {
+					if (thing instanceof Uint8Array) {
+						resolve(thing);
+					} else if (thing instanceof ArrayBuffer || ArrayBuffer.isView(thing)) {
+						resolve(new Uint8Array(thing));
+					} else if (thing instanceof Blob) {
+						resolve(readBlobAsBuffer(thing).then(function (buffer) {
+							return new Uint8Array(buffer);
+						}));
+					} else {
+						//Assume that Blob will know how to read this thing
+						resolve(readBlobAsBuffer(new Blob([thing])).then(function (buffer) {
+							return new Uint8Array(buffer);
+						}));
+					}
+				});
+			}

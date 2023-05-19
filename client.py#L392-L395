@@ -1,0 +1,4 @@
+def _copy(from_path, to_path):
+    message = "Copying path [%s] to [%s]"
+    log.debug(message, from_path, to_path)
+    copy(from_path, to_path)

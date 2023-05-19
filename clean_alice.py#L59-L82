@@ -1,0 +1,24 @@
+def concatenate_aiml(path='aiml-en-us-foundation-alice.v1-9.zip', outfile='aiml-en-us-foundation-alice.v1-9.aiml'):
+    """Strip trailing </aiml> tag and concatenate all valid AIML files found in the ZIP."""
+    path = find_data_path(path) or path
+
+    zf = zipfile.ZipFile(path)
+    for name in zf.namelist():
+        if not name.lower().endswith('.aiml'):
+            continue
+        with zf.open(name) as fin:
+            happyending = '#!*@!!BAD'
+            for i, line in enumerate(fin):
+                try:
+                    line = line.decode('utf-8').strip()
+                except UnicodeDecodeError:
+                    line = line.decode('ISO-8859-1').strip()
+                if line.lower().startswith('</aiml>') or line.lower().endswith('</aiml>'):
+                    happyending = (i, line)
+                    break
+                else:
+                    pass
+
+            if happyending != (i, line):
+                print('Invalid AIML format: {}\nLast line (line number {}) was: {}\nexpected "</aiml>"'.format(
+                    name, i, line))

@@ -1,0 +1,25 @@
+def to_excel(self, *args):
+        """
+        Dump all the data to excel, fname and path can be passed as args
+        """
+        path = os.getcwd()
+        fname = self.fname.replace(".ppl", "_ppl") + ".xlsx"
+        if len(args) > 0 and args[0] != "":
+            path = args[0]
+            if os.path.exists(path) == False:
+                os.mkdir(path)
+        xl_file = pd.ExcelWriter(path + os.sep + fname)
+        for idx in self.filter_data(""):
+            self.extract(idx)
+        labels = list(self.filter_data("").values())
+        for prof in self.data:
+            data_df = pd.DataFrame()
+            data_df["X"] = self.data[prof][0]
+            for timestep, data in zip(self.time, self.data[prof][1]):
+                data_df[timestep] = data
+            myvar = labels[prof-1].split(" ")[0]
+            br_label = labels[prof-1].split("\'")[5]
+            unit = labels[prof-1].split("\'")[7].replace("/", "-")
+            mylabel = "{} - {} - {}".format(myvar, br_label, unit)
+            data_df.to_excel(xl_file, sheet_name=mylabel)
+        xl_file.save()

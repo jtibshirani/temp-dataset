@@ -1,0 +1,22 @@
+def find(value, find, start=0):
+    """
+    Return index of `find` in `value` beginning at `start`
+    :param value:
+    :param find:
+    :param start:
+    :return: If NOT found, return the length of `value` string
+    """
+    l = len(value)
+    if is_list(find):
+        m = l
+        for f in find:
+            i = value.find(f, start)
+            if i == -1:
+                continue
+            m = min(m, i)
+        return m
+    else:
+        i = value.find(find, start)
+        if i == -1:
+            return l
+        return i

@@ -1,0 +1,9 @@
+function createExport(exportOptions, content) {
+    if (!content) return content;
+
+    const type = exportOptions.type;
+    const name = exportOptions.name;
+    const exportFunction = exportFabric(type);
+
+    return exportFunction(name, content);
+}

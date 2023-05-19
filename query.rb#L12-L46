@@ -1,0 +1,35 @@
+def anime_id(id, flag=nil)
+      @json = Jikan::API.new.get(endpoint: "anime", id: id, flag: flag)
+      if flag == nil
+        Jikan::Anime.new(@json)
+      elsif flag == :episodes
+        Jikan::Anime.new(@json)
+      elsif flag == :reviews
+        @json['reviews'].map do |review|
+          Jikan::Review.new(review)
+        end
+      elsif flag == :news
+        @json['articles'].map do |news|
+          Jikan::News.new(news)
+        end
+      elsif flag == :recommendations
+        @json['recommendations'].map do |rec|
+          Jikan::Recommendation.new(rec)
+        end
+      elsif flag == :userupdates
+        @json['users'].map do |user|
+          Jikan::UserUpdate.new(user)
+        end
+      elsif flag == :pictures
+        @json['pictures'].map do |pic|
+          Jikan::Picture.new(pic)
+        end
+      elsif flag == :characters_staff
+        @json['characters'].map do |cs|
+          Jikan::CharacterStaff.new(cs)
+        end
+      elsif flag == :stats
+        Jikan::Stat.new(@json)
+      end
+
+    end

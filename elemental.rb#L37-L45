@@ -1,0 +1,9 @@
+def parents
+      all_parents = Array.new
+      # Extract all parents and add to array recursively:
+      if parent
+        all_parents = parent.parents if parent.parent
+        all_parents.insert(0, parent)
+      end
+      return all_parents
+    end

@@ -1,0 +1,9 @@
+def parse_command_line_arguments():
+    # command line arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument( 'xdatcar' )
+    parser.add_argument( 'label', nargs = 2 )
+    parser.add_argument( 'max_r', type = float )
+    parser.add_argument( 'n_bins', type = int )
+    args = parser.parse_args()
+    return( args )

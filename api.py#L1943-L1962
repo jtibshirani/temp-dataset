@@ -1,0 +1,20 @@
+def _string_substr(self, start, length=None):
+    """
+    Pull substrings out of each string value by position and maximum
+    length.
+
+    Parameters
+    ----------
+    start : int
+      First character to start splitting, indices starting at 0 (like
+      Python)
+    length : int, optional
+      Maximum length of each substring. If not supplied, splits each string
+      to the end
+
+    Returns
+    -------
+    substrings : type of caller
+    """
+    op = ops.Substring(self, start, length)
+    return op.to_expr()

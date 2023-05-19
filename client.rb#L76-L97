@@ -1,0 +1,22 @@
+def extract_user_data(response:)
+      # only verify the token if it's in production (test is using an expired token)
+      decoded_token = Crypto.decode_jwt_token(
+        token: response['data'],
+        public_hex_key: PUBLIC_HEX,
+        should_verify: !@test_env
+      )
+      data_text = if response['encrypted']
+                    # decrypt the data attr
+                    Crypto.decrypt(
+                      text: decoded_token['data'],
+                      secret: @config.secret
+                    )
+                  else
+                    decoded_data['data']
+                  end
+
+      UserData.new(
+        user_id: response['userId'],
+        data_items: JSON.parse(data_text)
+      )
+    end

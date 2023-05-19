@@ -1,0 +1,24 @@
+def encrypt(message)
+      raise Error, "data must not be empty" if message.to_s.strip.empty?
+      # 1
+      @cipher.reset
+      @cipher.encrypt
+      aes_key   = @cipher.random_key
+      aes_iv    = @cipher.random_iv
+      encrypted = @cipher.update(message) + @cipher.final
+
+      # 2
+      rsa_encrypted_aes_key = @rsa.public_encrypt(aes_key)
+      rsa_encrypted_aes_iv  = @rsa.public_encrypt(aes_iv)
+
+      # 3
+      content = rsa_encrypted_aes_key + rsa_encrypted_aes_iv + encrypted
+
+      # 4
+      hmac = hmac_signature(content)
+      content = Base64.encode64(hmac + content)
+
+      { signature: hmac, content: content }
+    rescue OpenSSL::OpenSSLError => e
+      raise Error.new(e.message)
+    end

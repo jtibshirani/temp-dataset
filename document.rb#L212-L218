@@ -1,0 +1,7 @@
+def identifier_weight(elem)
+      {POSITIVE_IDENTIFIERS => 25, NEGATIVE_IDENTIFIERS => -25}.reduce(0) do |weight, pair|
+        regex, score = pair
+        matchstring = elem['class'].to_s + elem['id'].to_s + elem['name'].to_s
+        (weight += score if matchstring =~ regex) or weight
+      end
+    end

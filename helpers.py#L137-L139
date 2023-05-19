@@ -1,0 +1,3 @@
+def str2num(num_str, convert_type="float"):
+    num = float(grep_comma(num_str))
+    return num if convert_type == "float" else int(num)

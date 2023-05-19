@@ -1,0 +1,45 @@
+async function findChrome(options) {
+  if (options.executablePath)
+    return { executablePath: options.executablePath, type: 'user' };
+
+  const config = new Set(options.channel || ['stable']);
+  let executablePath;
+  // Always prefer canary.
+  if (config.has('canary') || config.has('*')) {
+    if (process.platform === 'linux')
+      executablePath = linux(true);
+    else if (process.platform === 'win32')
+      executablePath = win32(true);
+    else if (process.platform === 'darwin')
+      executablePath = darwin(true);
+    if (executablePath)
+      return { executablePath, type: 'canary' };
+  }
+
+  // Then pick stable.
+  if (config.has('stable') || config.has('*')) {
+    if (process.platform === 'linux')
+      executablePath = linux();
+    else if (process.platform === 'win32')
+      executablePath = win32();
+    else if (process.platform === 'darwin')
+      executablePath = darwin();
+    if (executablePath)
+      return { executablePath, type: 'stable' };
+  }
+
+  // always prefer puppeteer revision of chromium
+  if (config.has('chromium') || config.has('*')) {
+    const revisionInfo = await downloadChromium(options);
+    return { executablePath: revisionInfo.executablePath, type: revisionInfo.revision };
+  }
+
+  for (const item of config) {
+    if (!item.startsWith('r'))
+      continue;
+    const revisionInfo = await downloadChromium(options, item.substring(1));
+    return { executablePath: revisionInfo.executablePath, type: revisionInfo.revision };
+  }
+
+  return {};
+}

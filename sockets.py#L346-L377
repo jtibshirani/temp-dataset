@@ -1,0 +1,32 @@
+def recvfrom(self, bufsize, flags=0):
+        """receive data on a socket that isn't necessarily a 1-1 connection
+
+        .. note:: this method will block until data is available to be read
+
+        :param bufsize:
+            the maximum number of bytes to receive. fewer may be returned,
+            however
+        :type bufsize: int
+        :param flags:
+            flags for the receive call. consult the unix manpage for
+            ``recv(2)`` for what flags are available
+        :type flags: int
+
+        :returns:
+            a two-tuple of ``(data, address)`` -- the string data received and
+            the address from which it was received
+        """
+        with self._registered('re'):
+            while 1:
+                if self._closed:
+                    raise socket.error(errno.EBADF, "Bad file descriptor")
+                try:
+                    return self._sock.recvfrom(bufsize, flags)
+                except socket.error, exc:
+                    if not self._blocking or exc[0] not in _BLOCKING_OP:
+                        raise
+                    sys.exc_clear()
+                    if self._readable.wait(self.gettimeout()):
+                        raise socket.timeout("timed out")
+                    if scheduler.state.interrupted:
+                        raise IOError(errno.EINTR, "interrupted system call")

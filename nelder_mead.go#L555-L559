@@ -1,0 +1,5 @@
+func NelderMead(config NelderMeadConfiguration) []float64 {
+	nm := newNelderMead(config)
+	nm.evaluate()
+	return nm.results.vertices[0].vars
+}

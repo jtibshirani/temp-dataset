@@ -1,0 +1,76 @@
+def parse_binary(self, data, display, rawdict = 0):
+
+        """values, remdata = s.parse_binary(data, display, rawdict = 0)
+
+        Convert a binary representation of the structure into Python values.
+
+        DATA is a string or a buffer containing the binary data.
+        DISPLAY should be a Xlib.protocol.display.Display object if
+        there are any Resource fields or Lists with ResourceObjs.
+
+        The Python values are returned as VALUES.  If RAWDICT is true,
+        a Python dictionary is returned, where the keys are field
+        names and the values are the corresponding Python value.  If
+        RAWDICT is false, a DictWrapper will be returned where all
+        fields are available as attributes.
+
+        REMDATA are the remaining binary data, unused by the Struct object.
+
+        """
+        ret = {}
+        val = struct.unpack(self.static_codes, data[:self.static_size])
+        lengths = {}
+        formats = {}
+
+        vno = 0
+        for f in self.static_fields:
+
+            # Fields without name should be ignored.  This is typically
+            # pad and constant fields
+
+            if not f.name:
+                pass
+
+            # Store index in val for Length and Format fields, to be used
+            # when treating varfields.
+
+            elif isinstance(f, LengthField):
+                f_names = [f.name]
+                if f.other_fields:
+                    f_names.extend(f.other_fields)
+                field_val = val[vno]
+                if f.parse_value is not None:
+                    field_val = f.parse_value(field_val, display)
+                for f_name in f_names:
+                    lengths[f_name] = field_val
+
+            elif isinstance(f, FormatField):
+                formats[f.name] = val[vno]
+
+            # Treat value fields the same was as in parse_value.
+            else:
+                if f.structvalues == 1:
+                    field_val = val[vno]
+                else:
+                    field_val = val[vno:vno+f.structvalues]
+
+                if f.parse_value is not None:
+                    field_val = f.parse_value(field_val, display)
+                ret[f.name] = field_val
+
+            vno = vno + f.structvalues
+
+        data = data[self.static_size:]
+
+        # Call parse_binary_value for each var_field, passing the
+        # length and format values from the unpacked val.
+
+        for f in self.var_fields:
+            ret[f.name], data = f.parse_binary_value(data, display,
+                                                     lengths.get(f.name),
+                                                     formats.get(f.name),
+                                                    )
+
+        if not rawdict:
+            ret = DictWrapper(ret)
+        return ret, data

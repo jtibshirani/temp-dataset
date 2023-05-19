@@ -1,0 +1,5 @@
+/* export */ function OneToMany(typeFunction, inverseSideOrOptions, options) {
+    return function (object, propertyName) {
+        class_transformer_1.Type(typeFunction)(object, propertyName);
+    };
+}

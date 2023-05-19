@@ -1,0 +1,6 @@
+def sorts_from_hash(sorts)
+      sort_conditions = [sorts].flatten.compact
+      sort_conditions.collect do |c|
+        make_sort(c)
+      end
+    end

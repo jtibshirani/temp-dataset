@@ -1,0 +1,10 @@
+def fetch_line(self,strip=True,requireLine=True,report=""):
+		if   (strip == None): line = self.file.readline()
+		elif (strip == True): line = self.file.readline().strip()
+		else:                 line = self.file.readline().strip().strip(strip)
+		self.lineNumber += 1
+		if (requireLine):
+			assert (line), \
+			       "unexpected blank line or end of file%s (line %d)" \
+			     % (report,self.lineNumber)
+		return line

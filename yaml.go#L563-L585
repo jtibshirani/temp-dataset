@@ -1,0 +1,23 @@
+func (this *MaestroDoc) bind_vars(c Context) {
+	for _, disk := range this.Disks {
+		c.bind_vars(disk)
+	}
+	for _, instance := range this.Instances {
+		c.bind_vars(instance)
+	}
+	for _, artifact := range this.Artifacts {
+		c.bind_vars(artifact)
+	}
+	for _, image := range this.Images {
+		c.bind_vars(image)
+	}
+	for _, container := range this.Containers {
+		c.bind_vars(container)
+	}
+	for _, job := range this.Jobs {
+		c.bind_vars(job)
+	}
+	for _, service := range this.services {
+		c.bind_vars(service)
+	}
+}

@@ -1,0 +1,8 @@
+def _compress_content(self, content):
+        """Gzip a given string."""
+        zbuf = StringIO()
+        zfile = GzipFile(mode='wb', compresslevel=6, fileobj=zbuf)
+        zfile.write(content.read())
+        zfile.close()
+        content.file = zbuf
+        return content

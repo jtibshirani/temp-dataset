@@ -1,0 +1,10 @@
+def url_encode(url):
+    """
+    Convert special characters using %xx escape.
+
+    :param url: str
+    :return: str - encoded url
+    """
+    if isinstance(url, text_type):
+        url = url.encode('utf8')
+    return quote(url, ':/%?&=')

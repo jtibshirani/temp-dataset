@@ -1,0 +1,3 @@
+def heatmap2():
+    x = np.arange(5)
+    pw.heatmap(z=np.arange(25), x=np.tile(x, 5), y=x.repeat(5)).save('fig_heatmap2.html', **options)

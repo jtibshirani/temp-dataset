@@ -1,0 +1,29 @@
+public static function dencrypt($encryptedData)
+    {
+        $enc = mcrypt_module_open(MCRYPT_RIJNDAEL_256, '', MCRYPT_MODE_CBC, '');
+
+        //copia key original
+        $skey = self::$key;
+
+        //Sacamos el $randKey
+        $charRand = substr($encryptedData, -1);
+
+        //modifica encryotedData quita ultimo elemento
+        $encryptedData = substr($encryptedData, 0, strlen($encryptedData)-1);
+        $encryptedData = base64_decode($encryptedData);
+
+        //reemplaza el primer el elemento
+        $skey{ord($charRand)&0x1f} = $charRand;
+
+        mcrypt_generic_init($enc, $skey, self::$iv);
+
+        $data = mdecrypt_generic($enc, $encryptedData);
+        mcrypt_generic_deinit($enc);
+        mcrypt_module_close($enc);
+
+
+        // PKCS7 Padding from: https://gist.github.com/1077723
+        $dataPad = ord($data[strlen($data)-1]);
+
+        return substr($data, 0, -$dataPad);
+    }

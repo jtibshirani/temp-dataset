@@ -1,0 +1,23 @@
+def replace_f(self, path, arg_name=None):
+        """Replace files"""
+        root, file = os.path.split(path)
+
+        pattern = re.compile(r'(\<\<\<)([A-Za-z_]+)(\>\>\>)')
+        file_path = path
+        fh, abs_path = mkstemp()
+        with open(abs_path, 'w') as new_file:
+            with open(file_path) as old_file:
+                for line in old_file:
+                    for (o, var_name, c) in re.findall(pattern, line):
+                        line = self.handle_args(line, var_name, arg_name)
+                    new_file.write(line)
+        os.close(fh)
+        # Remove original file
+        os.remove(file_path)
+        # Move new file
+        shutil.move(abs_path, file_path)
+
+        pattern = re.compile(r'(\[\[)([A-Za-z_]+)(\]\])')
+        for (o, var_name, c) in re.findall(pattern, file):
+            file = self.handle_args(file, var_name, isfilename=True)
+        os.rename(path, os.path.join(root, file))

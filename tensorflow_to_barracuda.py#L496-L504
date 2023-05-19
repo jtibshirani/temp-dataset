@@ -1,0 +1,9 @@
+def flatten(items,enter=lambda x:isinstance(x, list)):
+    # http://stackoverflow.com/a/40857703
+    # https://github.com/ctmakro/canton/blob/master/canton/misc.py
+    """Yield items from any nested iterable; see REF."""
+    for x in items:
+        if enter(x):
+            yield from flatten(x)
+        else:
+            yield x

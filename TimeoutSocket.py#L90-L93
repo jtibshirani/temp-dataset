@@ -1,0 +1,4 @@
+def recv(self, amt, flags=0):
+        if select.select([self.sock], [], [], self.timeout)[0]:
+            return self.sock.recv(amt, flags)
+        raise TimeoutError('socket recv() timeout.')

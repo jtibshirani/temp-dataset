@@ -1,0 +1,11 @@
+function getExcerptByMoreTag(file, regExp) {
+    var excerpt = false,
+        contents = file.contents.toString();
+    contents = cheerio.load('<root>' + contents + '</root>', {decodeEntities: false})('root').html();
+    var match = contents.search(regExp);
+    if (match > -1) {
+        excerpt = contents.slice(0, match);
+        excerpt = v.unescapeHtml(excerpt);
+    }
+    return excerpt;
+}

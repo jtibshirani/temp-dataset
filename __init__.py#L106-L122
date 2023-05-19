@@ -1,0 +1,17 @@
+def to_file(self, outputfile=DEFAULT_OUTPUTFILE):
+        """Write the report to a file.
+        
+        By default a name is generated.
+
+        Parameters:
+        ----------
+        outputfile : str
+            The name or the path of the file to generale including the extension (.html).
+        """
+    
+        if outputfile != NO_OUTPUTFILE:
+            if outputfile == DEFAULT_OUTPUTFILE:
+                outputfile = 'profile_' + str(hash(self)) + ".html"
+            # TODO: should be done in the template
+            with codecs.open(outputfile, 'w+b', encoding='utf8') as self.file:
+                self.file.write(templates.template('wrapper').render(content=self.html))

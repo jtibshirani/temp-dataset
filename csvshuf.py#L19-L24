@@ -1,0 +1,6 @@
+def shuffle_sattolo(items):
+    """Shuffle items in place using Sattolo's algorithm."""
+    _randrange = random.randrange
+    for i in reversed(range(1, len(items))):
+        j = _randrange(i)  # 0 <= j < i
+        items[j], items[i] = items[i], items[j]

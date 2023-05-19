@@ -1,0 +1,6 @@
+def train_with_csv(filename, separator: "||")
+      csv = CSV.new File.read(filename), col_sep: separator, quote_char: "§" # hope § won't be used anywhere
+      csv.each do |row|
+        train row[1], row[0]
+      end
+    end

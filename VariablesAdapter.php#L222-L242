@@ -1,0 +1,21 @@
+public function getStringsBetween($string, $start, $end)
+    {
+        $lastPos   = 0;
+        $positions = array();
+
+        while (($lastPos = strpos($string, $start, $lastPos)) !== false) {
+            $positions[] = $lastPos;
+            $lastPos     += strlen($start);
+        }
+        $lastPos      = 0;
+        $positionsEnd = array();
+        while (($lastPos      = strpos($string, $end, $lastPos)) !== false) {
+            $positionsEnd[] = $lastPos;
+            $lastPos        += strlen($end);
+        }
+        $return = [];
+        foreach ($positions as $index => $position) {
+            $return[] = str_replace([$start, $end], '', substr($string, $position, $positionsEnd[$index] - $position));
+        }
+        return $return;
+    }

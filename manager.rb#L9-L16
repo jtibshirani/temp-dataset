@@ -1,0 +1,8 @@
+def process_change(change_id)
+      change = Change.find change_id
+      unless change.cancelled?
+        verified_changes = process_changes_similar_to change
+        notify_target_of verified_changes unless verified_changes.empty?
+        true
+      end
+    end

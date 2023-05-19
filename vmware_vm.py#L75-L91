@@ -1,0 +1,17 @@
+def __json__(self):
+
+        json = {"name": self.name,
+                "node_id": self.id,
+                "console": self.console,
+                "console_type": self.console_type,
+                "project_id": self.project.id,
+                "vmx_path": self.vmx_path,
+                "headless": self.headless,
+                "acpi_shutdown": self.acpi_shutdown,
+                "adapters": self._adapters,
+                "adapter_type": self.adapter_type,
+                "use_any_adapter": self.use_any_adapter,
+                "status": self.status,
+                "node_directory": self.working_path,
+                "linked_clone": self.linked_clone}
+        return json

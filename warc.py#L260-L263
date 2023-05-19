@@ -1,0 +1,4 @@
+def reader(self):
+        if self._reader is None:
+            self._reader = WARCReader(self.fileobj)
+        return self._reader

@@ -1,0 +1,8 @@
+protected function getDataFromText($text)
+    {
+        $data = json_decode($text, true);
+        if (!is_array($data)) {
+            return null;
+        }
+        return $data;
+    }

@@ -1,0 +1,24 @@
+private function clearClipboard(ActionEvent $event, $redirect = true)
+    {
+        $environment     = $event->getEnvironment();
+        $eventDispatcher = $environment->getEventDispatcher();
+        $clipboard       = $environment->getClipboard();
+        $input           = $environment->getInputProvider();
+
+        if ($clipboardId = $input->getParameter('clipboard-item')) {
+            $clipboard->removeByClipboardId($clipboardId);
+        } else {
+            $clipboard->clear();
+        }
+        $clipboard->saveTo($environment);
+
+        if (false === $redirect) {
+            return;
+        }
+
+        $addToUrlEvent = new AddToUrlEvent('clipboard-item=&original-act=&act=' . $input->getParameter('original-act'));
+        $eventDispatcher->dispatch(ContaoEvents::BACKEND_ADD_TO_URL, $addToUrlEvent);
+
+        $redirectEvent = new RedirectEvent($addToUrlEvent->getUrl());
+        $eventDispatcher->dispatch(ContaoEvents::CONTROLLER_REDIRECT, $redirectEvent);
+    }

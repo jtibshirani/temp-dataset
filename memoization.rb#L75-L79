@@ -1,0 +1,5 @@
+def disable_memoization
+      @_memoize = false
+      @_memo_identifiers.each { |identifier| (@_memo_cache_clear_proc || Proc.new { |ident| eval "@_memo_#{ident} = nil" }).call(identifier) }
+      @_memo_identifiers.clear
+    end

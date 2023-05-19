@@ -1,0 +1,36 @@
+public function connect(bool $persistent = false)
+	{
+		if (empty($this->DSN))
+		{
+			$this->buildDSN();
+		}
+
+		// Strip pgsql if exists
+		if (mb_strpos($this->DSN, 'pgsql:') === 0)
+		{
+			$this->DSN = mb_substr($this->DSN, 6);
+		}
+
+		// Convert semicolons to spaces.
+		$this->DSN = str_replace(';', ' ', $this->DSN);
+
+		$this->connID = $persistent === true ? pg_pconnect($this->DSN) : pg_connect($this->DSN);
+
+		if ($this->connID !== false)
+		{
+			if ($persistent === true && pg_connection_status($this->connID) === PGSQL_CONNECTION_BAD && pg_ping($this->connID) === false
+			)
+			{
+				return false;
+			}
+
+			empty($this->schema) || $this->simpleQuery("SET search_path TO {$this->schema},public");
+
+			if ($this->setClientEncoding($this->charset) === false)
+			{
+				return false;
+			}
+		}
+
+		return $this->connID;
+	}

@@ -1,0 +1,11 @@
+def paste(self):
+        """Import text/data/code from clipboard"""
+        clipboard = QApplication.clipboard()
+        cliptext = ''
+        if clipboard.mimeData().hasText():
+            cliptext = to_text_string(clipboard.text())
+        if cliptext.strip():
+            self.import_from_string(cliptext, title=_("Import from clipboard"))
+        else:
+            QMessageBox.warning(self, _( "Empty clipboard"),
+                                _("Nothing to be imported from clipboard."))

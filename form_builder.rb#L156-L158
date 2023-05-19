@@ -1,0 +1,3 @@
+def checkbox(name, attrs={})
+      input(:checkbox, { type: 'checkbox', value: 'true', checked: !!object.try(name) }.merge(attrs))
+    end

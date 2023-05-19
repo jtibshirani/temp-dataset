@@ -1,0 +1,31 @@
+func (f *fragment) readStorageFromArchive(r io.Reader) error {
+	// Create a temporary file to copy into.
+	path := f.path + copyExt
+	file, err := os.Create(path)
+	if err != nil {
+		return errors.Wrap(err, "creating directory")
+	}
+	defer file.Close()
+
+	// Copy reader into temporary path.
+	if _, err = io.Copy(file, r); err != nil {
+		return errors.Wrap(err, "copying")
+	}
+
+	// Close current storage.
+	if err := f.closeStorage(); err != nil {
+		return errors.Wrap(err, "closing")
+	}
+
+	// Move snapshot to data file location.
+	if err := os.Rename(path, f.path); err != nil {
+		return errors.Wrap(err, "renaming")
+	}
+
+	// Reopen storage.
+	if err := f.openStorage(); err != nil {
+		return errors.Wrap(err, "opening")
+	}
+
+	return nil
+}

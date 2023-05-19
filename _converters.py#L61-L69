@@ -1,0 +1,9 @@
+def deserialize(self, deserializable: PrimitiveJsonType) -> Optional[SerializableType]:
+        if not isinstance(self._decoder, ParsedJSONDecoder):
+            # Decode must take a string (even though we have a richer representation) :/
+            json_as_string = json.dumps(deserializable)
+            return self._decoder.decode(json_as_string)
+        else:
+            # Optimisation - no need to convert our relatively rich representation into a string (just to turn it back
+            # again!)
+            return self._decoder.decode_parsed(deserializable)

@@ -1,0 +1,15 @@
+func configure(args []string) (*csv.CsvToJsonProcess, error) {
+	var baseObject string
+	var stringsOnly bool
+	flags := flag.NewFlagSet("csv-to-json", flag.ExitOnError)
+
+	flags.BoolVar(&stringsOnly, "strings", false, "Don't attempt to convert strings to other JSON types.")
+	flags.StringVar(&baseObject, "base-object-key", "", "Write the other columns into the base JSON object found in the specified column.")
+	if err := flags.Parse(args); err != nil {
+		return nil, err
+	}
+	return &csv.CsvToJsonProcess{
+		BaseObject:  baseObject,
+		StringsOnly: stringsOnly,
+	}, nil
+}

@@ -1,0 +1,14 @@
+def _exact_match(response, matches, insensitive, fuzzy):
+    '''
+    returns an exact match, if it exists, given parameters
+    for the match
+    '''
+    for match in matches:
+        if response == match:
+            return match
+        elif insensitive and response.lower() == match.lower():
+            return match
+        elif fuzzy and _exact_fuzzy_match(response, match, insensitive):
+            return match
+    else:
+        return None

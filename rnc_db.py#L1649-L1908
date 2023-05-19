@@ -1,0 +1,260 @@
+def _connect(self,
+                 engine: str = None,
+                 interface: str = None,
+                 host: str = None,
+                 port: int = None,
+                 database: str = None,
+                 driver: str = None,
+                 dsn: str = None,
+                 odbc_connection_string: str = None,
+                 user: str = None,
+                 password: str = None,
+                 autocommit: bool = True,
+                 charset: str = "utf8",
+                 use_unicode: bool = True) -> bool:
+        # Check engine
+        if engine == ENGINE_MYSQL:
+            self.flavour = MySQL()
+            self.schema = database
+        elif engine == ENGINE_SQLSERVER:
+            self.flavour = SQLServer()
+            if database:
+                self.schema = database
+            else:
+                self.schema = "dbo"  # default for SQL server
+        elif engine == ENGINE_ACCESS:
+            self.flavour = Access()
+            self.schema = "dbo"  # default for SQL server
+        else:
+            raise ValueError("Unknown engine")
+
+        # Default interface
+        if interface is None:
+            if engine == ENGINE_MYSQL:
+                interface = INTERFACE_MYSQL
+            else:
+                interface = INTERFACE_ODBC
+
+        # Default port
+        if port is None:
+            if engine == ENGINE_MYSQL:
+                port = 3306
+            elif engine == ENGINE_SQLSERVER:
+                port = 1433
+
+        # Default driver
+        if driver is None:
+            if engine == ENGINE_MYSQL and interface == INTERFACE_ODBC:
+                driver = "{MySQL ODBC 5.1 Driver}"
+
+        self._engine = engine
+        self._interface = interface
+        self._server = host
+        self._port = port
+        self._database = database
+        self._user = user
+        self._password = password
+        self._charset = charset
+        self._use_unicode = use_unicode
+        self.autocommit = autocommit
+
+        # Report intent
+        log.info(
+            "Opening database: engine={e}, interface={i}, "
+            "use_unicode={u}, autocommit={a}".format(
+                e=engine, i=interface, u=use_unicode, a=autocommit))
+
+        # Interface
+        if interface == INTERFACE_MYSQL:
+            if pymysql:
+                self.db_pythonlib = PYTHONLIB_PYMYSQL
+            elif MySQLdb:
+                self.db_pythonlib = PYTHONLIB_MYSQLDB
+            else:
+                raise ImportError(_MSG_MYSQL_DRIVERS_UNAVAILABLE)
+        elif interface == INTERFACE_ODBC:
+            if not pyodbc:
+                raise ImportError(_MSG_PYODBC_UNAVAILABLE)
+            self.db_pythonlib = PYTHONLIB_PYODBC
+        elif interface == INTERFACE_JDBC:
+            if not jaydebeapi:
+                raise ImportError(_MSG_JDBC_UNAVAILABLE)
+            if host is None:
+                raise ValueError("Missing host parameter")
+            if port is None:
+                raise ValueError("Missing port parameter")
+            # if database is None:
+            #     raise ValueError("Missing database parameter")
+            if user is None:
+                raise ValueError("Missing user parameter")
+            self.db_pythonlib = PYTHONLIB_JAYDEBEAPI
+        else:
+            raise ValueError("Unknown interface")
+
+        # ---------------------------------------------------------------------
+        # Connect
+        # ---------------------------------------------------------------------
+        if engine == ENGINE_MYSQL and interface == INTERFACE_MYSQL:
+            # Connects to a MySQL database via MySQLdb/PyMySQL.
+            # http://dev.mysql.com/doc/refman/5.1/en/connector-odbc-configuration-connection-parameters.html  # noqa
+            # http://code.google.com/p/pyodbc/wiki/ConnectionStrings
+
+            # Between MySQLdb 1.2.3 and 1.2.5, the DateTime2literal function
+            # stops producing e.g.
+            #   '2014-01-03 18:15:51'
+            # and starts producing e.g.
+            #   '2014-01-03 18:15:51.842097+00:00'.
+            # Let's fix that...
+            datetimetype = datetime.datetime  # as per MySQLdb times.py
+            converters = mysql.converters.conversions.copy()
+            converters[datetimetype] = datetime2literal_rnc
+            # See also:
+            #   http://stackoverflow.com/questions/11053941
+            log.info(
+                "{i} connect: host={h}, port={p}, user={u}, "
+                "database={d}".format(
+                    i=interface, h=host, p=port, u=user, d=database))
+            self.db = mysql.connect(
+                host=host,
+                port=port,
+                user=user,
+                passwd=password,
+                db=database,
+                charset=charset,
+                use_unicode=use_unicode,
+                conv=converters
+            )
+            # noinspection PyCallingNonCallable
+            self.db.autocommit(autocommit)
+            # http://mysql-python.sourceforge.net/MySQLdb.html
+            # http://dev.mysql.com/doc/refman/5.0/en/mysql-autocommit.html
+            # https://github.com/PyMySQL/PyMySQL/blob/master/pymysql/connections.py  # noqa
+
+            # MySQL character sets and collations:
+            #   http://dev.mysql.com/doc/refman/5.1/en/charset.html
+            # Create a database using UTF8:
+            # ... CREATE DATABASE mydb DEFAULT CHARACTER SET utf8
+            #     DEFAULT COLLATE utf8_general_ci;
+            # What is my database using?
+            # ... SHOW VARIABLES LIKE 'character_set_%';
+            # Change a database character set:
+            # ... ALTER DATABASE mydatabasename charset=utf8;
+            # http://docs.moodle.org/23/en/
+            #        Converting_your_MySQL_database_to_UTF8
+            #
+            # Python talking to MySQL in Unicode:
+            # http://www.harelmalka.com/?p=81
+            # http://stackoverflow.com/questions/6001104
+
+        elif engine == ENGINE_MYSQL and interface == INTERFACE_ODBC:
+            log.info(
+                "ODBC connect: DRIVER={dr};SERVER={s};PORT={p};"
+                "DATABASE={db};USER={u};PASSWORD=[censored]".format(
+                    dr=driver, s=host, p=port,
+                    db=database, u=user))
+            dsn = (
+                "DRIVER={0};SERVER={1};PORT={2};DATABASE={3};"
+                "USER={4};PASSWORD={5}".format(driver, host, port, database,
+                                               user, password)
+            )
+            self.db = pyodbc.connect(dsn)
+            self.db.autocommit = autocommit
+            # http://stackoverflow.com/questions/1063770
+
+        elif engine == ENGINE_MYSQL and interface == INTERFACE_JDBC:
+            # https://help.ubuntu.com/community/JDBCAndMySQL
+            # https://github.com/baztian/jaydebeapi/issues/1
+            jclassname = "com.mysql.jdbc.Driver"
+            url = "jdbc:mysql://{host}:{port}/{database}".format(
+                host=host, port=port, database=database)
+            driver_args = [url, user, password]
+            jars = None
+            libs = None
+            log.info(
+                "JDBC connect: jclassname={jclassname}, "
+                "url={url}, user={user}, password=[censored]".format(
+                    jclassname=jclassname,
+                    url=url,
+                    user=user,
+                )
+            )
+            self._jdbc_connect(jclassname, driver_args, jars, libs, autocommit)
+
+        elif engine == ENGINE_SQLSERVER and interface == INTERFACE_ODBC:
+            # SQL Server:
+            # http://code.google.com/p/pyodbc/wiki/ConnectionStrings
+            if odbc_connection_string:
+                log.info("Using raw ODBC connection string [censored]")
+                connectstring = odbc_connection_string
+            elif dsn:
+                log.info(
+                    "ODBC connect: DSN={dsn};UID={u};PWD=[censored]".format(
+                        dsn=dsn, u=user))
+                connectstring = "DSN={};UID={};PWD={}".format(dsn, user,
+                                                              password)
+            else:
+                log.info(
+                    "ODBC connect: DRIVER={dr};SERVER={s};DATABASE={db};"
+                    "UID={u};PWD=[censored]".format(
+                        dr=driver, s=host, db=database, u=user))
+                connectstring = (
+                    "DRIVER={};SERVER={};DATABASE={};UID={};PWD={}".format(
+                        driver, host, database, user, password)
+                )
+            self.db = pyodbc.connect(connectstring, unicode_results=True)
+            self.db.autocommit = autocommit
+            # http://stackoverflow.com/questions/1063770
+
+        elif engine == ENGINE_SQLSERVER and interface == INTERFACE_JDBC:
+            # jar tvf sqljdbc41.jar
+            # https://msdn.microsoft.com/en-us/sqlserver/aa937724.aspx
+            # https://msdn.microsoft.com/en-us/library/ms378428(v=sql.110).aspx
+            # https://msdn.microsoft.com/en-us/library/ms378988(v=sql.110).aspx
+            jclassname = 'com.microsoft.sqlserver.jdbc.SQLServerDriver'
+            urlstem = 'jdbc:sqlserver://{host}:{port};'.format(
+                host=host,
+                port=port
+            )
+            nvp = {}
+            if database:
+                nvp['databaseName'] = database
+            nvp['user'] = user
+            nvp['password'] = password
+            nvp['responseBuffering'] = 'adaptive'  # default is 'full'
+            # ... THIS CHANGE (responseBuffering = adaptive) stops the JDBC
+            # driver crashing on cursor close [in a socket recv() call] when
+            # it's fetched a VARBINARY(MAX) field.
+            nvp['selectMethod'] = 'cursor'  # trying this; default is 'direct'
+            url = urlstem + ';'.join(
+                '{}={}'.format(x, y) for x, y in nvp.items())
+
+            nvp['password'] = '[censored]'
+            url_censored = urlstem + ';'.join(
+                '{}={}'.format(x, y) for x, y in nvp.items())
+            log.info(
+                'jdbc connect: jclassname={jclassname}, url = {url}'.format(
+                    jclassname=jclassname,
+                    url=url_censored
+                )
+            )
+
+            driver_args = [url]
+            jars = None
+            libs = None
+            self._jdbc_connect(jclassname, driver_args, jars, libs, autocommit)
+
+        elif engine == ENGINE_ACCESS and interface == INTERFACE_ODBC:
+            dsn = "DSN={}".format(dsn)
+            log.info("ODBC connect: DSN={}", dsn)
+            self.db = pyodbc.connect(dsn)
+            self.db.autocommit = autocommit
+            # http://stackoverflow.com/questions/1063770
+
+        else:
+            raise ValueError(
+                "Unknown 'engine'/'interface' combination: {}/{}".format(
+                    engine, interface
+                )
+            )
+
+        return True

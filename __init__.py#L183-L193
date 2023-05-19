@@ -1,0 +1,11 @@
+def read_properties(fname):
+    parser = configparser.SafeConfigParser()
+    parser.optionxform = str  # preserve key case
+    try:
+        with open(fname) as f:
+            parser_read(parser, AddSectionWrapper(f))
+    except IOError as e:
+        if e.errno != errno.ENOENT:
+            raise
+        return None  # compile time, prop file is not there
+    return dict(parser.items(AddSectionWrapper.SEC_NAME))

@@ -1,0 +1,24 @@
+def recv_response(socket, acceptable_length, timeout):
+    if socket.poll("recv", timeout):
+        snep_response = socket.recv()
+
+        if len(snep_response) < 6:
+            log.debug("snep response initial fragment too short")
+            return None
+
+        version, status, length = struct.unpack(">BBL", snep_response[:6])
+
+        if length > acceptable_length:
+            log.debug("snep response exceeds acceptable length")
+            return None
+
+        if len(snep_response) - 6 < length:
+            # request remaining fragments
+            socket.send(b"\x10\x00\x00\x00\x00\x00")
+            while len(snep_response) - 6 < length:
+                if socket.poll("recv", timeout):
+                    snep_response += socket.recv()
+                else:
+                    return None
+
+        return bytearray(snep_response)

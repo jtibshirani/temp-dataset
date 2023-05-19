@@ -1,0 +1,4 @@
+def format_dateformat(dates):
+    format = dateformat.DateFormat("YYYY-MM-DD hh:mm:ss")
+    for date in dates:
+        assert isinstance(format.format(date), str)

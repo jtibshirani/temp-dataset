@@ -1,0 +1,3 @@
+func (r *Range) Size() uint64 {
+	return binomial(r.n, uint(r.k))
+}

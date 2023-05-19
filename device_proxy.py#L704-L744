@@ -1,0 +1,41 @@
+def __DeviceProxy__get_property_list(self, filter, array=None):
+    """
+    get_property_list(self, filter, array=None) -> obj
+
+            Get the list of property names for the device. The parameter
+            filter allows the user to filter the returned name list. The
+            wildcard character is '*'. Only one wildcard character is
+            allowed in the filter parameter.
+
+        Parameters :
+                - filter[in] : (str) the filter wildcard
+                - array[out] : (sequence obj or None) (optional, default is None)
+                            an array to be filled with the property names. If None
+                            a new list will be created internally with the values.
+
+        Return     : the given array filled with the property names (or a new list
+                    if array is None)
+
+        Throws     : NonDbDevice, WrongNameSyntax,
+                    ConnectionFailed (with database),
+                    CommunicationFailed (with database)
+                    DevFailed from database device
+
+        New in PyTango 7.0.0
+    """
+
+    if array is None:
+        new_array = StdStringVector()
+        self._get_property_list(filter, new_array)
+        return new_array
+
+    if isinstance(array, StdStringVector):
+        self._get_property_list(filter, array)
+        return array
+    elif isinstance(array, collections_abc.Sequence):
+        new_array = StdStringVector()
+        self._get_property_list(filter, new_array)
+        StdStringVector_2_seq(new_array, array)
+        return array
+
+    raise TypeError('array must be a mutable sequence<string>')

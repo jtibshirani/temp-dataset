@@ -1,0 +1,7 @@
+def _read_from_buffer(self, delimiter=None, nbytes=None, regex=None):
+        if nbytes is not None:
+            return self._read_buffer.read(nbytes)
+        elif delimiter is not None:
+            return self._read_buffer.read_until(delimiter)
+        elif regex is not None:
+            return self._read_buffer.read_until_regex(regex)

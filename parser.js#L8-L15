@@ -1,0 +1,8 @@
+function parseCMS(fileString) {
+    var intObj = txtToIntObj(fileString);
+
+    var result = cmsObjConverter.convertToBBModel(intObj);
+
+    return result;
+
+}

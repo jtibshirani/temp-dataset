@@ -1,0 +1,20 @@
+func (o *HomeScreenItemData) T() (ret HomeScreenItemType, err error) {
+	switch o.T__ {
+	case HomeScreenItemType_TODO:
+		if o.Todo__ == nil {
+			err = errors.New("unexpected nil value for Todo__")
+			return ret, err
+		}
+	case HomeScreenItemType_PEOPLE:
+		if o.People__ == nil {
+			err = errors.New("unexpected nil value for People__")
+			return ret, err
+		}
+	case HomeScreenItemType_ANNOUNCEMENT:
+		if o.Announcement__ == nil {
+			err = errors.New("unexpected nil value for Announcement__")
+			return ret, err
+		}
+	}
+	return o.T__, nil
+}

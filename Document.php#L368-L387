@@ -1,0 +1,20 @@
+protected function lineByLine():self
+	{
+		while( ($line= $this->getLine())->hasMore() ){
+			$this->lineNumber+= 1;
+
+			if( $this->embedment ){
+				$this->embeddingParse($line);
+			}else{
+				$this->parseLine($line);
+			}
+		}
+
+		$this->embedment and $this->breakEmbedding();
+
+		$this->closeNodes($this->level);
+
+		$this->isExecuted= true;
+
+		return $this;
+	}

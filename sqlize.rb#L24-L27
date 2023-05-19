@@ -1,0 +1,4 @@
+def capitalize
+      regex = Regexp.new /\b#{Regexp.union @keywords.map{|w|Regexp.new(w, Regexp::IGNORECASE)}}\b/
+      @capitalized = @orig.gsub regex, &:upcase
+    end

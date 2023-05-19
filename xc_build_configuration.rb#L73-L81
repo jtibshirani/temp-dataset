@@ -1,0 +1,9 @@
+def read_property (key)
+			file = File.new(plist_path)
+			doc = REXML::Document.new(file)
+			
+			doc.elements.each("plist/dict/key") do |e| 
+				 return e.next_element.text if e.text == key
+			end
+			nil
+		end

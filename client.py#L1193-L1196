@@ -1,0 +1,4 @@
+def zrank(self, name, value):
+        zset = self._get_zset(name, "ZRANK")
+
+        return zset.rank(self._encode(value)) if zset else None

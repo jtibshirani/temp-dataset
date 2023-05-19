@@ -1,0 +1,20 @@
+protected function getLinesFromFile($file, $startLine, $endLine)
+    {
+        $fp = fopen($file, 'r');
+        $currentLine = 0;
+        $lines = [];
+
+        while (($line = fgets($fp)) !== false) {
+            $currentLine++;
+
+            if ($currentLine < $startLine || $currentLine > $endLine) {
+                continue;
+            }
+
+            $lines[$currentLine] = $line;
+        }
+
+        fclose($fp);
+
+        return $lines;
+    }

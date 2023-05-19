@@ -1,0 +1,6 @@
+def __mul__(self, m):
+        if hasattr(m, "__float__"):
+            return Matrix(self.a * m, self.b * m, self.c * m,
+                          self.d * m, self.e * m, self.f * m)
+        m1 = Matrix(1,1)
+        return m1.concat(self, m)

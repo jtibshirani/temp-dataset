@@ -1,0 +1,8 @@
+get: function () {
+                        // Returns true if _LegacyAppBar is not 'hidden'.
+                        return !_ElementUtilities.hasClass(this._element, _Constants.hiddenClass) &&
+                            !_ElementUtilities.hasClass(this._element, _Constants.hidingClass) &&
+                            this._doNext !== displayModeVisiblePositions.minimal &&
+                            this._doNext !== displayModeVisiblePositions.compact &&
+                            this._doNext !== displayModeVisiblePositions.none;
+                    },

@@ -1,0 +1,14 @@
+ts.convertFormat = function( dateString, format ) {
+      dateString = ( dateString || '' )
+       .replace( ts.regex.spaces, ' ' )
+       .replace( ts.regex.shortDateReplace, '/' );
+      if ( format === 'mmddyyyy' ) {
+         dateString = dateString.replace( ts.regex.shortDateXXY, '$3/$1/$2' );
+      } else if ( format === 'ddmmyyyy' ) {
+         dateString = dateString.replace( ts.regex.shortDateXXY, '$3/$2/$1' );
+      } else if ( format === 'yyyymmdd' ) {
+         dateString = dateString.replace( ts.regex.shortDateYMD, '$1/$2/$3' );
+      }
+      var date = new Date( dateString );
+      return date instanceof Date && isFinite( date ) ? date.getTime() : '';
+   };

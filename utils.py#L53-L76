@@ -1,0 +1,24 @@
+def _convert(value, default=None, convert=None):
+    def convert_bool(value):
+        if value.lower() in ('true', 't', 'yes', 'y'):
+            return True
+        if value.lower() in ('false', 'f', 'no', 'n'):
+            return False
+        raise ValueError('{} cannot be converted to bool'.format(value))
+
+    if value == '':
+        value = None
+
+    if convert is None:
+        if default is not None:
+            convert = type(default)
+        else:
+            convert = str
+
+    if convert == bool:
+        convert = convert_bool
+
+    if value is None:
+        return default
+    else:
+        return convert(value)

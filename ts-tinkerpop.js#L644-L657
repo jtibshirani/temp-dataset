@@ -1,0 +1,14 @@
+function _jsifyBulkSet(bulkSet) {
+        var arr = [];
+        var it = bulkSet.iterator();
+        while (it.hasNext()) {
+            var key = it.next();
+            var count = bulkSet.get(key);
+            var elem = {
+                key: jsify(key),
+                count: count
+            };
+            arr.push(elem);
+        }
+        return arr;
+    }

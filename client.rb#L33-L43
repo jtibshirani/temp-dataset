@@ -1,0 +1,11 @@
+def listen
+      Net::HTTP.start(@address.host, @address.port) do |http|
+        # TODO(@tadeboro): Add support for adding custom headers (auth)
+        http.request(Net::HTTP::Get.new(@address)) do |response|
+          # TODO(@tadeboro): Handle non-200 here
+          response.read_body do |chunk|
+            @parser.push(chunk).each { |e| yield(e) }
+          end
+        end
+      end
+    end

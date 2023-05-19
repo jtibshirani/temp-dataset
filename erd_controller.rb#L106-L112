@@ -1,0 +1,7 @@
+def gsub_file(path, flag, *args, &block)
+      path = File.expand_path path, Rails.root
+
+      content = File.read path
+      content.gsub! flag, *args, &block
+      File.open(path, 'w') {|file| file.write content}
+    end

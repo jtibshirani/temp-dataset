@@ -1,0 +1,82 @@
+func (c *Cleaner) convertDivsToParagraphs(doc *goquery.Document, domType string) *goquery.Document {
+	if c.config.debug {
+		log.Println("Starting to replace bad divs...")
+	}
+	badDivs := 0
+	convertedTextNodes := 0
+	divs := doc.Find(domType)
+
+	divs.Each(func(i int, div *goquery.Selection) {
+		divHTML, _ := div.Html()
+		if divToPElementsPattern.Match([]byte(divHTML)) {
+			c.replaceWithPara(div)
+			badDivs++
+		} else {
+			var replacementText []string
+			nodesToRemove := list.New()
+			children := div.Contents()
+			if c.config.debug {
+				log.Printf("Found %d children of div\n", children.Size())
+			}
+			children.EachWithBreak(func(i int, kid *goquery.Selection) bool {
+				text := kid.Text()
+				kidNode := kid.Get(0)
+				tag := kidNode.Data
+				if tag == text {
+					tag = "#text"
+				}
+				if tag == "#text" {
+					text = strings.Replace(text, "\n", "", -1)
+					text = tabsRegEx.ReplaceAllString(text, "")
+					if text == "" {
+						return true
+					}
+					if len(text) > 1 {
+						prev := kidNode.PrevSibling
+						if c.config.debug {
+							log.Printf("PARENT CLASS: %s NODENAME: %s\n", c.config.parser.name("class", div), tag)
+							log.Printf("TEXTREPLACE: %s\n", strings.Replace(text, "\n", "", -1))
+						}
+						if prev != nil && prev.DataAtom == atom.A {
+							nodeSelection := kid.HasNodes(prev)
+							html, _ := nodeSelection.Html()
+							replacementText = append(replacementText, html)
+							if c.config.debug {
+								log.Printf("SIBLING NODENAME ADDITION: %s TEXT: %s\n", prev.Data, html)
+							}
+						}
+						replacementText = append(replacementText, text)
+						nodesToRemove.PushBack(kidNode)
+						convertedTextNodes++
+					}
+
+				}
+				return true
+			})
+
+			/*
+			newNode := new(html.Node)
+			newNode.Type = html.ElementNode
+			newNode.Data = strings.Join(replacementText, "")
+			newNode.DataAtom = atom.P
+			*/
+/*
+			replacementText = strings.Replace(replacementText, "=C3=A8", "è")
+			replacementText = strings.Replace(replacementText, "=C3=A9", "é")
+*/
+			div.First().BeforeHtml("<p>" + strings.Join(replacementText, "") + "</p>")
+
+			for s := nodesToRemove.Front(); s != nil; s = s.Next() {
+				node := s.Value.(*html.Node)
+				if node != nil && node.Parent != nil {
+					node.Parent.RemoveChild(node)
+				}
+			}
+		}
+	})
+	if c.config.debug {
+		log.Printf("Found %d total divs with %d bad divs replaced and %d textnodes converted inside divs", divs.Size(), badDivs, convertedTextNodes)
+	}
+	return doc
+
+}

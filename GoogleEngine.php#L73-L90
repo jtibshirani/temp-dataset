@@ -1,0 +1,18 @@
+public function getWebsites($needle, $limit)
+    {
+        $url = $this->getRootUrl()."q=$needle&gbv=1&num=$limit";
+
+        $content = $this->scrapper->get($url);
+        $crawler = $this->crawler->setContent($content);
+        $links   = $crawler->get(self::LINK_SELECTOR);
+
+        $websites = new WebsiteCollection();
+
+        foreach ($links as $position => $link) {
+            $fullLocation = $link->getAttribute('href');
+            $location = $this->cleanUrl(substr($fullLocation, 7));
+            $websites->add($this->getWebsite($location));
+        }
+
+        return $websites;
+    }

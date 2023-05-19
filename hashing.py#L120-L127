@@ -1,0 +1,8 @@
+def memoize(self, obj):
+        # We want hashing to be sensitive to value instead of reference.
+        # For example we want ['aa', 'aa'] and ['aa', 'aaZ'[:2]]
+        # to hash to the same value and that's why we disable memoization
+        # for strings
+        if isinstance(obj, _bytes_or_unicode):
+            return
+        Pickler.memoize(self, obj)

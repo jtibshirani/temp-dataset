@@ -1,0 +1,14 @@
+def _tracebackToTree(self, failure):
+        backtrace = ET.Element('backtrace')
+
+        frames = failure.stack + failure.frames
+
+        for function_name, filename, line_number, localz, globalz in frames:
+            attrib = {'file': filename,
+                      'number': str(line_number),
+                      'method': "%s: %s" % (
+                        function_name,
+                        linecache.getline(filename, line_number).strip())}
+            backtrace.append(ET.Element('line', attrib=attrib))
+
+        return backtrace

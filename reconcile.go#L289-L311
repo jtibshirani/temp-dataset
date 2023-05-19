@@ -1,0 +1,23 @@
+func (r *Reconciler) groupRwsetByBlock(elements []*gossip2.PvtDataElement) map[uint64]rwsetByKeys {
+	rwSetByBlockByKeys := make(map[uint64]rwsetByKeys) // map from block num to rwsetByKeys
+
+	// Iterate over data fetched from peers
+	for _, element := range elements {
+		dig := element.Digest
+		if _, exists := rwSetByBlockByKeys[dig.BlockSeq]; !exists {
+			rwSetByBlockByKeys[dig.BlockSeq] = make(map[rwSetKey][]byte)
+		}
+		for _, rws := range element.Payload {
+			hash := hex.EncodeToString(util2.ComputeSHA256(rws))
+			key := rwSetKey{
+				txID:       dig.TxId,
+				namespace:  dig.Namespace,
+				collection: dig.Collection,
+				seqInBlock: dig.SeqInBlock,
+				hash:       hash,
+			}
+			rwSetByBlockByKeys[dig.BlockSeq][key] = rws
+		}
+	}
+	return rwSetByBlockByKeys
+}

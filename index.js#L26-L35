@@ -1,0 +1,10 @@
+function allowEmptyArray() {
+        var i;
+        for (i = 0; i < removeTypes.length; i++) {
+            if (Array.isArray(removeTypes[i]) && removeTypes[i].length === 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }

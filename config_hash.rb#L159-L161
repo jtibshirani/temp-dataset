@@ -1,0 +1,3 @@
+def parse!(argv=ARGV, options={}, &block)
+      parser(options, &block).parse!(argv)
+    end

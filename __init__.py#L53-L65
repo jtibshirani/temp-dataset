@@ -1,0 +1,13 @@
+def _load_file(self, filename):
+        try:
+            # Try to load the file
+            read_file = os.path.realpath(os.path.join(os.curdir, filename))
+            with open(read_file, 'rb') as file:
+                temp_program = ""
+                for line in file:
+                    temp_program += line.strip().replace(" ", "").replace("\n", "").replace("\r", "").replace("\t", "")
+
+        except IOError:  # Catch the file load error and exit gracefully
+            print "Cannot open file {}".format(filename)
+            sys.exit(1)
+        return self._parse_program(temp_program)

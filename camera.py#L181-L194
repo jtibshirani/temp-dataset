@@ -1,0 +1,14 @@
+def _get_projection_matrix(self):
+        # Convert from homogeneous 3d coordinates to 
+        # 2D coordinates
+        
+        fov = self.fov*np.pi/180.0
+        
+        top = np.tan(fov * 0.5)*self.z_near
+        bottom = -top
+        
+        left = self.aspectratio * bottom
+        right = self.aspectratio * top
+        
+        return clip_matrix(left, right, bottom, top,
+                           self.z_near, self.z_far, perspective=True)

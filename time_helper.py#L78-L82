@@ -1,0 +1,5 @@
+def day_to_month(timeperiod):
+    """:param timeperiod: as string in YYYYMMDD00 format
+    :return string in YYYYMM0000 format"""
+    t = datetime.strptime(timeperiod, SYNERGY_DAILY_PATTERN)
+    return t.strftime(SYNERGY_MONTHLY_PATTERN)

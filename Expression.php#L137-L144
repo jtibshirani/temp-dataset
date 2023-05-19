@@ -1,0 +1,8 @@
+public function count($column = '*', bool $distinct = false): self
+    {
+        if (!is_array($column)) {
+            $column = [$column];
+        }
+        $distinct = $distinct || (count($column) > 1);
+        return $this->addFunction('aggregateFunction', 'COUNT', $column, ['distinct' => $distinct]);
+    }

@@ -1,0 +1,12 @@
+MultiObserver.Watch = function (observables, callback, mask, scope) {
+            if (mask === void 0) { mask = -1; }
+            if (scope === void 0) { scope = null; }
+            var result = new MultiObserver();
+            result._observers = new Array();
+            result._observables = observables;
+            for (var _i = 0, observables_1 = observables; _i < observables_1.length; _i++) {
+                var observable = observables_1[_i];
+                result._observers.push(observable.add(callback, mask, false, scope));
+            }
+            return result;
+        };

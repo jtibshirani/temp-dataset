@@ -1,0 +1,13 @@
+def encrypt_payload(plaintext, content_encryption_key, nonce)
+      cipher = OpenSSL::Cipher.new('aes-128-gcm')
+      cipher.encrypt
+      cipher.key = content_encryption_key
+      cipher.iv = nonce
+      padding = cipher.update("\0\0")
+      text = cipher.update(plaintext)
+
+      e_text = padding + text + cipher.final
+      e_tag = cipher.auth_tag
+
+      e_text + e_tag
+    end

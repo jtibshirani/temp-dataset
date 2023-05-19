@@ -1,0 +1,42 @@
+def _fuzzy_match(set_a, set_b):
+    seen = dict()
+    scores = list()
+
+    # Yes, this is O(n.m), but python's equality operator is
+    # fast for hashable types.
+    for a_pk_seq, b_pk_seq in product(set_a, set_b):
+        a_pk, a_seq = a_pk_seq
+        b_pk, b_seq = b_pk_seq
+        if (a_pk, b_pk) in seen:
+            if seen[a_pk, b_pk][0]:
+                score = list(seen[a_pk, b_pk])
+                scores.append(score + [a_pk_seq, b_pk_seq])
+        else:
+            match = 0
+            common = min((len(a_pk), len(b_pk)))
+            no_match = max((len(a_pk), len(b_pk))) - common
+            for i in range(0, common):
+                if a_pk[i] == b_pk[i]:
+                    if not _nested_falsy(a_pk[i]):
+                        match += 1
+                else:
+                    no_match += 1
+            seen[a_pk, b_pk] = (match, no_match)
+            if match:
+                scores.append([match, no_match, a_pk_seq, b_pk_seq])
+
+    remaining_a = set(set_a)
+    remaining_b = set(set_b)
+
+    for match, no_match, a_pk_seq, b_pk_seq in sorted(
+        scores,
+        key=lambda x: x[0] - x[1],
+        reverse=True,
+    ):
+        if a_pk_seq in remaining_a and b_pk_seq in remaining_b:
+            remaining_a.remove(a_pk_seq)
+            remaining_b.remove(b_pk_seq)
+            yield a_pk_seq, b_pk_seq
+
+        if not remaining_a or not remaining_b:
+            break

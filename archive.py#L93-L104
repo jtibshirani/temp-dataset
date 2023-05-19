@@ -1,0 +1,12 @@
+def copy_dir(self, path):
+        """
+        Recursively copy directory
+        """
+        for directory in path:
+            if os.path.isdir(path):
+                full_path = os.path.join(self.archive_dir, directory.lstrip('/'))
+                logger.debug("Copying %s to %s", directory, full_path)
+                shutil.copytree(directory, full_path)
+            else:
+                logger.debug("Not a directory: %s", directory)
+        return path

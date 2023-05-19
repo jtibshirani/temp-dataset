@@ -1,0 +1,15 @@
+function reportUnparsable(filepath, loglevel) {
+  try {
+    // force the exception
+    parseJsonWithErrors(stripBOM(fs.readFileSync(filepath)));
+  } catch (e) {
+    var basename = path.basename(filepath);
+    blankLineMaybe(loglevel);
+    embarklog[loglevel]('file', filepath);
+    embarklog[loglevel]('code', `EJSONPARSE`);
+    embarklog[loglevel]('JSON parse', `Failed to parse json`);
+    embarklog[loglevel]('JSON parse', e.message);
+    embarklog[loglevel]('JSON parse', `Failed to parse ${basename} data.`);
+    embarklog[loglevel]('JSON parse', `${basename} must be actual JSON, not just JavaScript.`);
+  }
+}

@@ -1,0 +1,11 @@
+def normal_h1(size: int = 10000, mean: float = 0, sigma: float = 1) -> Histogram1D:
+    """A simple 1D histogram with normal distribution.
+
+    Parameters
+    ----------
+    size : Number of points
+    mean : Mean of the distribution
+    sigma : Sigma of the distribution
+    """
+    data = np.random.normal(mean, sigma, (size,))
+    return h1(data, name="normal", axis_name="x", title="1D normal distribution")

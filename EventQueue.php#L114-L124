@@ -1,0 +1,11 @@
+protected function getPriority($command, array $params)
+    {
+        $priority = new EventQueuePriority;
+        $priority->value = $this->priorities[$command];
+        $priority->timestamp = (int) (microtime(true) * 10000);
+        if ($priority->timestamp <= $this->lastTimestamp) {
+            $priority->timestamp = $this->lastTimestamp + 1;
+        }
+        $this->lastTimestamp = $priority->timestamp;
+        return $priority;
+    }

@@ -1,0 +1,7 @@
+func (r RankedSlice) Items() []interface{} {
+	result := make([]interface{}, len(r))
+	for i, item := range r {
+		result[i] = item.Item
+	}
+	return result
+}

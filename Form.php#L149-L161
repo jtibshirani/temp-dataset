@@ -1,0 +1,13 @@
+public static function checkbox(
+        $name,
+        $value,
+        array $checkedValues = [],
+        array $htmlOptions = []
+    ) {
+        $check = self::input('checkbox', $name, $value);
+        if (in_array($value, $checkedValues)) {
+            $check .= ' checked="checked"';
+        }
+        $check .= self::htmlOptions($htmlOptions) .'>';
+        return $check;
+    }

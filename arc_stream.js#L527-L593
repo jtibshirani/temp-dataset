@@ -1,0 +1,67 @@
+extractor.stdout.on('data', function onExtractorData(data) {
+
+		var output = data.toString(),
+		    procent,
+		    info;
+
+		// Look for percentages (indicating extraction progress)
+		procent = /\u0008{4}\W*(\d+)%/.exec(output);
+
+		// Sometimes procentages and filenames are on the same line
+		output = output.replace(/\u0008{4}\W*\d+%/g, '').trim();
+
+		if (!output && procent) {
+
+			if (procent[1]) {
+				that.emit('progress', Number(procent[1]));
+			}
+
+			outtemp = '';
+			if (curfile) files[curfile].update();
+			return;
+		}
+
+		outtemp += output;
+
+		// Look for a new message indicating a new file has started
+		info = /Extracting.+\n\nExtracting\W+(.*)/.exec(output);
+
+		if (!info) {
+			info = /Extracting (?!:from)\W+(.*)/.exec(output);
+		}
+
+		// Or for a continued file
+		if (!info) {
+			info = /\n\.\.\.\W+(.*)/.exec(output);
+		}
+
+		if (!info) {
+			// Probably "extracting from..." info
+			return;
+		}
+
+		// Trim the filename
+		info = info[1].trim();
+
+		// Remove possible \b characters
+		info = info.replace(/\u0008/g, ' ');
+
+		// Remove trailing "OK" message, if present
+		if (/\W{2,}OK$/.exec(info)) {
+			info = info.slice(0, -2).trim();
+		}
+
+		// Do nothing if the current file has not changes
+		if (curfile && curfile == info) {
+			return;
+		}
+
+		if (curfile) {
+			// End the stream
+			files[curfile].end();
+		}
+
+		// Create a new file
+		curfile = info;
+		files[curfile] = new RarFile(that, curfile);
+	});

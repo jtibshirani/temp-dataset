@@ -1,0 +1,30 @@
+def fit(self, initial_parameters):
+        import sys
+        import logging
+        import warnings
+
+        try:
+            from scipy.optimize import leastsq
+            import scipy
+        except ImportError:
+            print("You need to install python-scipy.")
+            sys.exit(1)
+
+        warnings.filterwarnings('error')
+
+        def residuals(p, eos, v, e):
+            return eos(v, *p) - e
+
+        try:
+            result = leastsq(residuals,
+                             initial_parameters,
+                             args=(self._eos, self._volume, self._energy),
+                             full_output=1)
+        except RuntimeError:
+            logging.exception('Fitting to EOS failed.')
+            raise
+        except (RuntimeWarning, scipy.optimize.optimize.OptimizeWarning):
+            logging.exception('Difficulty in fitting to EOS.')
+            raise
+        else:
+            self.parameters = result[0]

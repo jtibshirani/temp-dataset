@@ -1,0 +1,7 @@
+protected static function mPDFWrapper($html)
+    {
+        $pdf = new \Mpdf\Mpdf();
+        $pdf->WriteHTML($html);
+
+        return $pdf->Output('','S');    // returns the PDF as a string
+    }

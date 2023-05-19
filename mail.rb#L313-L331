@@ -1,0 +1,19 @@
+def encoded_with_jpmobile(transfer_encoding = '8bit')
+      if @mobile && !multipart?
+        case transfer_encoding
+        when /base64/
+          _raw_source = if transfer_encoding == encoding
+                          @raw_source.dup
+                        else
+                          negotiate_best_encoding(transfer_encoding).encode(@raw_source)
+                        end
+          Jpmobile::Util.set_encoding(_raw_source, @mobile.mail_charset(@charset))
+        when /quoted-printable/
+          Jpmobile::Util.set_encoding([@mobile.to_mail_body(@raw_source)].pack('M').gsub(/\n/, "\r\n"), @mobile.mail_charset(@charset))
+        else
+          @mobile.to_mail_body(Jpmobile::Util.force_encode(@raw_source, nil, Jpmobile::Util::UTF8))
+        end
+      else
+        encoded_without_jpmobile(transfer_encoding)
+      end
+    end

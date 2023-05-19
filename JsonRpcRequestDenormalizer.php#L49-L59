@@ -1,0 +1,11 @@
+protected function bindIdIfProvided(JsonRpcRequest $request, array $item) : void
+    {
+        /** If no id defined => request is a notification */
+        if (isset($item[self::KEY_ID])) {
+            $request->setId(
+                $item[self::KEY_ID] == (string)((int)$item[self::KEY_ID])
+                    ? (int)$item[self::KEY_ID] // Convert it in case it's a string containing an int
+                    : (string)$item[self::KEY_ID] // Convert to string in all other cases
+            );
+        }
+    }

@@ -1,0 +1,22 @@
+static function getDataFromZip($zipFile, $extractionPrefix)
+    {
+        $zip = new ZipArchive;
+        self::log(self::class, "zip=" . $zipFile);
+        if ($zip->open($zipFile)) {
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $stat = $zip->statIndex($i);
+//            print_r(basename($stat['name']) . '<br>');
+                //check if the file starts with the prefix
+                if (substr($stat['name'], 0, strlen($extractionPrefix)) === $extractionPrefix) {
+                    //echo $zip->getFromName($stat['name']);
+                    return $zip->getFromName($stat['name']);
+                }
+            }
+            $zip->close();
+
+        } else {
+            throw new DWDLibException("zip content is empty! zip file count=" . $zip->numFiles);
+
+        }
+        return null;
+    }

@@ -1,0 +1,47 @@
+def read_properties(self):
+        """
+        Populate this object by reading
+        the audio properties of the file at the given path.
+
+        Currently this function uses
+        :class:`~aeneas.ffprobewrapper.FFPROBEWrapper`
+        to get the audio file properties.
+
+        :raises: :class:`~aeneas.audiofile.AudioFileProbeError`: if the path to the ``ffprobe`` executable cannot be called
+        :raises: :class:`~aeneas.audiofile.AudioFileUnsupportedFormatError`: if the audio file has a format not supported
+        :raises: OSError: if the audio file cannot be read
+        """
+        self.log(u"Reading properties...")
+
+        # check the file can be read
+        if not gf.file_can_be_read(self.file_path):
+            self.log_exc(u"File '%s' cannot be read" % (self.file_path), None, True, OSError)
+
+        # get the file size
+        self.log([u"Getting file size for '%s'", self.file_path])
+        self.file_size = gf.file_size(self.file_path)
+        self.log([u"File size for '%s' is '%d'", self.file_path, self.file_size])
+
+        # get the audio properties using FFPROBEWrapper
+        try:
+            self.log(u"Reading properties with FFPROBEWrapper...")
+            properties = FFPROBEWrapper(
+                rconf=self.rconf,
+                logger=self.logger
+            ).read_properties(self.file_path)
+            self.log(u"Reading properties with FFPROBEWrapper... done")
+        except FFPROBEPathError:
+            self.log_exc(u"Unable to call ffprobe executable", None, True, AudioFileProbeError)
+        except (FFPROBEUnsupportedFormatError, FFPROBEParsingError):
+            self.log_exc(u"Audio file format not supported by ffprobe", None, True, AudioFileUnsupportedFormatError)
+
+        # save relevant properties in results inside the audiofile object
+        self.audio_length = TimeValue(properties[FFPROBEWrapper.STDOUT_DURATION])
+        self.audio_format = properties[FFPROBEWrapper.STDOUT_CODEC_NAME]
+        self.audio_sample_rate = gf.safe_int(properties[FFPROBEWrapper.STDOUT_SAMPLE_RATE])
+        self.audio_channels = gf.safe_int(properties[FFPROBEWrapper.STDOUT_CHANNELS])
+        self.log([u"Stored audio_length: '%s'", self.audio_length])
+        self.log([u"Stored audio_format: '%s'", self.audio_format])
+        self.log([u"Stored audio_sample_rate: '%s'", self.audio_sample_rate])
+        self.log([u"Stored audio_channels: '%s'", self.audio_channels])
+        self.log(u"Reading properties... done")

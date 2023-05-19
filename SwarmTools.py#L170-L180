@@ -1,0 +1,11 @@
+def TimeoutCounter(secTimeout):
+    startTime = time.time()
+    elapsedTime = time.time() - startTime
+    timeLeft = secTimeout - int(elapsedTime)
+    printedTime = timeLeft
+    while elapsedTime < secTimeout:
+        timeLeft = secTimeout - int(elapsedTime)
+        if timeLeft < printedTime:
+            printedTime = timeLeft
+            print("Restarting Swarm in %d seconds" % printedTime)
+        elapsedTime = time.time() - startTime

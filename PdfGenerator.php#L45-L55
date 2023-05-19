@@ -1,0 +1,11 @@
+protected function createPdf($content){
+		// replace the <html> tags by <page> tags
+    	$content = str_replace('<html>', '<page>', $content);
+    	$content = str_replace('</html>', '</page>', $content);
+
+		$html2pdf = new HTML2PDF($this->format, $this->size, $this->language);	
+        $html2pdf->setDefaultFont($this->font);
+        $html2pdf->writeHTML($content);
+
+        return $html2pdf;
+	}

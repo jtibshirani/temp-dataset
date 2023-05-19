@@ -1,0 +1,10 @@
+protected function mapSPIBinaryFileCreateStructToSPIBinaryFile(SPIBinaryFileCreateStruct $binaryFileCreateStruct)
+    {
+        $spiBinaryFile = new SPIBinaryFile();
+        $spiBinaryFile->id = $binaryFileCreateStruct->id;
+        $spiBinaryFile->mtime = $binaryFileCreateStruct->mtime;
+        $spiBinaryFile->size = $binaryFileCreateStruct->size;
+        $spiBinaryFile->mimeType = $binaryFileCreateStruct->mimeType;
+
+        return $spiBinaryFile;
+    }

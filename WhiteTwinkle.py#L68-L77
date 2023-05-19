@@ -1,0 +1,10 @@
+def pick_led(self, inc):
+        # Pick a random led, if it's off bump it up an even number so it gets brighter
+        idx = random.randrange(0, self.layout.numLEDs)
+        this_led = self.layout.get(idx)
+        r = this_led[0]
+
+        if random.randrange(0, self._maxLed) < self.density:
+            if r == 0:
+                r += inc
+                self.layout.set(idx, (2, 2, 2))

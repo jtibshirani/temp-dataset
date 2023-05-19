@@ -1,0 +1,2 @@
+def html(self, html: str) -> None:
+        self._html = html.encode(self.encoding)

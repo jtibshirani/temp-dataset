@@ -1,0 +1,5 @@
+def optimize(options)
+      try( options[:tune] ? :tune : :optimize,
+           options.fetch(:width,  0).to_i,
+           options.fetch(:limsiz, 0).to_i  )
+    end

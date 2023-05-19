@@ -1,0 +1,5 @@
+func gsfWrite(ptr unsafe.Pointer, i int64, user_data unsafe.Pointer) int64 {
+	l := (*virtualIo)(user_data)
+	b := (*[1 << 30]byte)(ptr)[0:i]
+	return l.v.Write(b, l.v.UserData)
+}

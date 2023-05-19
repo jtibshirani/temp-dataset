@@ -1,0 +1,14 @@
+def initialize(self):
+        """Initializes all components of the :class:`.NeuralNet` and
+        returns self.
+
+        """
+        self.initialize_virtual_params()
+        self.initialize_callbacks()
+        self.initialize_criterion()
+        self.initialize_module()
+        self.initialize_optimizer()
+        self.initialize_history()
+
+        self.initialized_ = True
+        return self

@@ -1,0 +1,7 @@
+def encode_string(str)
+      str = str.to_s.encode('UTF-8')
+
+      # Force to binary, when assembling the packet
+      str.force_encoding('ASCII-8BIT')
+      encode_short(str.bytesize) + str
+    end

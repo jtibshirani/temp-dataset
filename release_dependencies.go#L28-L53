@@ -1,0 +1,26 @@
+func (r ReleaseDependenciesService) List(productSlug string, releaseID int) ([]ReleaseDependency, error) {
+	url := fmt.Sprintf(
+		"/products/%s/releases/%d/dependencies",
+		productSlug,
+		releaseID,
+	)
+
+	var response ReleaseDependenciesResponse
+	resp, err := r.client.MakeRequest(
+		"GET",
+		url,
+		http.StatusOK,
+		nil,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	err = json.NewDecoder(resp.Body).Decode(&response)
+	if err != nil {
+		return nil, err
+	}
+
+	return response.ReleaseDependencies, nil
+}

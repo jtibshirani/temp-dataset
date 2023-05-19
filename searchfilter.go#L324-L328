@@ -1,0 +1,5 @@
+func NewGeoField(field string, latitude float32, longitude float32) GeoField {
+	return GeoField{
+		GeoLocation: GeoLocation{Latitude: latitude, Longitude: longitude},
+		Field:       field}
+}

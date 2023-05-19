@@ -1,0 +1,6 @@
+def error
+      @values.each_pair{|observable, value|
+        return Error.new(observable, value) if Exception === value
+      }
+      return nil
+    end

@@ -1,0 +1,6 @@
+def calculate_median_score
+      # Read our numbers and sort them first
+      sorted_scores = @data.map { |el| el['score'].to_f }.sort
+      len = sorted_scores.length
+      @median_score = len % 2 == 1 ? sorted_scores[len / 2] : (sorted_scores[len / 2 - 1] + sorted_scores[len / 2]).to_f / 2
+    end

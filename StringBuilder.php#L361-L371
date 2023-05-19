@@ -1,0 +1,11 @@
+public function reverse()
+    {
+        $length   = $this->length();
+        $reversed = '';
+        while ($length-- > 0) {
+            $reversed .= mb_substr($this->string, $length, 1, $this->encoding);
+        }
+
+        $this->string = $reversed;
+        return $this;
+    }

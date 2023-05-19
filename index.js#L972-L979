@@ -1,0 +1,8 @@
+io.addStaticLabel = function( text, x, y ) {
+    var label = null
+    if ( text && x && y ) {
+      label = { id:'label'+(lId++), type:'Label', label:text, pos: { x:''+x, y:''+y } }
+      this.moduleConfig.io.push( label )
+    } 
+    return label
+  }

@@ -1,0 +1,27 @@
+def extractdata(pattern, text=None, filepath=None):
+    """
+    Read through an entire file or body of text one line at a time. Parse each line that matches the supplied
+    pattern string and ignore the rest.
+
+    If *text* is supplied, it will be parsed according to the *pattern* string.
+    If *text* is not supplied, the file at *filepath* will be opened and parsed.
+    """
+    y = []
+    if text is None:
+        textsource = open(filepath, 'r')
+    else:
+        textsource = text.splitlines()
+
+    for line in textsource:
+        match = scanf(pattern, line)
+        if match:
+            if len(y) == 0:
+                y = [[s] for s in match]
+            else:
+                for i, ydata in enumerate(y):
+                    ydata.append(match[i])
+
+    if text is None:
+        textsource.close()
+
+    return y

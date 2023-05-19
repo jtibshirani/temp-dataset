@@ -1,0 +1,9 @@
+func Filter(array []interface{}, iterator ConditionIterator) []interface{} {
+	var result = make([]interface{}, 0)
+	for index, data := range array {
+		if iterator(data, index) {
+			result = append(result, data)
+		}
+	}
+	return result
+}

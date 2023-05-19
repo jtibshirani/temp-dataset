@@ -1,0 +1,17 @@
+def urlencode(params)
+            if Utils.empty(params)
+                return ''
+            end
+            if params.instance_of? String
+                return URI.encode(params)
+            end
+            result = ''
+            params.each_key do |key|
+                if ! Utils.empty(result)
+                    result += '&'
+                end
+                result += URI.encode(key.to_s) + '=' + URI.encode(params[key].to_s)
+            end
+
+            return result
+        end

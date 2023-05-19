@@ -1,0 +1,25 @@
+def recv(self, recv_socket, llc):
+        time.sleep(0.1) # delay to accept inbound connection before resolve
+        echo_buffer = queue.Queue(self.options.co_echo_buffer)
+        send_socket = nfc.llcp.Socket(llc, nfc.llcp.DATA_LINK_CONNECTION)
+        if self.options.pattern_number == 0x1200:
+            send_socket.connect(self.options.sap_lt_co_out_dest)
+        elif self.options.pattern_number == 0x1240:
+            send_socket.connect("urn:nfc:sn:dta-co-echo-out")
+        elif self.options.pattern_number == 0x1280:
+            send_socket.connect(llc.resolve("urn:nfc:sn:dta-co-echo-out"))
+        send_thread = Thread(target=self.send, args=(send_socket, echo_buffer))
+        send_thread.start()
+        log.info("receiving from sap %d", recv_socket.getpeername())
+        while recv_socket.poll("recv"):
+            data = recv_socket.recv()
+            if data == None: break
+            log.info("rcvd %d byte", len(data))
+            recv_socket.setsockopt(nfc.llcp.SO_RCVBSY, echo_buffer.full())
+            echo_buffer.put(data)
+        log.info("remote side closed connection")
+        try: echo_buffer.put_nowait(int(0))
+        except queue.Full: pass
+        send_thread.join()
+        recv_socket.close()
+        log.info("recv thread terminated")

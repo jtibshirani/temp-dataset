@@ -1,0 +1,16 @@
+def decode_aes256(cipher, iv, data, encryption_key):
+    """
+    Decrypt AES-256 bytes.
+    Allowed ciphers are: :ecb, :cbc.
+    If for :ecb iv is not used and should be set to "".
+    """
+    if cipher == 'cbc':
+        aes = AES.new(encryption_key, AES.MODE_CBC, iv)
+    elif cipher == 'ecb':
+        aes = AES.new(encryption_key, AES.MODE_ECB)
+    else:
+        raise ValueError('Unknown AES mode')
+    d = aes.decrypt(data)
+    # http://passingcuriosity.com/2009/aes-encryption-in-python-with-m2crypto/
+    unpad = lambda s: s[0:-ord(d[-1:])]
+    return unpad(d)

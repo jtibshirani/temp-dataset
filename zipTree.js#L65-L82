@@ -1,0 +1,18 @@
+function zipFile(zip, zipPath, bufferPromise, fileOpts) {
+  return bufferPromise
+    .then(buffer =>
+      zip.file(
+        zipPath,
+        buffer,
+        Object.assign(
+          {},
+          {
+            // necessary to get the same hash when zipping the same content
+            date: new Date(0)
+          },
+          fileOpts
+        )
+      )
+    )
+    .then(() => zip);
+}

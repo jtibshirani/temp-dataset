@@ -1,0 +1,11 @@
+function getFileProperties(object) {
+        var properties = getProperties(object);
+        var fileProperties = {};
+        Object.keys(properties).forEach(function(key) {
+            var property = properties[key];
+            if(files.isFile(property)) {
+                fileProperties[key] = property;
+            }
+        });
+        return fileProperties;
+    }

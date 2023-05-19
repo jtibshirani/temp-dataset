@@ -1,0 +1,11 @@
+public function postJson(string $url, array $data) : RequestBuilder
+    {
+
+        $this->method(Request::METHOD_POST)
+            ->url($url)
+            ->contentType(Mime::APPLICATION_JSON)
+            ->accept(Mime::APPLICATION_JSON)
+            ->content(json_encode($data));
+
+        return $this;
+    }

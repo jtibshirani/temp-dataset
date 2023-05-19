@@ -1,0 +1,30 @@
+public function parseDate($date)
+    {
+        $date = str_replace(['-', ':', '/', '.'], ' ', $date);
+        $date_yyyy = $date_mm = $date_dd = $date_hh = $date_ii = $date_ss = 0;
+
+        switch (sscanf($date, '%d %d %d %d %d %d', $date_yyyy, $date_mm, $date_dd, $date_hh, $date_ii, $date_ss)) {
+            case 1:
+                $date = sprintf('%04d/00/00 00:00:00', $date_yyyy);
+                break;
+            case 2:
+                $date = sprintf('%04d/%02d/00 00:00:00', $date_yyyy, $date_mm);
+                break;
+            case 3:
+                $date = sprintf('%04d/%02d/%02d 00:00:00', $date_yyyy, $date_mm, $date_dd);
+                break;
+            case 4:
+                $date = sprintf('%04d/%02d/%02d %02d:00:00', $date_yyyy, $date_mm, $date_dd, $date_hh);
+                break;
+            case 5:
+                $date = sprintf('%04d/%02d/%02d %02d:%02d:00', $date_yyyy, $date_mm, $date_dd, $date_hh, $date_ii);
+                break;
+            case 6:
+                $date = sprintf('%04d/%02d/%02d %02d:%02d:%02d', $date_yyyy, $date_mm, $date_dd, $date_hh, $date_ii, $date_ss);
+                break;
+            default:
+                $date = '0000/00/00 00:00:00';
+        }
+
+        return $date;
+    }

@@ -1,0 +1,6 @@
+func (s *service) getProcess(id, execID string) (*process, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	return s.getProcessLocked(id, execID)
+}

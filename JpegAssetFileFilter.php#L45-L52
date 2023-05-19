@@ -1,0 +1,8 @@
+public function optimizeImage($oImage) {
+        if (is_resource($oImage)) {
+            ob_start();
+            imagejpeg($oImage, null, $this->getImageQuality());
+            return ob_get_clean();
+        }
+        throw new \InvalidArgumentException('Image expects a ressource, "' . gettype($oImage) . '" given');
+    }

@@ -1,0 +1,12 @@
+public function build(IUrl $url, $encode = false) {
+        $pattern = $this->pattern;
+        $pattern = $this->setProtocol($pattern, $url, $encode);
+        $pattern = $this->setCredentials($pattern, $url, $encode);
+        $pattern = $this->setHost($pattern, $url, $encode);
+        $pattern = $this->setPort($pattern, $url, $encode);
+        $pattern = $this->setPath($pattern, $url, $encode);
+        $pattern = $this->setQuery($pattern, $url, $encode);
+        $pattern = $this->setFragment($pattern, $url, $encode);
+
+        return $pattern;
+    }

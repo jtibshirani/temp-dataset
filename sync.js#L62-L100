@@ -1,0 +1,39 @@
+var l_store = function (arr) {
+
+	// extract collection name
+	if (arr && typeof arr._name === 'string') {
+
+		var size = arr.length - arr._index;
+
+		if (size <= 0)
+			return false;
+		
+		LOG.sys('try to store to array [' + arr._name + '], # of elements to store: ' + size, 'SR.Sync');
+				
+		// TODO: wasteful of space?
+		// NOTE: only new array entries will be stored to DB
+		var elements = [];
+		for (var i=arr._index; i < arr.length; i++)
+			elements.push(arr[i]);
+
+		// update index count (regardless of update success or not?)
+		arr._index = arr.length;
+		
+		// TODO: find right way to store
+		// store away
+		// NOTE: $each is used here (try to hide it?)
+		SR.DB.updateArray(SR.Settings.DB_NAME_SYNC, {name: arr._name}, {data: elements},
+			function (result) {
+				LOG.sys('update array success: ' + result, 'SR.Sync');
+			}, 
+			function (result) {
+				LOG.error('update array fail: ' + result, 'SR.Sync');
+			}
+		);
+		return true;
+	}
+	else
+		LOG.error('cannot store to DB, arr_name unavailable', 'SR.Sync');
+		
+	return false;
+}

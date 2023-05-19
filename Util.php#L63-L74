@@ -1,0 +1,12 @@
+public static function nonEmptyStrs( ...$args ) {
+		if ( !isset( $args[0] ) ) {
+			return false;
+		}
+		foreach ( $args as $arg ) {
+			if ( !self::nonEmptyStr( $arg ) ) {
+				return false;
+			}
+		}
+		// If we're still here, all are good
+		return true;
+	}

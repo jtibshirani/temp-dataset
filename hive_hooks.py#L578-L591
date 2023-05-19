@@ -1,0 +1,14 @@
+def get_table(self, table_name, db='default'):
+        """Get a metastore table object
+
+        >>> hh = HiveMetastoreHook()
+        >>> t = hh.get_table(db='airflow', table_name='static_babynames')
+        >>> t.tableName
+        'static_babynames'
+        >>> [col.name for col in t.sd.cols]
+        ['state', 'year', 'name', 'gender', 'num']
+        """
+        if db == 'default' and '.' in table_name:
+            db, table_name = table_name.split('.')[:2]
+        with self.metastore as client:
+            return client.get_table(dbname=db, tbl_name=table_name)

@@ -1,0 +1,37 @@
+def save_filelist(self, opFile, opFormat, delim=',', qu='"'):
+        """
+        uses a List of files and collects meta data on them and saves
+        to an text file as a list or with metadata depending on opFormat.
+        """
+
+        op_folder = os.path.dirname(opFile)
+        if op_folder is not None:   # short filename passed
+            if not os.path.exists(op_folder):
+                os.makedirs(op_folder)
+
+
+        with open(opFile,'w') as fout:
+            fout.write("fullFilename" + delim)
+            for colHeading in opFormat:
+                fout.write(colHeading + delim)
+            fout.write('\n')
+            for f in self.filelist:
+                line = qu + f + qu + delim
+                try:
+                    for fld in opFormat:
+                        if fld == "name":
+                            line = line + qu + os.path.basename(f) + qu + delim
+                        if fld == "date":
+                            line = line + qu + self.GetDateAsString(f) + qu + delim
+                        if fld == "size":
+                            line = line + qu + str(os.path.getsize(f)) + qu + delim
+                        if fld == "path":
+                            line = line + qu + os.path.dirname(f) + qu + delim
+                except IOError:
+                    line += '\n'   # no metadata
+                try:
+                    fout.write (str(line.encode('ascii', 'ignore').decode('utf-8')))
+                    fout.write ('\n')
+                except IOError:
+                    #print("Cant print line - cls_filelist line 304")
+                    pass

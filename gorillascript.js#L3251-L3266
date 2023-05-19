@@ -1,0 +1,16 @@
+function inspectArray(depth, array) {
+            var _arr, _i, _len, item, sb;
+            if (array.length === 0) {
+              return "[]";
+            } else {
+              sb = "";
+              sb += "[";
+              for (_arr = __toArray(array), _i = 0, _len = _arr.length; _i < _len; ++_i) {
+                item = _arr[_i];
+                sb += "\n  ";
+                sb += inspect(item, null, decDepth(depth)).split("\n").join("\n  ");
+              }
+              sb += "\n]";
+              return sb;
+            }
+          }

@@ -1,0 +1,12 @@
+public function convertToSqlBoolean(bool $value)
+    {
+        if (is_bool($value)) {
+            if ($value) {
+                return $this->trueBooleanValues[0];
+            } else {
+                return $this->falseBooleanValues[0];
+            }
+        }
+
+        return $value;
+    }

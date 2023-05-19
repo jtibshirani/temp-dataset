@@ -1,0 +1,8 @@
+def make_entities_code(entities):
+    entities_text = "\n".join("    \"%s\": u\"%s\"," % (
+        name, entities[name].encode(
+            "unicode-escape").replace("\"", "\\\""))
+        for name in sorted(entities.keys()))
+    return """entities = {
+%s
+}""" % entities_text

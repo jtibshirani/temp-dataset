@@ -1,0 +1,106 @@
+func (exporter *logExporter) retrieveLogs() (foundIndexedDay bool, numWarnings int, e error) {
+	numWarnings = 0
+	foundIndexedDay = false
+	// fileIndex is a map of parsedMessage to an index into exporter.outputFiles
+	exporter.fileIndex = NewFileIndex(exporter.GroupBy)
+	for _, yyyymmdd := range exporter.days {
+		// Skip the indexes that are filtered out by the date range
+		if (exporter.FromDate != "" && yyyymmdd < exporter.FromDate) || (exporter.ToDate != "" && yyyymmdd > exporter.ToDate) {
+			continue
+		} else {
+			foundIndexedDay = true
+		}
+
+		if exporter.Debug {
+			log.WithFields(logrus.Fields{
+				"date": yyyymmdd,
+			}).Info("Querying logstash for given date")
+		}
+		log := log.WithFields(logrus.Fields{
+			"date": yyyymmdd,
+		})
+		log.Info("Retrieving Logstash Elastic results for one day")
+
+		result, e := exporter.Driver.StartSearch(yyyymmdd, exporter.query)
+		if e != nil {
+			return foundIndexedDay, numWarnings, fmt.Errorf("failed to search elasticsearch for day %s: %s", yyyymmdd, e)
+		}
+
+		if exporter.Debug {
+			log.WithFields(logrus.Fields{
+				"date":      yyyymmdd,
+				"totalmsgs": result.Hits.Total,
+			}).Info("Found log messages")
+		}
+
+		//TODO: Submit a patch to elastigo to support the "clear scroll" api. Add a "defer" here.
+		remaining := result.Hits.Total > 0
+		for remaining {
+			result, e = exporter.Driver.ScrollSearch(result.ScrollId)
+			if e != nil {
+				return foundIndexedDay, numWarnings, e
+			}
+			hits := result.Hits.Hits
+			total := len(hits)
+			for i := 0; i < total; i++ {
+				message, e := parseLogSource(yyyymmdd, hits[i].Source)
+				if e != nil {
+					return foundIndexedDay, numWarnings, e
+				}
+
+				// Ignore log messages sent directly from serviced and serviced-controller; only
+				// export logs from the applications themselves.  Note that filebeat is hard-coded
+				// to set the _type property to "log" and we only use filebeat for messages from the
+				// application services.
+				if message.Type != "log" {
+					continue
+				}
+
+				if len(exporter.minDateFound) == 0 || yyyymmdd < exporter.minDateFound {
+					exporter.minDateFound = yyyymmdd
+				}
+				if len(exporter.maxDateFound) == 0 || yyyymmdd > exporter.maxDateFound {
+					exporter.maxDateFound = yyyymmdd
+				}
+
+				// add a new tempfile
+				if _, found := exporter.fileIndex.FindIndexForMessage(message); !found {
+					index := len(exporter.outputFiles)
+					filename := filepath.Join(exporter.tempdir, exporter.fileIndex.GetFileName(index, message))
+					file, e := os.Create(filename)
+					if e != nil {
+						return foundIndexedDay, numWarnings, fmt.Errorf("failed to create file %s: %s", filename, e)
+					}
+					exporter.fileIndex.AddIndexForMessage(index, message)
+					outputFile := outputFileInfo{
+						File:        file,
+						Name:        filename,
+						HostID:      message.HostID,
+						ContainerID: message.ContainerID,
+						LogFileName: message.LogFileName,
+						ServiceID:   message.ServiceID,
+					}
+					exporter.outputFiles = append(exporter.outputFiles, outputFile)
+				}
+				index, _ := exporter.fileIndex.FindIndexForMessage(message)
+				exporter.outputFiles[index].LineCount += len(message.Lines)
+				file := exporter.outputFiles[index].File
+				filename := exporter.outputFiles[index].Name
+				for _, line := range message.Lines {
+					formatted := fmt.Sprintf("%016x\t%016x\t%s\n", line.Timestamp, line.Offset, line.Message)
+					if _, e := file.WriteString(formatted); e != nil {
+						return foundIndexedDay, numWarnings, fmt.Errorf("failed writing to file %s: %s", filename, e)
+					}
+				}
+				if len(message.Warnings) > 0 {
+					if _, e := exporter.parseWarningsFile.WriteString(message.Warnings); e != nil {
+						return foundIndexedDay, numWarnings, fmt.Errorf("failed writing to file %s: %s", exporter.parseWarningsFilename, e)
+					}
+					numWarnings++
+				}
+			}
+			remaining = len(hits) > 0
+		}
+	}
+	return foundIndexedDay, numWarnings, nil
+}

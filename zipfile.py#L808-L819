@@ -1,0 +1,12 @@
+def testzip(self):
+        """Read all the files and check the CRC."""
+        chunk_size = 2 ** 20
+        for zinfo in self.filelist:
+            try:
+                # Read by chunks, to avoid an OverflowError or a
+                # MemoryError with very large embedded files.
+                f = self.open(zinfo.filename, "r")
+                while f.read(chunk_size):     # Check CRC-32
+                    pass
+            except BadZipfile:
+                return zinfo.filename

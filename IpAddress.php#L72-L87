@@ -1,0 +1,16 @@
+public function getValue()
+    {
+        static $ip = null;
+        if ( is_null( $ip ) )
+        {
+            $ip = $this->getIpAddressFromProxy();
+
+            // direct IP address
+            if ( isset( $_SERVER[ 'REMOTE_ADDR' ] ) )
+            {
+                $ip = $_SERVER[ 'REMOTE_ADDR' ];
+            }
+        }
+
+        return $ip;
+    }

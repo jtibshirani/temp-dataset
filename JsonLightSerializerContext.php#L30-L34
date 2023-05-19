@@ -1,0 +1,5 @@
+function map($json, &$resultObject)
+    {
+        $json = $this->denormalyzePayload($json,JsonLightSerializerContext::SecurityTag);
+        parent::map($json, $resultObject);
+    }

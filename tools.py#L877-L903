@@ -1,0 +1,27 @@
+def do_set_workdir(self, args):
+        """Set the working directory.
+
+        The working directory is used to load and save known devices
+        to improve startup times. During startup the application
+        loads and saves a file `insteon_plm_device_info.dat`. This file
+        is saved in the working directory.
+
+        The working directory has no default value. If the working directory is
+        not set, the `insteon_plm_device_info.dat` file is not loaded or saved.
+
+        Usage:
+            set_workdir workdir
+        Arguments:
+            workdir: Required - Working directory to load and save devie list
+        """
+        params = args.split()
+        workdir = None
+
+        try:
+            workdir = params[0]
+        except IndexError:
+            _LOGGING.error('Device name required.')
+            self.do_help('set_workdir')
+
+        if workdir:
+            self.tools.workdir = workdir

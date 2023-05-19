@@ -1,0 +1,5 @@
+def __enqueue(self, catcher, pillow, feathers, passThrower=False, **ka):
+        if pillow.endswith("!"):
+            self.__enqueueStatefull(catcher, pillow, passThrower)
+        else:
+            self._normalQueue.append( (catcher, (pillow, feathers), ka) )

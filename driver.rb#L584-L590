@@ -1,0 +1,7 @@
+def cell_with_id(cell_id, options = {})
+      if options && options[:index] then
+        cell(:id => cell_id.to_s, :index => options[:index]).text
+      else
+        cell(:id, cell_id).text
+      end
+    end

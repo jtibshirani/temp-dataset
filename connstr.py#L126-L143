@@ -1,0 +1,18 @@
+def encode(self):
+        """
+        Encodes the current state of the object into a string.
+
+        :return: The encoded string
+        """
+        opt_dict = {}
+        for k, v in self.options.items():
+            opt_dict[k] = v[0]
+
+        ss = '{0}://{1}'.format(self.scheme, ','.join(self.hosts))
+        if self.bucket:
+            ss += '/' + self.bucket
+
+        # URL encode options then decoded forward slash /
+        ss += '?' + urlencode(opt_dict).replace('%2F', '/')
+
+        return ss

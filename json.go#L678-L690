@@ -1,0 +1,13 @@
+func (d *jsonDecDriver) ReadArrayElem() {
+	const xc uint8 = ','
+	if d.tok == 0 {
+		d.tok = d.r.skip(&jsonCharWhitespaceSet)
+	}
+	if d.c != containerArrayStart {
+		if d.tok != xc {
+			d.d.errorf("read array element - expect char '%c' but got char '%c'", xc, d.tok)
+		}
+		d.tok = 0
+	}
+	d.c = containerArrayElem
+}

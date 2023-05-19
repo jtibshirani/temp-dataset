@@ -1,0 +1,5 @@
+public function fputcsv($fields, $delimiter = ',', $enclosure = '"', $escape = '\\')
+    {
+        CsvRfcUtils::checkPutCsvEscape($escape);
+        $this->fwrite(CsvRfcUtils::strPutCsv($fields, $delimiter, $enclosure));
+    }

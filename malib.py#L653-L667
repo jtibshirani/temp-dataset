@@ -1,0 +1,15 @@
+def linreg(self, rsq=False, conf_test=False):
+        model='linear'
+        if not self.datestack:
+            self.compute_dt_stats()
+        if np.isnan(self.min_dt_ptp):
+            #This could fail if stack contains a small number of inputs
+            max_dt_ptp = calcperc(self.dt_stack_ptp, (4, 96))[1]
+            self.min_dt_ptp = 0.20 * max_dt_ptp
+        if self.robust:
+            model='theilsen'
+            #model='ransac'
+        print("Compute stack linear trend with model: %s" % model)
+        self.stack_trend, self.stack_intercept, self.stack_detrended_std = \
+                ma_linreg(self.ma_stack, self.date_list, dt_stack_ptp=self.dt_stack_ptp, min_dt_ptp=self.min_dt_ptp, \
+                n_thresh=self.n_thresh, model=model, rsq=False, conf_test=False, smooth=False, n_cpu=self.n_cpu)

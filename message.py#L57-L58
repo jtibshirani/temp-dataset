@@ -1,0 +1,2 @@
+def recv_n(self, n, timeout=-1):
+        return self.recver.recv_n(n, timeout=timeout)

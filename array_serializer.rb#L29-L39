@@ -1,0 +1,11 @@
+def to_csv(options={})
+      columns = options.delete(:columns)
+
+      CSV.generate(options) do |csv|
+        csv << columns if columns.present?
+
+        serializable_objects.each do |object|
+          csv << object.attributes_hash.values
+        end
+      end
+    end

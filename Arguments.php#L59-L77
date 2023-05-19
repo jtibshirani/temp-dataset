@@ -1,0 +1,19 @@
+public function castAsSequence(int $number)
+    {
+        $value = $this->get($number);
+
+        if (\is_scalar($value)) {
+            throw new CastException('Cannot convert scalar to sequence');
+        }
+
+        if (\is_array($value)) {
+            return \array_map(
+                function ($deepValue) {
+                    return $deepValue->textContent;
+                },
+                $value
+            );
+        }
+
+        throw new CastException('Cannot convert list of elements to string');
+    }

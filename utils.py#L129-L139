@@ -1,0 +1,11 @@
+def median_interp(interp_object):
+    """
+    Find the median of the function represented as an interpolation object.
+    """
+    new_grid = np.sort(np.concatenate([interp_object.x[:-1] + 0.1*ii*np.diff(interp_object.x)
+                                       for ii in range(10)]).flatten())
+
+    tmp_prop = np.exp(-(interp_object(new_grid)-interp_object.y.min()))
+    tmp_cumsum = np.cumsum(0.5*(tmp_prop[1:]+tmp_prop[:-1])*np.diff(new_grid))
+    median_index = min(len(tmp_cumsum)-3, max(2,np.searchsorted(tmp_cumsum, tmp_cumsum[-1]*0.5)+1))
+    return new_grid[median_index]

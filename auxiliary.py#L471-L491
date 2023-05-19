@@ -1,0 +1,21 @@
+def findAllSubstrings(string, substring):
+    """ Returns a list of all substring starting positions in string or an empty
+    list if substring is not present in string.
+
+    :param string: a template string
+    :param substring: a string, which is looked for in the ``string`` parameter.
+
+    :returns: a list of substring starting positions in the template string
+    """
+    #TODO: solve with regex? what about '.':
+    #return [m.start() for m in re.finditer('(?='+substring+')', string)]
+    start = 0
+    positions = []
+    while True:
+        start = string.find(substring, start)
+        if start == -1:
+            break
+        positions.append(start)
+        #+1 instead of +len(substring) to also find overlapping matches
+        start += 1
+    return positions

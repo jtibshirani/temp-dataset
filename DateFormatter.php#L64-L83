@@ -1,0 +1,20 @@
+public static function formatDate($date, string $format = null)
+    {
+
+        if ($format === null) {
+            if (self::$formatDateModel === false) {
+                $dateFormatId          = app('antares.memory')->make('registry')->get('brand.configuration.options.date_format_id');
+                self::$formatDateModel = DateFormat::query()->find($dateFormatId);
+            }
+
+
+            $format = self::$formatDateModel ? self::$formatDateModel->format : 'y-m-d';
+        }
+        if ($date instanceof Carbon) {
+            return $date->format($format);
+        }
+
+        $time = is_numeric($date) ? $date : strtotime($date);
+
+        return date($format, $time);
+    }

@@ -1,0 +1,15 @@
+def convertToBool():
+    """ Convert a byte value to boolean (0 or 1) if
+    the global flag strictBool is True
+    """
+    if not OPTIONS.strictBool.value:
+        return []
+
+    REQUIRES.add('strictbool.asm')
+
+    result = []
+    result.append('pop af')
+    result.append('call __NORMALIZE_BOOLEAN')
+    result.append('push af')
+
+    return result

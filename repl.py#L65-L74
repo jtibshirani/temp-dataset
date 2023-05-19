@@ -1,0 +1,10 @@
+def replace(html, replacements=None):
+    """Performs replacements on given HTML string."""
+    if not replacements:
+        return html  # no replacements
+    html = HTMLFragment(html)
+
+    for r in replacements:
+        r.replace(html)
+
+    return unicode(html)

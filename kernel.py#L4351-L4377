@@ -1,0 +1,27 @@
+def get_current_date_time(i):
+    """
+    Input:  {}
+
+    Output: {
+              return       - return code =  0
+
+              array        - array with date and time
+              iso_datetime - date and time in ISO format
+            }
+    """
+
+    import datetime
+
+    a={}
+
+    now1=datetime.datetime.now()
+    now=now1.timetuple()
+
+    a['date_year']=now[0]
+    a['date_month']=now[1]
+    a['date_day']=now[2]
+    a['time_hour']=now[3]
+    a['time_minute']=now[4]
+    a['time_second']=now[5]
+
+    return {'return':0, 'array':a, 'iso_datetime':now1.isoformat()}

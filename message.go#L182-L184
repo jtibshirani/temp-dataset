@@ -1,0 +1,3 @@
+func (m *Message) FormatDate(date time.Time) string {
+	return date.Format(time.RFC1123Z)
+}

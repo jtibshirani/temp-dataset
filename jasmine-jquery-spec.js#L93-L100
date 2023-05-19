@@ -1,0 +1,8 @@
+it("should define toBeChecked", function () {
+			const checkbox = this.tag("input").attr({ type: "checkbox" }).prop({ checked: true });
+			expect(checkbox).toBeChecked();
+			expect(checkbox[0]).toBeChecked();
+			checkbox.prop({ checked: false });
+			expect(checkbox).not.toBeChecked();
+			expect(checkbox[0]).not.toBeChecked();
+		});

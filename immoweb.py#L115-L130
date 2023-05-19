@@ -1,0 +1,16 @@
+def find_number(regex, s):
+    """Find a number using a given regular expression.
+    If the string cannot be found, returns None.
+    The regex should contain one matching group, 
+    as only the result of the first group is returned.
+    The group should only contain numeric characters ([0-9]+).
+    
+    s - The string to search.
+    regex - A string containing the regular expression.
+    
+    Returns an integer or None.
+    """
+    result = find_string(regex, s)
+    if result is None:
+        return None
+    return int(result)

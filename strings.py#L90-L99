@@ -1,0 +1,10 @@
+def regex(regex, case=False, _value=None, *args, **kwargs):
+    if kwargs.get('case'):
+        regex = re.compile(regex)
+    else:
+        regex = re.compile(regex, re.IGNORECASE)
+
+    if not regex.match(_value):
+        raise ValidationError('The _value must match the regex %s' % regex)
+
+    return _value

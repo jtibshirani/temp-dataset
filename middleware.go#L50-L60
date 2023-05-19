@@ -1,0 +1,11 @@
+func (s *sessionsResponseWriter) SetCookie(cookie *http.Cookie) {
+	if s.cookies == nil {
+		s.cookies = make(map[string]*http.Cookie)
+	}
+
+	if len(cookie.Name) == 0 {
+		panic("cookie name cannot be empty")
+	}
+
+	s.cookies[cookie.Name] = cookie
+}

@@ -1,0 +1,36 @@
+def reindent(text, filename):
+    new_lines=[]
+    k=0
+    c=0
+    for n, raw_line in enumerate(text.splitlines()):
+        line=raw_line.strip()
+        if not line or line[0]=='#':
+            new_lines.append(line)
+            continue
+
+        line3 = line[:3]
+        line4 = line[:4]
+        line5 = line[:5]
+        line6 = line[:6]
+        line7 = line[:7]
+        if line3=='if ' or line4 in ('def ', 'for ', 'try:') or\
+            line6=='while ' or line6=='class ' or line5=='with ':
+            new_lines.append('    '*k+line)
+            k += 1
+            continue
+        elif line5=='elif ' or line5=='else:' or    \
+            line7=='except:' or line7=='except ' or \
+            line7=='finally:':
+                c = k-1
+                if c<0:
+                    # print (_format_code(text))
+                    raise ParseError("Extra pass founded on line %s:%d" % (filename, n))
+                new_lines.append('    '*c+line)
+                continue
+        else:
+            new_lines.append('    '*k+line)
+        if line=='pass' or line5=='pass ':
+            k-=1
+        if k<0: k = 0
+    text='\n'.join(new_lines)
+    return text

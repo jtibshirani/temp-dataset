@@ -1,0 +1,7 @@
+def ip
+      addr = Socket.ip_address_list.detect do |i|
+        i.ipv4? && !i.ipv4_loopback? && !i.ipv4_multicast? && !i.ipv4_private?
+      end
+      raise 'Can\'t detect your IP address, you have to specify it in --host' if addr.nil?
+      addr.ip_address
+    end

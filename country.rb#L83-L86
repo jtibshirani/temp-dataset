@@ -1,0 +1,4 @@
+def get_public_holidays_for_date_range(from_date, to_date)
+      params = country_parameters({fromDate: from_date.strftime("%d-%m-%Y"), toDate: to_date.strftime("%d-%m-%Y")})
+      self.class.get("/?action=getPublicHolidaysForDateRange&#{params}")
+    end

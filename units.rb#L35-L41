@@ -1,0 +1,7 @@
+def add_conversion(amount, unit, other_unit)
+      unit = self[unit]
+      other_unit = self[other_unit]
+
+      new_conversion = {unit => {other_unit => amount.to_r}, other_unit => {unit => 1/amount.to_r}}
+      conversions.deep_merge!(new_conversion)
+    end

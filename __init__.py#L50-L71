@@ -1,0 +1,22 @@
+def deserialize(json, cls=None):
+    """Deserialize a JSON string into a Python object.
+
+    Args:
+        json (str): the JSON string.
+        cls (:py:class:`object`):
+            if the ``json`` is deserialized into a ``dict`` and
+            this argument is set,
+            the ``dict`` keys are passed as keyword arguments to the
+            given ``cls`` initializer.
+
+    Returns:
+        Python object representation of the given JSON string.
+    """
+    LOGGER.debug('deserialize(%s)', json)
+
+    out = simplejson.loads(json)
+
+    if isinstance(out, dict) and cls is not None:
+        return cls(**out)
+
+    return out

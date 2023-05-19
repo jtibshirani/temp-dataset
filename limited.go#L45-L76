@@ -1,0 +1,32 @@
+func (i *Limited) Next(ctx context.Context, _ error) time.Duration {
+	switch {
+	case i.Retries == 0:
+		return Stop
+	case i.Retries > 0:
+		i.Retries--
+	}
+
+	// If there is a maximum total time, enforce it.
+	if i.MaxTotal > 0 {
+		now := clock.Now(ctx)
+		if i.startTime.IsZero() {
+			i.startTime = now
+		}
+
+		var elapsed time.Duration
+		if now.After(i.startTime) {
+			elapsed = now.Sub(i.startTime)
+		}
+
+		// Remaining time is the difference between total allowed time and elapsed
+		// time.
+		remaining := i.MaxTotal - elapsed
+		if remaining <= 0 {
+			// No more time!
+			i.Retries = 0
+			return Stop
+		}
+	}
+
+	return i.Delay
+}

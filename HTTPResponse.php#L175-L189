@@ -1,0 +1,15 @@
+public function setStatusCode($code, $description = null)
+    {
+        if (isset(self::$status_codes[$code])) {
+            $this->statusCode = $code;
+        } else {
+            throw new InvalidArgumentException("Unrecognised HTTP status code '$code'");
+        }
+
+        if ($description) {
+            $this->statusDescription = $description;
+        } else {
+            $this->statusDescription = self::$status_codes[$code];
+        }
+        return $this;
+    }

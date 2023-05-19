@@ -1,0 +1,12 @@
+def adjust_to_level(self, level, x, op, median):
+        if x > median:
+            if level > 0.5:
+                result = median + (x - median) * ((level - 0.5) / 0.5)
+            else:
+                result = op + (median - op) * (level / 0.5)
+        else:
+            if level > 0.5:
+                result = x + (median - x) * ((level - 0.5) / 0.5)
+            else:
+                result = median + (op - median) * (level / 0.5)
+        return result

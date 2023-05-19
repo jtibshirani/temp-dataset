@@ -1,0 +1,36 @@
+function OutputOpen($Render, $File, $ContentType) {
+
+		if (($Render & TBSZIP_FILE)==TBSZIP_FILE) {
+			$this->OutputMode = TBSZIP_FILE;
+			if (''.$File=='') $File = basename($this->ArchFile).'.zip';
+			$this->OutputHandle = @fopen($File, 'w');
+			if ($this->OutputHandle===false) {
+				return $this->RaiseError('Method Flush() cannot overwrite the target file \''.$File.'\'. This may not be a valid file path or the file may be locked by another process or because of a denied permission.');
+			}
+		} elseif (($Render & TBSZIP_STRING)==TBSZIP_STRING) {
+			$this->OutputMode = TBSZIP_STRING;
+			$this->OutputSrc = '';
+		} elseif (($Render & TBSZIP_DOWNLOAD)==TBSZIP_DOWNLOAD) {
+			$this->OutputMode = TBSZIP_DOWNLOAD;
+			// Output the file
+			if (''.$File=='') $File = basename($this->ArchFile);
+			if (($Render & TBSZIP_NOHEADER)==TBSZIP_NOHEADER) {
+			} else {
+				header ('Pragma: no-cache');
+				if ($ContentType!='') header ('Content-Type: '.$ContentType);
+				header('Content-Disposition: attachment; filename="'.$File.'"');
+				header('Expires: 0');
+				header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+				header('Cache-Control: public');
+				header('Content-Description: File Transfer'); 
+				header('Content-Transfer-Encoding: binary');
+				$Len = $this->_EstimateNewArchSize();
+				if ($Len!==false) header('Content-Length: '.$Len); 
+			}
+		} else {
+			return $this->RaiseError('Method Flush is called with a unsupported render option.');
+		}
+
+		return true;
+
+	}

@@ -1,0 +1,48 @@
+public void connectToPostgreSQLDatabase(String database, String host, String port, String user, String password, Boolean secure, String ca, String crt, String key) throws SQLException {
+
+        if (port.startsWith("[")) {
+            port = port.substring(1, port.length() - 1);
+        }
+        if (!secure) {
+            if (password == null) {
+                password = "stratio";
+            }
+            try {
+                myConnection = DriverManager.getConnection("jdbc:postgresql://" + host + ":" + port + "/" + database, user, password);
+            } catch (SQLException se) {
+                // log the exception
+                this.getLogger().error(se.getMessage());
+                // re-throw the exception
+                throw se;
+            }
+
+        } else {
+            Properties props = new Properties();
+            if (user != null) {
+                props.setProperty("user", user);
+            }
+            if (ca != null) {
+                props.setProperty("sslrootcert", ca);
+            }
+            if (crt != null) {
+                props.setProperty("sslcert", crt);
+            }
+            if (key != null) {
+                props.setProperty("sslkey", key);
+            }
+            props.setProperty("password", "null");
+            props.setProperty("ssl", "true");
+            props.setProperty("sslmode", "verify-full");
+
+
+            try {
+                myConnection = DriverManager.getConnection("jdbc:postgresql://" + host + ":" + port + "/" + database, props);
+            } catch (SQLException se) {
+                // log the exception
+                this.getLogger().error(se.getMessage());
+                // re-throw the exception
+                throw se;
+            }
+
+        }
+    }

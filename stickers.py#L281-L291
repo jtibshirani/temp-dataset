@@ -1,0 +1,11 @@
+def pdf_from_post(self):
+        """Returns a pdf stream with the stickers
+        """
+        html = self.request.form.get("html")
+        style = self.request.form.get("style")
+        reporthtml = "<html><head>{0}</head><body>{1}</body></html>"
+        reporthtml = reporthtml.format(style, html)
+        reporthtml = safe_unicode(reporthtml).encode("utf-8")
+        pdf_fn = tempfile.mktemp(suffix=".pdf")
+        pdf_file = createPdf(htmlreport=reporthtml, outfile=pdf_fn)
+        return pdf_file

@@ -1,0 +1,35 @@
+def request(self, url,
+                json="",
+                data="",
+                username="",
+                password="",
+                headers=None,
+                timout=30):
+        """This is overridden on module initialization. This function will make
+        an HTTP POST to a given url. Either json/data will be what is posted to
+        the end point. he HTTP request needs to be basicAuth when username and
+        password are provided. a headers dict maybe provided,
+        whatever the values are should be applied.
+
+        Args:
+            url (str):                  url to send the POST
+            json (dict, optional):      Dict of the JSON to POST
+            data (dict, optional):      Dict, presumed flat structure of
+                                        key/value of request to place as
+                                        www-form
+            username (str, optional):    Username for basic auth. Must be
+                                        uncluded as part of password.
+            password (str, optional):   Password for basic auth. Must be
+                                        included as part of username.
+            headers (dict, optional):   Key/Value pairs of headers to include
+        Returns:
+            str:    Raw request placed
+            str:    Raw response received
+            int:    HTTP status code, eg 200,404,401
+            dict:   Key/Value pairs of the headers received.
+            :param timout:
+        """
+        raise NotImplementedError('request of HTTPClient should have been '
+                                  'overridden on initialization. '
+                                  'Otherwise, can be overridden to '
+                                  'supply your own post method')

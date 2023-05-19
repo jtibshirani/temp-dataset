@@ -1,0 +1,6 @@
+function readLines(f, cb) {
+  var lines = [];
+  eachLine(f, { line: function(line) { lines.push(line); }
+              , end: function() { cb(lines); }
+              });
+}

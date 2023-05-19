@@ -1,0 +1,6 @@
+def write_csv data
+      File.open csv_file, "wb" do |f|
+        f.write data
+      end
+      csv_file
+    end

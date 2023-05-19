@@ -1,0 +1,21 @@
+def epoch(self):
+        """
+        Returns the total seconds since epoch associated with
+        the Delorean object.
+
+        .. testsetup::
+
+            from datetime import datetime
+            from delorean import Delorean
+
+        .. doctest::
+
+            >>> d = Delorean(datetime(2015, 1, 1), timezone='US/Pacific')
+            >>> d.epoch
+            1420099200.0
+
+        """
+        epoch_sec = pytz.utc.localize(datetime.utcfromtimestamp(0))
+        now_sec = pytz.utc.normalize(self._dt)
+        delta_sec = now_sec - epoch_sec
+        return get_total_second(delta_sec)

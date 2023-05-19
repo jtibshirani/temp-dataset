@@ -1,0 +1,28 @@
+def permute(self, permutations: List[mx.nd.NDArray]) -> 'ParallelDataSet':
+        """
+        Permutes the data within each bucket. The permutation is received as an argument,
+        allowing the data to be unpermuted (i.e., restored) later on.
+
+        :param permutations: For each bucket, a permutation of the data within that bucket.
+        :return: A new, permuted ParallelDataSet.
+        """
+        assert len(self) == len(permutations)
+        source = []
+        target = []
+        label = []
+        for buck_idx in range(len(self)):
+            num_samples = self.source[buck_idx].shape[0]
+            if num_samples:  # not empty bucket
+                permutation = permutations[buck_idx]
+                if isinstance(self.source[buck_idx], np.ndarray):
+                    source.append(self.source[buck_idx].take(np.int64(permutation.asnumpy())))
+                else:
+                    source.append(self.source[buck_idx].take(permutation))
+                target.append(self.target[buck_idx].take(permutation))
+                label.append(self.label[buck_idx].take(permutation))
+            else:
+                source.append(self.source[buck_idx])
+                target.append(self.target[buck_idx])
+                label.append(self.label[buck_idx])
+
+        return ParallelDataSet(source, target, label)

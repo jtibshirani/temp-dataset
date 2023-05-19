@@ -1,0 +1,13 @@
+def _set_normal(self, normal):
+        '''
+
+        Parameters
+        ----------
+        electrodes
+
+        Returns
+        -------
+
+        '''
+        for i, el in enumerate(self.electrodes):
+            el.normal = normal/np.linalg.norm(normal)

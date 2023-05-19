@@ -1,0 +1,39 @@
+def add_output_args(arg_parser):
+    output_group = arg_parser.add_argument_group(
+        title="Output",
+        description="How and where to write results")
+
+    output_group.add_argument(
+        "--output-csv",
+        default=None,
+        help="Path to output CSV file")
+
+    output_group.add_argument(
+        "--output-html",
+        default=None,
+        help="Path to output HTML file")
+
+    output_group.add_argument(
+        "--output-csv-sep",
+        default=",",
+        help="Separator for CSV file")
+
+    output_group.add_argument(
+        "--subset-output-columns",
+        nargs="*")
+
+    output_group.add_argument(
+        "--rename-output-column",
+        nargs=2,
+        action="append",
+        help=(
+            "Rename original column (first parameter) to new"
+            " name (second parameter)"))
+
+    output_group.add_argument(
+        "--print-columns",
+        default=False,
+        action="store_true",
+        help="Print columns before writing data to file(s)")
+
+    return output_group

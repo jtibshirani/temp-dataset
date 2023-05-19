@@ -1,0 +1,10 @@
+def flatten(base_path, file_ext)
+      Dir["#{base_path}/**/*.#{file_ext}"].each do |file|
+        # get the filename and parent dir
+        filename = file.tr('/', '-')
+
+        # copy the files to a single temp directory.
+        debug("copying #{file} to #{@tmp_dir}/#{filename} ...")
+        FileUtils.cp(file, "#{@tmp_dir}/#{filename}")
+      end
+    end

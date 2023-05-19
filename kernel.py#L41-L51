@@ -1,0 +1,11 @@
+def get_bpftool_map_ids(self, map_file):
+        out = []
+        try:
+            map_data = json.load(open(map_file))
+        except Exception as e:
+            self._log_info("Could not parse bpftool map list as JSON: %s" % e)
+            return out
+        for item in range(len(map_data)):
+            if "id" in map_data[item]:
+                out.append(map_data[item]["id"])
+        return out

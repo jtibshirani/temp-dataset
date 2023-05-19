@@ -1,0 +1,42 @@
+def to_excel(self, xl_app=None, resize_columns=True):
+        from win32com.client import Dispatch, gencache
+
+        if xl_app is None:
+            xl_app = Dispatch("Excel.Application")
+        xl_app = gencache.EnsureDispatch(xl_app)
+
+        # Add a new workbook with the correct number of sheets.
+        # We aren't allowed to create an empty one.
+        assert self.worksheets, "Can't export workbook with no worksheets"
+        sheets_in_new_workbook = xl_app.SheetsInNewWorkbook
+        try:
+            xl_app.SheetsInNewWorkbook = float(len(self.worksheets))
+            self.workbook_obj = xl_app.Workbooks.Add()
+        finally:
+            xl_app.SheetsInNewWorkbook = sheets_in_new_workbook
+
+        # Rename the worksheets, ensuring that there can never be two sheets with the same
+        # name due to the sheets default names conflicting with the new names.
+        sheet_names = {s.name for s in self.worksheets}
+        assert len(sheet_names) == len(self.worksheets), "Worksheets must have unique names"
+        for worksheet in self.workbook_obj.Sheets:
+            i = 1
+            original_name = worksheet.Name
+            while worksheet.Name in sheet_names:
+                worksheet.Name = "%s_%d" % (original_name, i)
+                i += 1
+
+        for worksheet, sheet in zip(self.workbook_obj.Sheets, self.worksheets):
+            worksheet.Name = sheet.name
+
+        # Export each sheet (have to use itersheets for this as it sets the
+        # current active sheet before yielding each one).
+        for worksheet, sheet in zip(self.workbook_obj.Sheets, self.itersheets()):
+            worksheet.Select()
+            sheet.to_excel(workbook=self,
+                           worksheet=worksheet,
+                           xl_app=xl_app,
+                           rename=False,
+                           resize_columns=resize_columns)
+
+        return self.workbook_obj

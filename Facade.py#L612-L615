@@ -1,0 +1,4 @@
+def create_check_box_widget(self, text=None):
+        check_box_widget = CheckBoxWidget(self.__ui)
+        check_box_widget.text = text
+        return check_box_widget

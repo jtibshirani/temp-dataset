@@ -1,0 +1,27 @@
+function sendData($data, $flags = null)
+    {
+        $rHandler = $this->resource()->getRHandler();
+
+        if ($flags === null) {
+            if ($this->resource()->meta()->getStreamType() == 'udp_socket')
+                // STREAM_OOB data not provided on udp sockets
+                $flags = STREAM_PEEK;
+            else
+                $flags = STREAM_SOCK_RDM;
+        }
+
+        $ret = @stream_socket_sendto($rHandler, $data, $flags);
+
+        if ($ret == -1) {
+            $lerror = error_get_last();
+            throw new \RuntimeException(sprintf(
+                'Cannot send data on stream, %s.',
+                $lerror['message']
+            ));
+        }
+
+
+        $this->_resetTransCount($ret);
+
+        return $this;
+    }

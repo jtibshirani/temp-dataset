@@ -1,0 +1,15 @@
+public function export($entity, $fileType) {
+
+        $appHelper = new libs\AppHelper();
+        
+	$className = $appHelper->getModel($entity);
+	$data      = $className::get();
+	if (strcmp($fileType, "excel") == 0) {
+		$excel = \App::make('Excel');
+		\Excel::create($entity, function($excel) use ($data) {
+			$excel->sheet('Sheet1', function($sheet) use ($data) {
+				$sheet->fromModel($data);
+			});
+		})->export('xls');
+	}
+    }

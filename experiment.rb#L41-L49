@@ -1,0 +1,9 @@
+def format_observation(observation)
+      observation.name + ":\n" +
+      if observation.raised?
+        lines = observation.exception.backtrace.map { |line| "    #{line}" }.join("\n")
+        "  #{observation.exception.inspect}" + "\n" + lines
+      else
+        "  #{observation.cleaned_value.inspect}"
+      end
+    end

@@ -1,0 +1,9 @@
+func NewMapArrayTest(init ...*MapArrayTest) *MapArrayTest {
+	var o *MapArrayTest
+	if len(init) == 1 {
+		o = init[0]
+	} else {
+		o = new(MapArrayTest)
+	}
+	return o.Init()
+}

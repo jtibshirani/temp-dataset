@@ -1,0 +1,16 @@
+def levenshtein_similarity(s1, s2):
+
+    conc = pandas.Series(list(zip(s1, s2)))
+
+    def levenshtein_apply(x):
+
+        try:
+            return 1 - jellyfish.levenshtein_distance(x[0], x[1]) \
+                / np.max([len(x[0]), len(x[1])])
+        except Exception as err:
+            if pandas.isnull(x[0]) or pandas.isnull(x[1]):
+                return np.nan
+            else:
+                raise err
+
+    return conc.apply(levenshtein_apply)

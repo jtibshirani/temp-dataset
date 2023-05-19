@@ -1,0 +1,14 @@
+function AES_Encrypt(block, key) {
+	var l = key.length;
+	AES_AddRoundKey(block, key.slice(0, 16));
+	for(var i = 16; i < l - 16; i += 16) {
+		AES_SubBytes(block, AES_Sbox);
+		AES_ShiftRows(block, AES_ShiftRowTab);
+		AES_MixColumns(block);
+		AES_AddRoundKey(block, key.slice(i, i + 16));
+	}
+	AES_SubBytes(block, AES_Sbox);
+	AES_ShiftRows(block, AES_ShiftRowTab);
+	AES_AddRoundKey(block, key.slice(i, l));
+	return block;
+}

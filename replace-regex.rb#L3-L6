@@ -1,0 +1,4 @@
+def replace_regex(input, regex_string, replace_string)
+			regex = Regexp.new regex_string
+			input.gsub regex, replace_string
+		end

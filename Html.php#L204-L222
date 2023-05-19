@@ -1,0 +1,19 @@
+public function _checkbox(array $tag = [])
+    {
+        $name = $tag['name'];
+        $checkboxes = $tag['checkboxes'];
+        $checked = $tag['checked'];
+        $separator = $tag['separator'];
+        $checkboxes = $this->tpl->get($checkboxes);
+        $checked = $this->tpl->get($checked) ? $this->tpl->get($checked) : $checked;
+        $parseStr = '';
+        foreach ($checkboxes as $key => $val) {
+            if ($checked == $key || in_array($key, $checked)) {
+                $parseStr .= '<input type="checkbox" checked="checked" name="'.$name.'[]" value="'.$key.'">'.$val.$separator;
+            } else {
+                $parseStr .= '<input type="checkbox" name="'.$name.'[]" value="'.$key.'">'.$val.$separator;
+            }
+        }
+
+        return $parseStr;
+    }

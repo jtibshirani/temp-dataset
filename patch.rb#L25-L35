@@ -1,0 +1,11 @@
+def parse_line(line_content, line_number, patch_position, lines)
+      case line_content
+      when RANGE_INFORMATION_LINE
+        Regexp.last_match[:line_number].to_i
+      when MODIFIED_LINE
+        lines << Line.new(line_number, line_content, patch_position)
+        line_number + 1
+      when NOT_REMOVED_LINE
+        line_number + 1
+      end
+    end

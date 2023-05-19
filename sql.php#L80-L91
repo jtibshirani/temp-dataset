@@ -1,0 +1,12 @@
+public static function run($query, $database = null)
+    {
+        if (empty(self::$connect)) {
+            self::connect();
+        }
+        if ($database != self::$config['database']) {
+            self::$connect->select_db($database);
+        }
+        if (!self::$connect->query($query)) {
+            system::add_error('sql::run()', 'query_fail', 'fail to run query');
+        }
+    }

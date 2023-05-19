@@ -1,0 +1,40 @@
+def get_dimensions
+         dimensions = nil
+
+         open_file do |file|
+           file.pos = DIMENSIONS_OFFSET[@type]
+           read = []
+
+           # Check the image type.
+           if @type == JPEG
+              # Read until we can't anymore or we've found what we're looking for.
+              done = false
+              while !file.eof? and !done
+                 # Read to the next marker.
+                 read_source(file,read) {|c| c == 0xff} # Read to the marker.
+                 read_source(file,read) {|c| c != 0xff} # Skip any padding.
+
+                 if read[-1] >= 0xc0 && read[-1] <= 0xc3
+                    # Read in the width and height details.
+                    read_source(file, read, 7)
+                    dimensions = read[-4,4].pack('C4').unpack('nn').reverse
+                    done       = true
+                 else
+                    # Skip the marker block.
+                    read_source(file, read, 2)
+                    read_source(file, read, read[-2,2].pack('C2').unpack('n')[0] - 2)
+                 end
+              end
+           elsif @type == PNG
+              # Read in the data to contain the width and height.
+              read_source(file, read, 16)
+              dimensions = read[-8,8].pack('C8').unpack('N2')
+           elsif @type == BITMAP
+              # Read in the data to contain the width and height.
+              read_source(file, read, 18)
+              dimensions = [to_integer(read[-8,4]), to_integer(read[-4,4])]
+           end
+         end
+
+         dimensions
+      end

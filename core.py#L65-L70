@@ -1,0 +1,6 @@
+def format_date(date, timestamp_format):
+    try:
+        date = DATE_ADD.format(int(date))
+    except ValueError:
+        date = timestamp_format.format(date)
+    return date

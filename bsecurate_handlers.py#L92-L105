@@ -1,0 +1,14 @@
+def bsecurate_cli_handle_subcmd(args):
+    handler_map = {
+        'get-reader-formats': _bsecurate_cli_get_reader_formats,
+        'elements-in-files': _bsecurate_cli_elements_in_files,
+        'component-file-refs': _bsecurate_cli_component_file_refs,
+        'print-component-file': _bsecurate_cli_print_component_file,
+        'compare-basis-sets': _bsecurate_cli_compare_basis_sets,
+        'compare-basis-files': _bsecurate_cli_compare_basis_files,
+        'make-diff': _bsecurate_cli_make_diff,
+        'view-graph': _bsecurate_cli_view_graph,
+        'make-graph-file': _bsecurate_cli_make_graph_file
+    }
+
+    return handler_map[args.subcmd](args)

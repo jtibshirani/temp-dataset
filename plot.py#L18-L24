@@ -1,0 +1,7 @@
+def encode(self):
+        if self.html:
+            return self.html
+        elif self.fig:
+            return self.encode2()
+        else:
+            return self.encode1()

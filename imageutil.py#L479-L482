@@ -1,0 +1,4 @@
+def _convert_uint8(im):
+    if im.dtype != np.uint8:
+        im = np.uint8(im * 255)
+    return im

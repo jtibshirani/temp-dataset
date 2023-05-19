@@ -1,0 +1,22 @@
+def convert()
+      errors = ""
+      output = ""
+      
+      if @user_pwd 
+        cmd = "pdftohtml -stdout #{@format} -upw #{@user_pwd}" + ' "' + @path + '"'    
+      elsif @owner_pwd 
+        cmd = "pdftohtml -stdout #{@format} -opw #{@owner_pwd}" + ' "' + @path + '"'
+      else
+        cmd = "pdftohtml -stdout #{@format}" + ' "' + @path + '"'
+      end
+      
+      output = `#{cmd} 2>&1`
+
+      if (output.include?("Error: May not be a PDF file"))
+        raise PDFToHTMLRError, "Error: May not be a PDF file (continuing anyway)"
+      elsif (output.include?("Error:"))
+        raise PDFToHTMLRError, output.split("\n").first.to_s.chomp
+      else
+        return output
+      end
+    end

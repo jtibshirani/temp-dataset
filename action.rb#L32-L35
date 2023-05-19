@@ -1,0 +1,4 @@
+def timer=(t)
+      raise ArgumentError.new('Expecting an ActionTimer::Timer') unless t.is_a?(ActionTimer::Timer)
+      @timer = t
+    end

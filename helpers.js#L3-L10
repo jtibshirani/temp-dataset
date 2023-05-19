@@ -1,0 +1,8 @@
+function isEqualDate(dateA, dateB) {
+  return (
+    dateA.getUTCFullYear() === dateB.getUTCFullYear()
+    && dateA.getUTCMonth() === dateB.getUTCMonth()
+    && dateA.getUTCDate() === dateB.getUTCDate()
+    && dateA.getTimezoneOffset() === dateB.getTimezoneOffset()
+  );
+}

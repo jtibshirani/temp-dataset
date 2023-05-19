@@ -1,0 +1,36 @@
+def ps(self):
+        """
+        Get the process information from the system PS command.
+        """
+        
+        # Get the process ID
+        pid = self.get()
+        
+        # Parent / child processes
+        parent   = None
+        children = []
+        
+        # If the process is running
+        if pid:
+            proc   = Popen(['ps', '-ef'], stdout=PIPE)
+            for _line in proc.stdout.readlines():
+                line = self.unicode(_line.rstrip())
+                
+                # Get the current PID / parent PID
+                this_pid, this_parent = self._ps_extract_pid(line)
+                try:
+                    
+                    # If scanning a child process
+                    if int(pid) == int(this_parent):
+                        children.append('{}; [{}]'.format(this_pid.rstrip(), re.sub(' +', ' ', line)))
+                    
+                    # If scanning the parent process
+                    if int(pid) == int(this_pid):
+                        parent = re.sub(' +', ' ', line)
+                        
+                # Ignore value errors
+                except ValueError:
+                    continue
+                
+        # Return the parent PID and any children processes
+        return (parent, children)

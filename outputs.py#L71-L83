@@ -1,0 +1,13 @@
+def save(self):
+        filename_list = self.output['source']['filenames']
+        if not isinstance(filename_list, list):
+            filename_list = filename_list.split(' ')
+        contents_list = []
+        for filename in filename_list:
+            file_path = os.path.join(
+                self.working_dir, filename)
+            contents_list.append(self._read_file(file_path))
+        self.output.update({'data': {'contents': contents_list}})
+        self.connection.update_task_attempt_output(
+            self.output['uuid'],
+            self.output)

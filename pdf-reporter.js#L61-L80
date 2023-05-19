@@ -1,0 +1,20 @@
+function convertToPdf(htmlFile) {
+    var binPath;
+
+    if (process.platform === 'win32') {
+        binPath = path.join(__dirname, 'pdf', 'wkhtmltopdf.exe');
+    } else if (process.platform === 'linux') {
+        binPath = path.join(__dirname, 'pdf', 'wkhtmltopdf-lin');
+    } else {
+        throw 'PDF reporter is not yet supported on OS X.';
+        //binPath = path.join(__dirname, 'pdf', 'wkhtmltopdf-osx');
+    }
+
+    var pdfPath = htmlFile.replace(new RegExp('.htm', 'g'), '.pdf');
+
+    exec(binPath, ['-q', '--viewport-size', '1600x900', '-O', 'Landscape', '-L', '10mm', '-R', '10mm', '-T', '10mm', '-B', '10mm', htmlFile, pdfPath], {stdio:[0,1,2]});
+
+    fs.unlinkSync(htmlFile);
+
+    return pdfPath;
+}

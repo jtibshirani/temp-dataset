@@ -1,0 +1,143 @@
+func parsecmd(line string) (cmd *Cmd, err error) {
+	cmd = &Cmd{}
+	line = strings.TrimSpace(line)
+	if line == "" {
+		// Empty command is a special case: advance and print.
+		cmd.F = pcmd
+		if dot == nil {
+			cmd.A1 = 1
+			cmd.A2 = 1
+		} else {
+			n := msgNum[dot.Msg] + 2
+			if n > len(msgs) {
+				return nil, fmt.Errorf("out of messages")
+			}
+			cmd.A1 = n
+			cmd.A2 = n
+		}
+		return cmd, nil
+	}
+
+	// Global search?
+	if line[0] == 'g' {
+		line = line[1:]
+		if line == "" || line[0] != '/' {
+			// No search string means all messages.
+			cmd.A1 = 1
+			cmd.A2 = len(msgs)
+		} else if line[0] == '/' {
+			re, rest, err := parsere(line)
+			if err != nil {
+				return nil, err
+			}
+			line = rest
+			// Find all messages matching this search string.
+			var targ []*imap.Msg
+			for _, m := range msgs {
+				if re.MatchString(header(m)) {
+					targ = append(targ, m)
+				}
+			}
+			if len(targ) == 0 {
+				return nil, fmt.Errorf("no matches")
+			}
+			cmd.Targs = targ
+		}
+	} else {
+		// Parse an address.
+		a1, targ, rest, err := parseaddr(line, 1)
+		if err != nil {
+			return nil, err
+		}
+		if targ != nil {
+			cmd.Targ = targ
+			line = rest
+		} else {
+			if a1 < 1 || a1 > len(msgs) {
+				return nil, fmt.Errorf("message number %d out of range", a1)
+			}
+			cmd.A1 = a1
+			cmd.A2 = a1
+			a2 := a1
+			if rest != "" && rest[0] == ',' {
+				// This is an address range.
+				a2, targ, rest, err = parseaddr(rest[1:], len(msgs))
+				if err != nil {
+					return nil, err
+				}
+				if a2 < 1 || a2 > len(msgs) {
+					return nil, fmt.Errorf("message number %d out of range", a2)
+				}
+				cmd.A2 = a2
+			} else if rest == line {
+				// There was no address.
+				if dot == nil {
+					cmd.A1 = 1
+					cmd.A2 = 0
+				} else {
+					if dot != nil {
+						if dot == &dot.Msg.Root {
+							// If dot is a plain msg, use a range so that dp works.
+							cmd.A1 = msgNum[dot.Msg] + 1
+							cmd.A2 = cmd.A1
+						} else {
+							cmd.Targ = dot
+						}
+					}
+				}
+			}
+			line = rest
+		}
+	}
+
+	cmd.Line = strings.TrimSpace(line)
+
+	// Insert space after ! or | for tokenization.
+	switch {
+	case strings.HasPrefix(cmd.Line, "||"):
+		cmd.Line = cmd.Line[:2] + " " + cmd.Line[2:]
+	case strings.HasPrefix(cmd.Line, "!"), strings.HasPrefix(cmd.Line, "|"):
+		cmd.Line = cmd.Line[:1] + " " + cmd.Line[1:]
+	}
+
+	av := strings.Fields(cmd.Line)
+	cmd.Args = av
+	if len(av) == 0 || av[0] == "" {
+		// Default is to print.
+		cmd.F = pcmd
+		return cmd, nil
+	}
+
+	name := av[0]
+	cmd.ArgLine = strings.TrimSpace(cmd.Line[len(av[0]):])
+
+	// Hack to allow t prefix on all commands.
+	if len(name) >= 2 && name[0] == 't' {
+		cmd.Thread = true
+		name = name[1:]
+	}
+
+	// Hack to allow d prefix on all commands.
+	if len(name) >= 2 && name[0] == 'd' {
+		cmd.Delete = true
+		name = name[1:]
+	}
+	cmd.Name = name
+
+	// Search command table.
+	for _, ct := range cmdtab {
+		if ct.Name == name {
+			if ct.Args == 0 && len(av) > 1 {
+				return nil, fmt.Errorf("%s doesn't take an argument", name)
+			}
+			cmd.F = ct.F
+			cmd.TF = ct.TF
+			if name == "m" {
+				// mute applies to all thread no matter what
+				cmd.Thread = true
+			}
+			return cmd, nil
+		}
+	}
+	return nil, fmt.Errorf("unknown command %s", name)
+}

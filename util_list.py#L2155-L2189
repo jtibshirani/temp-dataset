@@ -1,0 +1,35 @@
+def sample_lists(items_list, num=1, seed=None):
+    r"""
+    Args:
+        items_list (list):
+        num (int): (default = 1)
+        seed (None): (default = None)
+
+    Returns:
+        list: samples_list
+
+    CommandLine:
+        python -m utool.util_list --exec-sample_lists
+
+    Example:
+        >>> # DISABLE_DOCTEST
+        >>> from utool.util_list import *  # NOQA
+        >>> items_list = [[], [1, 2, 3], [4], [5, 6], [7, 8, 9, 10]]
+        >>> num = 2
+        >>> seed = 0
+        >>> samples_list = sample_lists(items_list, num, seed)
+        >>> result = ('samples_list = %s' % (str(samples_list),))
+        >>> print(result)
+        samples_list = [[], [3, 2], [4], [5, 6], [10, 9]]
+    """
+    if seed is not None:
+        rng = np.random.RandomState(seed)
+    else:
+        rng = np.random
+    def random_choice(items, num):
+        size = min(len(items), num)
+        return rng.choice(items, size, replace=False).tolist()
+    samples_list = [random_choice(items, num)
+                    if len(items) > 0 else []
+                    for items in items_list]
+    return samples_list

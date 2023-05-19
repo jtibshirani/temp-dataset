@@ -1,0 +1,16 @@
+def _search_for_executable(self, executable):
+        """
+        Search for file give in "executable". If it is not found, we try the environment PATH.
+        Returns either the absolute path to the found executable, or None if the executable
+        couldn't be found.
+        """
+        if os.path.isfile(executable):
+            return os.path.abspath(executable)
+        else:
+            envpath = os.getenv('PATH')
+            if envpath is None:
+                return
+            for path in envpath.split(os.pathsep):
+                exe = os.path.join(path, executable)
+                if os.path.isfile(exe):
+                    return os.path.abspath(exe)

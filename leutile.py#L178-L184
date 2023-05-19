@@ -1,0 +1,7 @@
+def group_by_count(self):
+        d = OrderedDict()
+        for item, count in self.most_common():
+            if count not in d:
+                d[count] = []
+            d[count].append(item)
+        return d.items()

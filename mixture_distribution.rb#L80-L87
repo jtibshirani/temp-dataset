@@ -1,0 +1,8 @@
+def calculate_variance
+        @mixture.inject(0.0) do |s,x|
+          # the following formula was taken from
+          # https://en.wikipedia.org/wiki/Mixture_Distribution#Moments
+          s += (x[:weight] * ((x[:distribution].mean - self.mean) ** 2 +
+                               x[:distribution].variance))
+        end
+      end

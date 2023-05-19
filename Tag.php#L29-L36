@@ -1,0 +1,8 @@
+public static function tag($name, $content, $options = null)
+    {
+        $output = '';
+        $output = self::tagHtml($name, $options, false, false, true);
+        $output .= $content;
+        $output .= self::tagHtmlClose($name, true);
+        return $output;
+    }

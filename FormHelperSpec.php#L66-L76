@@ -1,0 +1,11 @@
+public function it_makes_input_checkbox_tag()
+    {
+        $this->checkbox('name', 'value')
+            ->make()
+            ->shouldBe('<input type="checkbox" name="name" value="value" />');
+        
+        // checked
+        $this->checkbox('name', 'value', true)
+            ->make()
+            ->shouldBe('<input type="checkbox" name="name" value="value" checked="checked" />');
+    }

@@ -1,0 +1,4 @@
+public function inc($key,$value=1){
+        if(null === ($current = $this->get($key))) $current = $value; else $current += $value;
+        $this->set($key,$current);
+    }

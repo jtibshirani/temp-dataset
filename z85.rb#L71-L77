@@ -1,0 +1,7 @@
+def decode(input)
+      raise ArgumentError, "wrong input length" if input.bytesize % 5 > 0
+      zchunk = ffi_delegate.decode(input)
+      raise_zmq_err if zchunk.null?
+      decoded_string = zchunk.data.read_string(zchunk.size - 1)
+      return decoded_string
+    end

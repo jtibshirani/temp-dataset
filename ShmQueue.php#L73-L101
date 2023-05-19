@@ -1,0 +1,29 @@
+protected function doPop($priority = null, $block = false)
+    {
+        // 只想取出一个 $priority 队列的数据
+        if ($this->isPriority($priority)) {
+            // $priority 级别的队列还未初始化。
+            // $queue = $this->createQueue($priority);
+            if (!$this->hasQueue($priority)) {
+                return null;
+            }
+
+            return $this->queues[$priority]->lPop();
+        }
+
+        $data = null;
+
+        foreach ($this->queues as $pri => $queue) {
+            // $queue = $queue ?: $this->createQueue($pri);
+            if (!$queue) {
+                continue;
+            }
+
+            if (false !== ($data = $queue->lPop())) {
+                break;
+            }
+        }
+
+        // reset($this->queues);
+        return $data;
+    }

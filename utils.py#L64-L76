@@ -1,0 +1,13 @@
+def int_to_decimal_str(integer):
+    """
+    Helper to convert integers (representing cents) into decimal currency
+    string. WARNING: DO NOT TRY TO DO THIS BY DIVISION, FLOATING POINT
+    ERRORS ARE NO FUN IN FINANCIAL SYSTEMS.
+    @param integer The amount in cents
+    @return string The amount in currency with full stop decimal separator
+    """
+    int_string = str(integer)
+    if len(int_string) < 2:
+        return "0." + int_string.zfill(2)
+    else:
+        return int_string[:-2] + "." + int_string[-2:]

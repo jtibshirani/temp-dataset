@@ -1,0 +1,6 @@
+def parse(args, data):
+    url = urlparse(data)
+    query = url.query
+    if not args.no_query_params:
+        query = parse_qsl(url.query)
+    return url, query

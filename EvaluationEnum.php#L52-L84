@@ -1,0 +1,33 @@
+public static function toString(int $value): string
+    {
+        assert(is_int($value) === true);
+
+        switch ($value) {
+            case static::PERMIT:
+                $result = 'PERMIT';
+                break;
+            case static::DENY:
+                $result = 'DENY';
+                break;
+            case static::INDETERMINATE:
+                $result = 'INDETERMINATE';
+                break;
+            case static::NOT_APPLICABLE:
+                $result = 'NOT APPLICABLE';
+                break;
+            case static::INDETERMINATE_PERMIT:
+                $result = 'INDETERMINATE PERMIT';
+                break;
+            case static::INDETERMINATE_DENY:
+                $result = 'INDETERMINATE DENY';
+                break;
+            case static::INDETERMINATE_DENY_OR_PERMIT:
+                $result = 'INDETERMINATE DENY OR PERMIT';
+                break;
+            default:
+                $result = 'UNKNOWN';
+                break;
+        }
+
+        return $result;
+    }

@@ -1,0 +1,21 @@
+protected function multiplyMatrix(Matrix $b) : Matrix
+    {
+        if ($this->n !== $b->n()) {
+            throw new DimensionalityMismatchException('Vector A requires'
+                . " $this->n columns but Matrix B has {$b->n()}.");
+        }
+
+        $c = [];
+
+        foreach ($b as $row) {
+            $temp = [];
+
+            foreach ($row as $j => $value) {
+                $temp[] = $this->a[$j] * $value;
+            }
+
+            $c[] = $temp;
+        }
+
+        return Matrix::quick($c);
+    }

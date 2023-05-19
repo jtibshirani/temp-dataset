@@ -1,0 +1,6 @@
+def czech_html(input)
+      coder = HTMLEntities.new
+      encoded = coder.encode(input, :named, :decimal)
+      czech_diacritics.each { |k, v| encoded.gsub!(k, v) }
+      encoded
+    end

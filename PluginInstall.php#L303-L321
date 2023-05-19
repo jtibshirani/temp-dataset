@@ -1,0 +1,19 @@
+private function extractZip()
+    {
+        $this->info("Extracting");
+        $this->tmpDirectory = tmpPath($this->tmpRandomName);
+
+        // extract
+        Zipper::make($this->tmpZipFile)->extractTo($this->tmpDirectory);
+
+        // delete zip file
+        File::delete($this->tmpZipFile);
+
+        // zip creates a parent directory on extract, pass it
+        $directories = File::directories($this->tmpDirectory);
+        if(isset($directories[0])) {
+            $this->tmpDirectory = $directories[0];
+        }
+
+        return $this;
+    }

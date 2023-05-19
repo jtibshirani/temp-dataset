@@ -1,0 +1,10 @@
+public function convertDecToHex($dec)
+    {
+        if (strlen($dec) < 5) {
+            return dechex($dec);
+        }
+
+        list($remain, $last) = array(bcdiv(bcsub($dec, $last), '16'), bcmod($dec, '16'));
+
+        return ($remain == 0) ? dechex($last) : $this->convertDecToHex($remain) . dechex($last);
+    }

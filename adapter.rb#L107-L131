@@ -1,0 +1,25 @@
+def transform_data_item(type, data)
+      json = {}
+      transforms = self.class.get_transforms
+      
+      type.get_class_properties.each do |property|
+        key = property[:name].to_sym
+        transform = transforms[property[:type]]
+        if transform
+          json[key] = transform[:deserialize].call(data.valueForKey(key))
+        else
+          json[key] = data.valueForKey(key)
+        end
+      end
+      
+      type.get_class_relationships.each do |relationship|
+        if relationship[:belongs_to]
+          key = "#{relationship[:belongs_to]}_id".to_sym
+        elsif relationship[:has_many]
+          key = "#{relationship[:has_many].to_s.singularize}_ids".to_sym
+        end
+        json[key] = data.valueForKey(key)
+      end
+      
+      json
+    end

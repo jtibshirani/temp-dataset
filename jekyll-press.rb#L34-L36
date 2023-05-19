@@ -1,0 +1,3 @@
+def output_html(path, content)
+      output_file(path, HtmlPress.press(content, @site.config['jekyll-press'] && @site.config['jekyll-press']['html_options'] || {}))
+    end

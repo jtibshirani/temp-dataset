@@ -1,0 +1,3 @@
+def compile_file(file, opts)
+      Faml::Engine.new(opts.merge(filename: file)).call(File.read(file))
+    end

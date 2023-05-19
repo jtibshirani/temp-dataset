@@ -1,0 +1,33 @@
+def __inject_files_to_staging(self, rel_filepaths, temp_path):
+        patch_files = {}
+        for rel_filepath in rel_filepaths:
+            from_filepath = os.path.join(self.__root_path, rel_filepath)
+            to_filepath = os.path.join(temp_path, rel_filepath)
+
+            _LOGGER.debug("Copying file to patch path: [%s] => [%s]", 
+                          from_filepath, to_filepath)
+
+            to_path = os.path.dirname(to_filepath)
+            if os.path.exists(to_path) is False:
+                os.makedirs(to_path)
+
+            with open(from_filepath, 'rb') as f:
+                with open(to_filepath, 'wb') as g:
+                    shutil.copyfileobj(f, g)
+
+            s = os.stat(from_filepath)
+            mtime_epoch = int(s.st_mtime)
+            filesize_b = s.st_size
+
+            # Set patch mtime.
+            os.utime(to_filepath, (mtime_epoch, mtime_epoch))
+
+            hash_ = self.__get_md5_for_rel_filepath(rel_filepath)
+
+            patch_files[rel_filepath] = {
+                'mtime_epoch': mtime_epoch,
+                'filesize_b': filesize_b,
+                'hash_md5': hash_,
+            }
+
+        return patch_files

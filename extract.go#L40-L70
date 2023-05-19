@@ -1,0 +1,31 @@
+func (t ext) Generate(a content.Article) error {
+	thumbnail := content.Thumbnail{ArticleID: a.ID, Processed: true}
+
+	t.log.Debugf("Generating thumbnail for article %s from extract", a)
+
+	thumbnail.Thumbnail, thumbnail.Link =
+		generateThumbnailFromDescription(strings.NewReader(a.Description))
+
+	if thumbnail.Link == "" {
+		t.log.Debugf("%s description doesn't contain suitable link, getting extract\n", a)
+
+		extract, err := extract.Get(a, t.extractRepo, t.generator, t.processors)
+		if err != nil {
+			return errors.WithMessage(err, fmt.Sprintf("getting article extract for %s", a))
+		}
+
+		if extract.TopImage == "" {
+			t.log.Debugf("Extract for %s doesn't contain a top image", a)
+		} else {
+			t.log.Debugf("Generating thumbnail from top image %s of %s\n", extract.TopImage, a)
+			thumbnail.Thumbnail = generateThumbnailFromImageLink(extract.TopImage)
+			thumbnail.Link = extract.TopImage
+		}
+	}
+
+	if err := t.repo.Update(thumbnail); err != nil {
+		return errors.WithMessage(err, "saving thumbnail to repo")
+	}
+
+	return nil
+}

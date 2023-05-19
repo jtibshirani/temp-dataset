@@ -1,0 +1,20 @@
+def parse_url(url):
+
+    # Parse the URL into scheme, path, and query.
+    m = re.match(r'^(?:(\w+):)?(.*?)(?:/(.*?))?(?:\?(.*))?$', url)
+    scheme, netloc, path, query = m.groups()
+    
+    kwargs = urlparse.parse_qs(query, keep_blank_values=True) if query else {}
+    for k, v in kwargs.iteritems():
+        if len(v) == 1 and k not in ('cols', 'column_display_names'):
+            kwargs[k] = v = v[0]
+        if k.endswith('_id') and v.isdigit():
+            kwargs[k] = int(v)
+
+    # Parse the path into an entrypoint.
+    m = re.match(r'^([\w.]+:\w+)$', netloc)
+    if not m:
+        raise ValueError('entrypoint must be like "package.module:function"; got "%s"' % netloc)
+        return 1
+
+    return m.group(1), kwargs

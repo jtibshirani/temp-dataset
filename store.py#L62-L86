@@ -1,0 +1,25 @@
+def connect(self, db_uri, debug=False):
+        """Configure connection to a SQL database.
+
+        Args:
+            db_uri (str): path/URI to the database to connect to
+            debug (Optional[bool]): whether to output logging information
+        """
+        kwargs = {'echo': debug, 'convert_unicode': True}
+        # connect to the SQL database
+        if 'mysql' in db_uri:
+            kwargs['pool_recycle'] = 3600
+        elif '://' not in db_uri:
+            logger.debug("detected sqlite path URI: {}".format(db_uri))
+            db_path = os.path.abspath(os.path.expanduser(db_uri))
+            db_uri = "sqlite:///{}".format(db_path)
+
+        self.engine = create_engine(db_uri, **kwargs)
+        logger.debug('connection established successfully')
+        # make sure the same engine is propagated to the BASE classes
+        BASE.metadata.bind = self.engine
+        # start a session
+        self.session = scoped_session(sessionmaker(bind=self.engine))
+        # shortcut to query method
+        self.query = self.session.query
+        return self

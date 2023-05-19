@@ -1,0 +1,5 @@
+def parse_date(date_str):
+    if date_str:
+        date = datetime.strptime(date_str, '%Y%m%d')
+        return date.year, date.month - 1, date.day
+    return '', '', ''

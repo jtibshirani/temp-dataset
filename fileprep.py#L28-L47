@@ -1,0 +1,20 @@
+def prep(self):
+        while True:
+            sample = self.queue.get()
+            # Don't make the file if it already exists
+            if not os.path.isfile(sample.general.combined):
+                # Iterate through the uncompressed .fastq file(s)
+                for read in sample.general.fastqfiles:
+                    # Only decompress if the reads are gzipped
+                    if '.gz' in read:
+                        with open(sample.general.combined, 'wb') as combined:
+                            # Open the .fastq file with gzip
+                            with gzip.open(read, 'rb') as fastq:
+                                # Read the file contents and write them to the combined file
+                                combined.write(fastq.read())
+                    else:
+                        with open(sample.general.combined, 'w') as combined:
+                            with open(read, 'r') as fastq:
+                                # Read in data and write it to file
+                                combined.write(fastq.read())
+            self.queue.task_done()

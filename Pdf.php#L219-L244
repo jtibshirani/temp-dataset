@@ -1,0 +1,26 @@
+private function eaPDFSettings($parts)
+    {
+
+        $templateModel = $this->template;
+
+        $oldErrorReporting = error_reporting();
+
+        $config = $this->config($templateModel);
+
+        $pdf = $this->mpdfFactory->create($config);
+
+        $pdf->SetHTMLHeader($parts['header']);
+        $pdf->SetHTMLFooter($parts['footer']);
+
+        $css = $templateModel->getTemplateCss();
+
+        $pdf->WriteHTML($css, 1);
+
+        //@codingStandardsIgnoreLine
+        $pdf->WriteHTML('<body>' . html_entity_decode($parts['body']) . '</body>');
+        $pdfToOutput = $pdf->Output('', 'S');
+
+        error_reporting($oldErrorReporting);
+
+        return $pdfToOutput;
+    }

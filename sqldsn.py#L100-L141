@@ -1,0 +1,42 @@
+def _postgresql(self, dbhost, dbport, dbname, dbuser, dbpass, dsn_style=None):  # noqa
+        """PostgreSQL psycopg2 driver  accepts two syntaxes
+
+        Plus a string for .pgpass file
+        """
+        dsn = []
+
+        if dsn_style is None or dsn_style == 'all' or dsn_style == 'keyvalue':
+            dsnstr = "host='{0}' dbname='{2}' user='{3}' password='{4}'"
+
+            if dbport is not None:
+                dsnstr += " port='{1}'"
+
+            dsn.append(dsnstr.format(dbhost,
+                                     dbport,
+                                     dbname,
+                                     dbuser,
+                                     dbpass,))
+
+        if dsn_style == 'all' or dsn_style == 'kwargs':
+            dsnstr = "host='{0}', database='{2}', user='{3}', password='{4}'"
+            if dbport is not None:
+                dsnstr += ", port='{1}'"
+
+            dsn.append(dsnstr.format(dbhost,
+                                     dbport,
+                                     dbname,
+                                     dbuser,
+                                     dbpass))
+
+        if dsn_style == 'all' or dsn_style == 'uri':
+            dsnstr = "postgresql://{user}:{password}@{host}/{name}"
+
+            dsn.append(dsnstr.format(
+                host="{host}:{port}".format(host=dbhost, port=dbport) if dbport else dbhost,  # noqa
+                name=dbname, user=dbuser, password=dbpass))
+
+        if dsn_style == 'all' or dsn_style == 'pgpass':
+            dsn.append(':'.join(map(str, filter(
+                None, [dbhost, dbport, dbname, dbuser, dbpass]))))
+
+        return dsn

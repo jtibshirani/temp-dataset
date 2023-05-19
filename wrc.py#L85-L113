@@ -1,0 +1,29 @@
+def html_to_pdf(tmp_filenames, output_directory, lang_options):
+    input_html = output_directory + "/" + tmp_filenames[0]
+    wkthml_cmd = ["wkhtmltopdf"]
+    # Basic margins etc
+    wkthml_cmd.extend(["--margin-left", "18"])
+    wkthml_cmd.extend(["--margin-right", "18"])
+    wkthml_cmd.extend(["--page-size", "Letter"])
+    # Header and Footer
+    header_file = pkg_resources.resource_filename("wrc", "data/header.html")
+    footer_file = pkg_resources.resource_filename("wrc", "data/footer.html")
+    wkthml_cmd.extend(["--header-html", header_file])
+    wkthml_cmd.extend(["--footer-html", footer_file])
+    wkthml_cmd.extend(["--header-spacing", "8"])
+    wkthml_cmd.extend(["--footer-spacing", "8"])
+    wkthml_cmd.append(input_html)
+    wkthml_cmd.append(output_directory + "/" + lang_options['pdf'] + '.pdf')
+    try:
+        check_call(wkthml_cmd)
+        print "Successfully generated pdf file!"
+        print "Cleaning temporary file (%s)..." % input_html
+        os.remove(input_html)
+    except CalledProcessError as err:
+        print "Error while generating pdf:"
+        print err
+        sys.exit(1)
+    except OSError as err:
+        print "Error when running command \"" + " ".join(wkthml_cmd) + "\""
+        print err
+        sys.exit(1)

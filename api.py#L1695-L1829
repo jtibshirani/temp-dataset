@@ -1,0 +1,135 @@
+def cluster_kmeans(data=None, k=None, max_iter=10, tolerance=1e-5, stride=1,
+                   metric='euclidean', init_strategy='kmeans++', fixed_seed=False,
+                   n_jobs=None, chunksize=None, skip=0, keep_data=False, clustercenters=None, **kwargs):
+    r"""k-means clustering
+
+    If data is given, it performs a k-means clustering and then assigns the
+    data using a Voronoi discretization. It returns a :class:`KmeansClustering <pyemma.coordinates.clustering.KmeansClustering>`
+    object that can be used to extract the discretized data sequences, or to
+    assign other data points to the same partition. If data is not given, an
+    empty :class:`KmeansClustering <pyemma.coordinates.clustering.KmeansClustering>`
+    will be created that still needs to be parametrized, e.g. in a :func:`pipeline`.
+
+    Parameters
+    ----------
+    data: ndarray (T, d) or list of ndarray (T_i, d) or a reader created by :func:`source`
+        input data, if available in memory
+
+    k: int
+        the number of cluster centers. When not specified (None), min(sqrt(N), 5000) is chosen as default value,
+        where N denotes the number of data points
+
+    max_iter : int
+        maximum number of iterations before stopping. When not specified (None), min(sqrt(N),5000) is chosen
+        as default value, where N denotes the number of data points
+
+    tolerance : float
+        stop iteration when the relative change in the cost function
+
+        :math:`C(S) = \sum_{i=1}^{k} \sum_{\mathbf x \in S_i} \left\| \mathbf x - \boldsymbol\mu_i \right\|^2`
+
+        is smaller than tolerance.
+
+    stride : int, optional, default = 1
+        If set to 1, all input data will be used for estimation. Note that this
+        could cause this calculation to be very slow for large data sets. Since
+        molecular dynamics data is usually correlated at short timescales, it
+        is often sufficient to estimate transformations at a longer stride.
+        Note that the stride option in the get_output() function of the returned
+        object is independent, so you can parametrize at a long stride, and
+        still map all frames through the transformer.
+
+    metric : str
+        metric to use during clustering ('euclidean', 'minRMSD')
+
+    init_strategy : str
+        determines if the initial cluster centers are chosen according to the kmeans++-algorithm
+        or drawn uniformly distributed from the provided data set
+
+    fixed_seed : bool or (positive) integer
+        if set to true, the random seed gets fixed resulting in deterministic behavior; default is false.
+        If an integer >= 0 is given, use this to initialize the random generator.
+
+    n_jobs : int or None, default None
+        Number of threads to use during assignment of the data.
+        If None, all available CPUs will be used.
+
+    chunksize: int, default=None
+        Number of data frames to process at once. Choose a higher value here,
+        to optimize thread usage and gain processing speed. If None is passed,
+        use the default value of the underlying reader/data source. Choose zero to
+        disable chunking at all.
+
+    skip : int, default=0
+        skip the first initial n frames per trajectory.
+
+    keep_data: boolean, default=False
+        if you intend to quickly resume a non-converged kmeans iteration, set this to True.
+        Otherwise the linear memory array will have to be re-created. Note that the data will also be deleted,
+        if and only if the estimation converged within the given tolerance parameter.
+
+    clustercenters: ndarray (k, dim), default=None
+        if passed, the init_strategy is ignored and these centers will be iterated.
+
+    Returns
+    -------
+    kmeans : a :class:`KmeansClustering <pyemma.coordinates.clustering.KmeansClustering>` clustering object
+        Object for kmeans clustering.
+        It holds discrete trajectories and cluster center information.
+
+
+    Examples
+    --------
+
+    >>> import numpy as np
+    >>> from pyemma.util.contexts import settings
+    >>> import pyemma.coordinates as coor
+    >>> traj_data = [np.random.random((100, 3)), np.random.random((100,3))]
+    >>> with settings(show_progress_bars=False):
+    ...     cluster_obj = coor.cluster_kmeans(traj_data, k=20, stride=1)
+    ...     cluster_obj.get_output() # doctest: +ELLIPSIS
+    [array([...
+
+    .. seealso:: **Theoretical background**: `Wiki page <http://en.wikipedia.org/wiki/K-means_clustering>`_
+
+
+    .. autoclass:: pyemma.coordinates.clustering.kmeans.KmeansClustering
+        :members:
+        :undoc-members:
+
+        .. rubric:: Methods
+
+        .. autoautosummary:: pyemma.coordinates.clustering.kmeans.KmeansClustering
+           :methods:
+
+        .. rubric:: Attributes
+
+        .. autoautosummary:: pyemma.coordinates.clustering.kmeans.KmeansClustering
+            :attributes:
+
+    References
+    ----------
+    The k-means algorithms was invented in [1]_. The term k-means was
+    first used in [2]_.
+
+    .. [1] Steinhaus, H. (1957).
+        Sur la division des corps materiels en parties.
+        Bull. Acad. Polon. Sci. (in French) 4, 801-804.
+
+    .. [2] MacQueen, J. B. (1967).
+        Some Methods for classification and Analysis of Multivariate Observations.
+        Proceedings of 5th Berkeley Symposium on Mathematical Statistics and
+        Probability 1. University of California Press. pp. 281-297
+
+    """
+    from pyemma.coordinates.clustering.kmeans import KmeansClustering
+    res = KmeansClustering(n_clusters=k, max_iter=max_iter, metric=metric, tolerance=tolerance,
+                           init_strategy=init_strategy, fixed_seed=fixed_seed, n_jobs=n_jobs, skip=skip,
+                           keep_data=keep_data, clustercenters=clustercenters, stride=stride)
+    from pyemma.util.reflection import get_default_args
+    cs = _check_old_chunksize_arg(chunksize, get_default_args(cluster_kmeans)['chunksize'], **kwargs)
+    if data is not None:
+        res.estimate(data, chunksize=cs)
+    else:
+        res.chunksize = cs
+    return res

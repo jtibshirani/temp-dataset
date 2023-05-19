@@ -1,0 +1,26 @@
+public function getUrlIndexPager($more_table, $more_id, $base_more, $base_table, $base_id, $link_base_id, $link_table, $link_distant_id, $distant_id, $distant_table, array $where)
+    // PageFanta dependency should be isolated!
+    {
+        $queryBuilder = $this->getUrlIndexQueryBuilder(
+            $more_table, $more_id, $base_more, $base_table, $base_id,
+            $link_base_id, $link_table, $link_distant_id, $distant_id,
+            $distant_table, $where);
+
+        $finishQueryBuilderModifier = function (QueryBuilder $queryBuilder) {
+            $queryBuilder
+                ->groupBy('more.uuid') // suggested by Postgres error // TODO: Would it be only needed for counting?
+                ->addGroupBy('base.uuid') // suggested by Postgres error // TODO: Would it be only needed for counting?
+                ->orderBy('count(base.uuid=taxo.owned_url_uuid)', 'ASC')
+            ;
+        };
+
+        $countQueryBuilderModifier = function (QueryBuilder $queryBuilder) { // TODO: a simplified query may improve performance!
+            // $queryBuilder->select('COUNT(DISTINCT base.uuid) AS total_results, count(base.uuid=taxo.owned_url_uuid) AS taxocount')
+            $queryBuilder->select('COUNT(DISTINCT base.uuid) AS total_results')
+                  ->setMaxResults(1);
+        };
+
+        $adapter = new DoctrineDbal2ModifiersAdapter($queryBuilder, $finishQueryBuilderModifier, $countQueryBuilderModifier);
+
+        return new Pagerfanta($adapter);
+    }

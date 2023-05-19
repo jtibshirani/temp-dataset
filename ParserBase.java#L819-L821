@@ -1,0 +1,3 @@
+public Number convertToNumber(String s, NumberType type) {
+        return scanner.convertToNumber(s, type);
+    }

@@ -1,0 +1,20 @@
+def set_file(self, file=None, is_modified=False, is_untitled=False):
+        """
+        Sets the editor file.
+
+        :param File: File to set.
+        :type File: unicode
+        :param is_modified: File modified state.
+        :type is_modified: bool
+        :param is_untitled: File untitled state.
+        :type is_untitled: bool
+        :return: Method success.
+        :rtype: bool
+        """
+
+        LOGGER.debug("> Setting '{0}' editor file.".format(file))
+        self.__file = file
+        self.__is_untitled = is_untitled
+        self.set_modified(is_modified)
+        self.set_title()
+        return True

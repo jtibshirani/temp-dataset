@@ -1,0 +1,13 @@
+def convert(self, content, conversion):
+        """Convert content to Python data structures."""
+        if not conversion:
+            data = content
+        elif self.format == 'json':
+            data = json.loads(content)
+        elif self.format == 'xml':
+            content = xml(content)
+            first = list(content.keys())[0]
+            data = content[first]
+        else:
+            data = content
+        return data

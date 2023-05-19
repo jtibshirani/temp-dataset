@@ -1,0 +1,8 @@
+def datetime(self):
+        """
+        Returns a datetime object of the month, day, year, and time the game
+        was played.
+        """
+        date_string = '%s %s' % (self._date, self._year)
+        date_string = re.sub(r' \(\d+\)', '', date_string)
+        return datetime.strptime(date_string, '%A, %b %d %Y')

@@ -1,0 +1,7 @@
+def get_all_parents(self):
+        """Return all parent GO IDs."""
+        all_parents = set()
+        for parent in self.parents:
+            all_parents.add(parent.item_id)
+            all_parents |= parent.get_all_parents()
+        return all_parents

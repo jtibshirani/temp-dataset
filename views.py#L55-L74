@@ -1,0 +1,20 @@
+def render_pdf(self, *args, **kwargs):
+        """
+        Render the PDF and returns as bytes.
+
+        :rtype: bytes
+        """
+        html = self.render_html(*args, **kwargs)
+
+        options = self.get_pdfkit_options()
+        if 'debug' in self.request.GET and settings.DEBUG:
+            options['debug-javascript'] = 1
+
+        kwargs = {}
+        wkhtmltopdf_bin = os.environ.get('WKHTMLTOPDF_BIN')
+        if wkhtmltopdf_bin:
+            kwargs['configuration'] = pdfkit.configuration(wkhtmltopdf=wkhtmltopdf_bin)
+
+        pdf = pdfkit.from_string(html, False, options, **kwargs)
+
+        return pdf

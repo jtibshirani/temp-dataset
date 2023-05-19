@@ -1,0 +1,5 @@
+def to_bool(value):
+    try:
+        return bool(int(value))
+    except ValueError:
+        return True if 'true' == value.lower() else False

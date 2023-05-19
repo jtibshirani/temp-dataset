@@ -1,0 +1,37 @@
+def _tmp_html_file(
+            self,
+            content):
+        """*create a tmp html file with some content used for the header or footer of the ebook*
+
+        **Key Arguments:**
+            - ``content`` -- the content to include in the HTML file.
+        """
+        self.log.debug('starting the ``_tmp_html_file`` method')
+
+        content = """
+
+<hr>
+<div style="text-align: center">
+%(content)s
+</div>
+<hr>
+
+""" % locals()
+
+        now = datetime.now()
+        now = now.strftime("%Y%m%dt%H%M%S%f")
+        pathToWriteFile = "/tmp/%(now)s.html" % locals()
+        try:
+            self.log.debug("attempting to open the file %s" %
+                           (pathToWriteFile,))
+            writeFile = codecs.open(
+                pathToWriteFile, encoding='utf-8', mode='w')
+        except IOError, e:
+            message = 'could not open the file %s' % (pathToWriteFile,)
+            self.log.critical(message)
+            raise IOError(message)
+        writeFile.write(content)
+        writeFile.close()
+
+        self.log.debug('completed the ``_tmp_html_file`` method')
+        return pathToWriteFile

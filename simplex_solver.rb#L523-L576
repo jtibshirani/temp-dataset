@@ -1,0 +1,54 @@
+def optimize(zvar)
+      # Minimize the value of the objective.  (The tableau should
+      # already be feasible.)
+      zrow = rows[zvar]
+      exitvar = nil
+      while true do
+        # Find a variable in the objective function with a negative
+        # coefficient (ignoring dummy variables). If all coefficients
+        # are positive we're done.  To implement Bland's anticycling
+        # rule, if there is more than one variable with a negative
+        # coefficient, pick the one with the smaller id (implemented
+        # as hash).
+        entryvar = nil
+        zrow.each_variable_and_coefficient do |v, c|
+          if v.pivotable? and c.definitely_negative and (entryvar.nil? or v.hash < entryvar.hash)
+            entryvar = v
+          end
+        end
+
+        # if all coefficients were positive (or if the objective
+        # function has no pivotable variables) we are at optimum
+        return nil if entryvar.nil?
+
+        # Choose which variable to move out of the basis.  Only
+        # consider pivotable basic variables (that is, restricted,
+        # non-dummy variables).
+        minratio = nil
+        columns[entryvar].each do |v|
+          if v.pivotable?
+            expr = rows[v]
+            coeff = expr.coefficient_for(entryvar)
+
+            if coeff < 0.0
+              r = -(expr.constant / coeff)
+              # Decide whether to make v be the best choice for exit
+              # variable so far by comparing the ratios. In case of a
+              # tie, choose the variable with the smaller id (to
+              # implement Bland's anticycling rule).
+              if minratio.nil? or r < minratio or (r == minratio and v.hash < exitvar.hash)
+                minratio = r
+                exitvar = v
+              end
+            end
+          end
+        end
+
+        # If minRatio is still nil at this point, it means that the
+        # objective function is unbounded, i.e. it can become
+        # arbitrarily negative.  This should never happen in this
+        # application.
+        raise InternalError if minratio.nil?
+        pivot entryvar, exitvar
+      end
+    end

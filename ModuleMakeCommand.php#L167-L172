@@ -1,0 +1,6 @@
+private function replacer($word, $replace, $path)
+	{
+		$file = file_get_contents($path);
+		$file = str_replace($word, $replace, $file);
+		$file = file_put_contents($path, $file);
+	}

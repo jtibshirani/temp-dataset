@@ -1,0 +1,4 @@
+def initializing(self, initializing):
+        validate_attribute(initializing, 'rts_profile.Initializing',
+                           expected_type=Initialize, required=False)
+        self._initializing = initializing

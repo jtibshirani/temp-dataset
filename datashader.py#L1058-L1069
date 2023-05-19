@@ -1,0 +1,12 @@
+def uint8_to_uint32(self, element):
+        img = np.dstack([element.dimension_values(d, flat=False)
+                         for d in element.vdims])
+        if img.shape[2] == 3: # alpha channel not included
+            alpha = np.ones(img.shape[:2])
+            if img.dtype.name == 'uint8':
+                alpha = (alpha*255).astype('uint8')
+            img = np.dstack([img, alpha])
+        if img.dtype.name != 'uint8':
+            img = (img*255).astype(np.uint8)
+        N, M, _ = img.shape
+        return img.view(dtype=np.uint32).reshape((N, M))

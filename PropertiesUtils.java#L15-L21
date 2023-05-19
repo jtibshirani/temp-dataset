@@ -1,0 +1,7 @@
+public static Properties readProperties(File file) {
+        try {
+            return readProperties(new FileInputStream(file));
+        } catch (FileNotFoundException e) {
+            return new Properties();
+        }
+    }

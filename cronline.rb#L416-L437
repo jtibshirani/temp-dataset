@@ -1,0 +1,22 @@
+def monthdays(date)
+
+      pos = 1
+      d = date.dup
+
+      loop do
+        d = d - WEEK_S
+        break if d.month != date.month
+        pos = pos + 1
+      end
+
+      neg = -1
+      d = date.dup
+
+      loop do
+        d = d + WEEK_S
+        break if d.month != date.month
+        neg = neg - 1
+      end
+
+      [ "#{WEEKDAYS[date.wday]}##{pos}", "#{WEEKDAYS[date.wday]}##{neg}" ]
+    end

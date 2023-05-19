@@ -1,0 +1,7 @@
+def table_metadata(self, database, table):
+        "Fetch table-specific metadata."
+        return (self.metadata("databases") or {}).get(database, {}).get(
+            "tables", {}
+        ).get(
+            table, {}
+        )

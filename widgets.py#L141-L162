@@ -1,0 +1,22 @@
+def __call__(self, *arg):
+        if self.status:
+            # If the checkbox was previously checked, set the status
+            # to 0 and turn the whole box back to white.
+            self.status = 0
+            self.image.fill((255, 255, 255))
+
+            # Draw the checkbox on the external surface
+            ptg.Button.set_position(self, self.position, self.midpoint,
+                                    self.surface)
+        else:
+            # If the checkbox was previously unchecked, set the status
+            # to 1 and draw a check in the center of the checkbox.
+            self.status = 1
+            if self.checktype == 'r':
+                self.draw_rect_check()
+            elif self.checktype == 'c':
+                self.draw_circle_check()
+
+            # Draw the new image on the external surface
+            ptg.Button.set_position(self, self.position, self.midpoint,
+                                    self.surface)

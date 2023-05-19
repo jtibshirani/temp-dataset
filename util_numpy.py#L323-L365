@@ -1,0 +1,43 @@
+def random_sample(list_, nSample, strict=False, rng=None, seed=None):
+    """
+    Grabs data randomly
+
+    Args:
+        list_ (list):
+        nSample (?):
+        strict (bool): (default = False)
+        rng (module):  random number generator(default = numpy.random)
+        seed (None): (default = None)
+
+    Returns:
+        list: sample_list
+
+    CommandLine:
+        python -m utool.util_numpy --exec-random_sample
+
+    Example:
+        >>> # DISABLE_DOCTEST
+        >>> from utool.util_numpy import *  # NOQA
+        >>> list_ = np.arange(10)
+        >>> nSample = 4
+        >>> strict = False
+        >>> rng = np.random.RandomState(0)
+        >>> seed = None
+        >>> sample_list = random_sample(list_, nSample, strict, rng, seed)
+        >>> result = ('sample_list = %s' % (str(sample_list),))
+        >>> print(result)
+    """
+    rng = ensure_rng(seed if rng is None else rng)
+    if isinstance(list_, list):
+        list2_ = list_[:]
+    else:
+        list2_ = np.copy(list_)
+    if len(list2_) == 0 and not strict:
+        return list2_
+    rng.shuffle(list2_)
+    if nSample is None and strict is False:
+        return list2_
+    if not strict:
+        nSample = min(max(0, nSample), len(list2_))
+    sample_list = list2_[:nSample]
+    return sample_list

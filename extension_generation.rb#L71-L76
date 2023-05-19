@@ -1,0 +1,6 @@
+def localized_table_name
+      localized_table_name = [ 'refinery']
+      localized_table_name << namespacing.underscore if table_name != namespacing.underscore.pluralize
+      localized_table_name << [ singular_table_name, 'translations']
+      localized_table_name.join('_')
+    end

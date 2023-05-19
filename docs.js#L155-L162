@@ -1,0 +1,8 @@
+function setRTL() {
+        $('#dir-rtl').closest('ul').find('.active').removeClass('active').removeAttr('aria-current');
+        $('#dir-rtl').addClass('active').attr('aria-current', 'true');
+        $('html').attr('dir', 'rtl');
+        fileRename('cssCore', 'figuration-rtl');
+        fileRename('cssDocs', 'docs-rtl');
+        document.cookie = 'docsDir=rtl';
+    }

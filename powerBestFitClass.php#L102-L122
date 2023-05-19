@@ -1,0 +1,21 @@
+private function powerRegression($yValues, $xValues, $const)
+    {
+        foreach ($xValues as &$value) {
+            if ($value < 0.0) {
+                $value = 0 - log(abs($value));
+            } elseif ($value > 0.0) {
+                $value = log($value);
+            }
+        }
+        unset($value);
+        foreach ($yValues as &$value) {
+            if ($value < 0.0) {
+                $value = 0 - log(abs($value));
+            } elseif ($value > 0.0) {
+                $value = log($value);
+            }
+        }
+        unset($value);
+
+        $this->leastSquareFit($yValues, $xValues, $const);
+    }

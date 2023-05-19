@@ -1,0 +1,13 @@
+func parseArgs(c *cli.Context) ([]string, []string) {
+	args := strings.Split(c.Command.ArgsUsage, " ")
+	var reqArgs []string
+	var optArgs []string
+	for _, arg := range args {
+		if strings.HasPrefix(arg, "[") {
+			optArgs = append(optArgs, arg)
+		} else if strings.Trim(arg, " ") != "" {
+			reqArgs = append(reqArgs, arg)
+		}
+	}
+	return reqArgs, optArgs
+}

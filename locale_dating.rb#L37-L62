@@ -1,0 +1,26 @@
+def locale_date(*args)
+      options = args.extract_options!
+      locale_dating_naming_checks(args, options)
+
+      # Loop through all the given attributes that should be wrapped using the same settings.
+      args.each do |attrib|
+        getter_name, setter_name = locale_dating_wrapper_method_names(attrib, options)
+        # Define the code to execute when the method is called
+        # Create new methods for get and set calls with blocks for implementation.
+        class_eval do
+          # == Create the GET methods
+          # EX: def birth_date_as_text()
+          define_method getter_name do
+            value = self.send(attrib)
+            I18n.l(value, :format => options[:format]) if value
+          end
+          # == Create the SET methods
+          # EX: def birth_date_as_text=()
+          define_method setter_name do |value|
+            date_value = DateTime.strptime(value.to_s, I18n.t("date.formats.#{options[:format]}")) unless value.blank?
+            # Keep the date from the given value and preserve the original time part
+            self.send("#{attrib}=", date_value)
+          end
+        end
+      end
+    end

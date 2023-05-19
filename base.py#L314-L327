@@ -1,0 +1,14 @@
+def read_text(self, text: str) -> bool:
+        """
+        Consume a strlen(text) text at current position in the stream
+        else return False.
+        Same as "" in BNF
+        ex : read_text("ls");.
+        """
+        if self.read_eof():
+            return False
+        self._stream.save_context()
+        if self.peek_text(text):
+            self._stream.incpos(len(text))
+            return self._stream.validate_context()
+        return self._stream.restore_context()

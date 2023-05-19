@@ -1,0 +1,14 @@
+public function setReadTimeout(int $timeout)
+    {
+        if ($timeout < -1) {
+            throw new RedisException('Timeout values less than -1 are not accepted.');
+        }
+        $this->readTimeout = $timeout;
+        if ($this->connected) {
+            $timeout = $timeout <= 0 ? 315360000 : $timeout; // Ten-year timeout
+            \stream_set_blocking($this->redis, true);
+            \stream_set_timeout($this->redis, (int) \floor($timeout), ($timeout - \floor($timeout)) * 1000000);
+        }
+
+        return $this;
+    }

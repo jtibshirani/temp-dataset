@@ -1,0 +1,32 @@
+function handleConnection (err,scoutScript){
+    if(err) return out.emit('error');
+
+    scoutScript.on("error",function(err){
+      // something bad happened to serial.
+      console.log("something bad happened to the serial connection. =(");
+      console.log(err);
+
+      out.emit('error',err);
+
+    });
+    
+    out.ready = true;
+    out.scoutScript = scoutScript;
+
+    activateBridge(function(err){
+      if(err) return out.emit('error',err);
+
+      out.activated = true;
+      out.emit('ready',scoutScript);
+      readycb(false,out);
+      readycb = noop;
+    });
+
+
+    // all serial output
+    scoutScript.on('log',function(data){
+      //console.log('sending log data to verbose parser!!'+data);
+      parser.write(data);
+    });
+
+  }

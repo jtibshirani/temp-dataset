@@ -1,0 +1,28 @@
+def from_file(cls, file):
+        """Create the object from a *file* or *file-like object*."""
+        opf_xml = etree.parse(file)
+        # Check if ``file`` is file-like.
+        if hasattr(file, 'read'):
+            name = os.path.basename(file.name)
+            root = os.path.abspath(os.path.dirname(file.name))
+        else:  # ...a filepath
+            name = os.path.basename(file)
+            root = os.path.abspath(os.path.dirname(file))
+        parser = OPFParser(opf_xml)
+
+        # Roll through the item entries
+        manifest = opf_xml.xpath('/opf:package/opf:manifest/opf:item',
+                                 namespaces=EPUB_OPF_NAMESPACES)
+        pkg_items = []
+        for item in manifest:
+            absolute_filepath = os.path.join(root, item.get('href'))
+            properties = item.get('properties', '').split()
+            is_navigation = 'nav' in properties
+            media_type = item.get('media-type')
+            pkg_items.append(Item.from_file(absolute_filepath,
+                                            media_type=media_type,
+                                            is_navigation=is_navigation,
+                                            properties=properties))
+        # Ignore spine ordering, because it is not important
+        #   for our use cases.
+        return cls(name, pkg_items, parser.metadata)

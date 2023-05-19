@@ -1,0 +1,15 @@
+def check(self, item_id):
+        """Check if an analysis is complete.
+
+        :type  item_id: str
+        :param item_id: File ID to check.
+
+        :rtype:  bool
+        :return: Boolean indicating if a report is done or not.
+        """
+        try:
+            return self.jbx.info(item_id).get('status').lower() == 'finished'
+        except jbxapi.JoeException:
+            return False
+
+        return False

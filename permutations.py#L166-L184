@@ -1,0 +1,19 @@
+def permutation_from_block_permutations(permutations):
+    """Reverse operation to :py:func:`permutation_to_block_permutations`
+    Compute the concatenation of permutations
+
+        ``(1,2,0) [+] (0,2,1) --> (1,2,0,3,5,4)``
+
+    :param permutations: A list of permutation tuples
+                                 ``[t = (t_0,...,t_n1), u = (u_0,...,u_n2),..., z = (z_0,...,z_nm)]``
+    :type permutations: list of tuples
+    :return: permutation image tuple
+                    ``s = t [+] u [+] ... [+] z``
+    :rtype: tuple
+    """
+    offset = 0
+    new_perm = []
+    for p in permutations:
+        new_perm[offset: offset +len(p)] = [p_i + offset for p_i in p]
+        offset += len(p)
+    return tuple(new_perm)

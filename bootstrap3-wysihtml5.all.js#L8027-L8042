@@ -1,0 +1,16 @@
+addRowCell: function(cell, row, where) {
+            var colSpanAttr = (cell.isColspan) ? {"colspan" : api.getAttribute(cell.el, 'colspan')} : null;
+            if (cell.isReal) {
+                if (where != 'above' && cell.isRowspan) {
+                    cell.el.setAttribute('rowspan', parseInt(api.getAttribute(cell.el,'rowspan'), 10) + 1);
+                } else {
+                    row.appendChild(this.createCells('td', 1, colSpanAttr));
+                }
+            } else {
+                if (where != 'above' && cell.isRowspan && cell.lastRow) {
+                    row.appendChild(this.createCells('td', 1, colSpanAttr));
+                } else if (c.isRowspan) {
+                    cell.el.attr('rowspan', parseInt(api.getAttribute(cell.el, 'rowspan'), 10) + 1);
+                }
+            }
+        },

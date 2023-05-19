@@ -1,0 +1,18 @@
+def convert_flow(flow)
+      res = ""
+      flow.each do |item|
+        case item
+        when String
+#          $stderr.puts "Converting '#{item}'"
+          res << convert_string(item)
+        when AttrChanger
+          off_tags(res, item)
+          on_tags(res,  item)
+        when Special
+          res << convert_special(item)
+        else
+          raise "Unknown flow element: #{item.inspect}"
+        end
+      end
+      res
+    end

@@ -1,0 +1,22 @@
+protected function define(MapperDefinition $map)
+    {
+        $map->type(AnalyticsDriverConfig::class);
+        $map->toTable('analytics');
+
+        $map->idToPrimaryKey('id');
+
+        $map->property(AnalyticsDriverConfig::DRIVER_NAME)->to('driver')->asVarchar(255);
+        $map->property(AnalyticsDriverConfig::OPTIONS)
+            ->mappedVia(function (FormObject $options) : string {
+                $values            = $this->transformFilesToArrays($options->unprocess($options->getInitialValues()));
+                $values['__class'] = get_class($options);
+
+                return json_encode($values);
+            }, function (string $json) : FormObject {
+                $values = $this->restoreFilesFromStrings(json_decode($json, true));
+
+                return $values['__class']::build(array_diff_key($values, ['__class' => true]));
+            })
+            ->to('options')
+            ->asText();
+    }

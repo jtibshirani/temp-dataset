@@ -1,0 +1,10 @@
+def replace_file_contents(path_to_file)
+      return unless siba_file.file_file? path_to_file
+      Siba::FileHelper.change_file(path_to_file) do |file_text|
+        file_text.gsub! CATEGORY_REPLACE_TEXT, category
+        file_text.gsub! CATEGORY_REPLACE_TEXT.capitalize, category.capitalize
+        file_text.gsub! NAME_REPLACE_TEXT, name
+        file_text.gsub! NAME_REPLACE_TEXT.capitalize, name_camelized
+        file_text
+      end
+    end

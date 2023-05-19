@@ -1,0 +1,16 @@
+public function filterHiddenAttributes($attributes, array $_hiddenAttributes = [])
+    {
+        $hiddenAttributes = $_hiddenAttributes !== null ? $_hiddenAttributes : $this->getHiddenAttributes();
+
+        if (count($hiddenAttributes) > 0) {
+            foreach ($hiddenAttributes as $hiddenAttributeName) {
+                if (isset($attributes[$hiddenAttributeName])) {
+                    unset($attributes[$hiddenAttributeName]);
+                }
+            }
+        }
+
+        unset ($attributes[self::ENTRY_HIDDENATTRIBUTES]);
+
+        return $attributes;
+    }

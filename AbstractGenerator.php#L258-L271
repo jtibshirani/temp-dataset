@@ -1,0 +1,14 @@
+protected function getStringBetween($content, $start, $ending)
+    {
+        $startPosition = \mb_strpos($content, $start);
+        if ($startPosition === false) {
+            return null;
+        }
+
+        $endPosition = \mb_strpos($content, $ending, $startPosition + \mb_strlen($start));
+        if ($endPosition === false) {
+            return null;
+        }
+
+        return \mb_substr($content, $startPosition, $endPosition);
+    }

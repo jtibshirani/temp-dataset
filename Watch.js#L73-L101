@@ -1,0 +1,29 @@
+function _parseCommandLineOptions(argv, options) {
+    for (var i = 0, iz = argv.length; i < iz; ++i) {
+        switch (argv[i]) {
+        case "-h":
+        case "--help":      options.help = true; break;
+        case "-v":
+        case "--verbose":   options.verbose = true; break;
+        case "--delay":     options.delay = argv[++i]; break;
+        case "--action":    options.action = argv[++i]; break;
+        default:
+            var path = argv[i];
+
+            if (fs.existsSync(path) && fs.statSync(path).isFile()) {
+                if (options.source.indexOf(path) < 0) { // avoid duplicate
+                    options.source.push(path);
+                }
+            } else if (fs.existsSync(path) && fs.statSync(path).isDirectory()) {
+                path = path.replace(/\/+$/, "") + "/"; // supply tail slash. "path" -> "path/"
+
+                if (options.source.indexOf(path) < 0) { // avoid duplicate
+                    options.source.push(path);
+                }
+            } else {
+                console.log(CONSOLE_COLOR.RED + "invalid path: " + path + CONSOLE_COLOR.CLEAR);
+            }
+        }
+    }
+    return options;
+}

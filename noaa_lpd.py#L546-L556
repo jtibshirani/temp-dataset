@@ -1,0 +1,11 @@
+def __convert_num(number):
+        """
+        All path items are automatically strings. If you think it's an int or float, this attempts to convert it.
+        :param str number:
+        :return float or str:
+        """
+        try:
+            return float(number)
+        except ValueError as e:
+            logger_noaa_lpd.warn("convert_num: ValueError: {}".format(e))
+            return number

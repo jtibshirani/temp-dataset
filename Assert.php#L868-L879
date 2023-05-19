@@ -1,0 +1,12 @@
+public function toInt()
+    {
+        if (is_array($this->value)) {
+            throw new InvalidNotArrayException($this->name);
+        } elseif (!empty($this->value) && !is_numeric($this->value)) {
+            throw new InvalidNumericException($this->name, $this->value);
+        }
+
+        $this->value = (int) $this->value;
+
+        return $this;
+    }

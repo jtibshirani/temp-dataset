@@ -1,0 +1,5 @@
+def check_box(method, options = {}, checked_value = "1", unchecked_value = "0")
+      options[:checked] = true if get_form_params_entry(method).to_i > 0
+      mark_error_if_present(method, options)
+      super(method, options, checked_value, unchecked_value)
+    end

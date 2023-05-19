@@ -1,0 +1,10 @@
+public function setImageUuid($imageUuid)
+    {
+        if ('docker:' !== substr($imageUuid, 0, 7)) {
+            $imageUuid = 'docker:' . $imageUuid;
+        }
+
+        $this->imageUuid = $imageUuid;
+
+        return $this;
+    }

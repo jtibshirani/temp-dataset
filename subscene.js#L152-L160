@@ -1,0 +1,9 @@
+function extractSrt (buffer) {
+  const zip = new AdmZip(buffer)
+  const srtZipEntry = zip
+    .getEntries()
+    .find(zipEntry =>
+      zipEntry.entryName.endsWith('.srt')
+    )
+  return zip.readAsText(srtZipEntry)
+}

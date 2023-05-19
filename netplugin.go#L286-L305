@@ -1,0 +1,20 @@
+func (p *NetPlugin) Reinit(cfg Config) {
+	var err error
+
+	p.Lock()
+	defer p.Unlock()
+	if p.NetworkDriver != nil {
+		logrus.Infof("Reinit de-initializing NetworkDriver")
+		p.NetworkDriver.Deinit()
+		p.NetworkDriver = nil
+	}
+
+	cfg.Instance.StateDriver, _ = utils.GetStateDriver()
+	p.NetworkDriver, err = utils.NewNetworkDriver(cfg.Drivers.Network, &cfg.Instance)
+	logrus.Infof("Reinit Initializing NetworkDriver")
+
+	if err != nil {
+		logrus.Errorf("Reinit De-initializing due to error: %v", err)
+		p.NetworkDriver.Deinit()
+	}
+}

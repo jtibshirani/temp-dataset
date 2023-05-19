@@ -1,0 +1,7 @@
+function replaceEntities($str)
+    {
+        foreach ($this->_entity_replacements as $old => $new) {
+            $str = preg_replace(sprintf("/&%s;/", $old), $new, $str);
+        }
+        return $str;
+    }

@@ -1,0 +1,11 @@
+def _cbc_encrypt(self, content, final_key):
+        """This method encrypts the content."""
+
+        aes = AES.new(final_key, AES.MODE_CBC, self._enc_iv)
+        padding = (16 - len(content) % AES.block_size)
+
+        for _ in range(padding):
+            content += chr(padding).encode()
+
+        temp = bytes(content)
+        return aes.encrypt(temp)

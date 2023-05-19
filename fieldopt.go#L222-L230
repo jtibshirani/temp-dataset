@@ -1,0 +1,9 @@
+func Uint8Array(name string, values []uint8) FieldOpt {
+	return func(em *eventMetadata, ed *eventData) {
+		em.writeArray(name, inTypeUint8, outTypeDefault, 0)
+		ed.writeUint16(uint16(len(values)))
+		for _, v := range values {
+			ed.writeUint8(v)
+		}
+	}
+}

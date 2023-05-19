@@ -1,0 +1,44 @@
+def create_cookie(self, value, typ, cookie_name=None, ttl=-1, kill=False):
+        """
+
+        :param value: Part of the cookie payload
+        :param typ: Type of cookie
+        :param cookie_name:
+        :param ttl: Number of minutes before this cookie goes stale
+        :param kill: Whether the the cookie should expire on arrival
+        :return: A tuple to be added to headers
+        """
+        if kill:
+            ttl = -1
+        elif ttl < 0:
+            ttl = self.default_value['max_age']
+
+        if cookie_name is None:
+            cookie_name = self.default_value['name']
+
+        c_args = {}
+
+        srvdomain = self.default_value['domain']
+        if srvdomain and srvdomain not in ['localhost', '127.0.0.1',
+                                           '0.0.0.0']:
+            c_args['domain'] = srvdomain
+
+        srvpath = self.default_value['path']
+        if srvpath:
+            c_args['path'] = srvpath
+
+        # now
+        timestamp = str(int(time.time()))
+
+        # create cookie payload
+        try:
+            cookie_payload = "::".join([value, timestamp, typ])
+        except TypeError:
+            cookie_payload = "::".join([value[0], timestamp, typ])
+
+        cookie = make_cookie(
+            cookie_name, cookie_payload, self.sign_key,
+            timestamp=timestamp, enc_key=self.enc_key, max_age=ttl,
+            sign_alg=self.sign_alg, **c_args)
+
+        return cookie

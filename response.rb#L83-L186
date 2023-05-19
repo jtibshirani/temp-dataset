@@ -1,0 +1,104 @@
+def extract_data
+        doc = Nokogiri::XML(@raw_response)
+
+        if doc.root.xpath("/Error[1]").first
+          raise Calais::Error, doc.root.xpath("/Error/Exception").first.content
+        end        
+
+        doc.root.xpath("rdf:Description/rdf:type[contains(@rdf:resource, '#{MATCHERS[:docinfometa]}')]/..").each do |node|
+          @language = node['language']
+          @submission_date =  DateTime.parse node['submissionDate']
+
+          attributes = extract_attributes(node.xpath("*[contains(name(), 'c:')]"))
+
+          @signature = attributes.delete('signature')
+          @submitter_code = attributes.delete('submitterCode')
+
+          node.remove
+        end
+
+        doc.root.xpath("rdf:Description/rdf:type[contains(@rdf:resource, '#{MATCHERS[:docinfo]}')]/..").each do |node|
+          @request_id = node['calaisRequestID']
+
+          attributes = extract_attributes(node.xpath("*[contains(name(), 'c:')]"))
+
+          @doc_title = attributes.delete('docTitle')
+          @doc_date = Date.parse(attributes.delete('docDate')) 
+
+          node.remove
+        end
+
+        @socialtags = doc.root.xpath("rdf:Description/c:socialtag/..").map do |node|
+          tag = SocialTag.new
+          tag.name = node.xpath("c:name[1]").first.content
+          tag.importance = node.xpath("c:importance[1]").first.content.to_i
+          
+          node.remove if node.xpath("c:categoryName[1]").first.nil?
+          
+          tag
+        end
+
+        @categories = doc.root.xpath("rdf:Description/rdf:type[contains(@rdf:resource, '#{MATCHERS[:doccat]}')]/..").map do |node|
+          category = Category.new
+          category.name = node.xpath("c:categoryName[1]").first.content
+          score = node.xpath("c:score[1]").first
+          category.score = score.content.to_f unless score.nil?
+
+          node.remove
+          category
+        end
+
+        @relevances = doc.root.xpath("rdf:Description/rdf:type[contains(@rdf:resource, '#{MATCHERS[:relevances]}')]/..").inject({}) do |acc, node|
+          subject_hash = node.xpath("c:subject[1]").first[:resource].split('/')[-1]
+          acc[subject_hash] = node.xpath("c:relevance[1]").first.content.to_f
+
+          node.remove
+          acc
+        end
+
+        @entities = doc.root.xpath("rdf:Description/rdf:type[contains(@rdf:resource, '#{MATCHERS[:entities]}')]/..").map do |node|
+          extracted_hash = node['about'].split('/')[-1] rescue nil
+
+          entity = Entity.new
+          entity.calais_hash = CalaisHash.find_or_create(extracted_hash, @hashes)
+          entity.type = extract_type(node)
+          entity.attributes = extract_attributes(node.xpath("*[contains(name(), 'c:')]"))
+
+          entity.relevance = @relevances[extracted_hash]
+          entity.instances = extract_instances(doc, extracted_hash)
+
+          node.remove
+          entity
+        end
+
+        @relations = doc.root.xpath("rdf:Description/rdf:type[contains(@rdf:resource, '#{MATCHERS[:relations]}')]/..").map do |node|
+          extracted_hash = node['about'].split('/')[-1] rescue nil
+
+          relation = Relation.new
+          relation.calais_hash = CalaisHash.find_or_create(extracted_hash, @hashes)
+          relation.type = extract_type(node)
+          relation.attributes = extract_attributes(node.xpath("*[contains(name(), 'c:')]"))
+          relation.instances = extract_instances(doc, extracted_hash)
+
+          node.remove
+          relation
+        end
+
+        @geographies = doc.root.xpath("rdf:Description/rdf:type[contains(@rdf:resource, '#{MATCHERS[:geographies]}')]/..").map do |node|
+          attributes = extract_attributes(node.xpath("*[contains(name(), 'c:')]"))
+
+          geography = Geography.new
+          geography.name = attributes.delete('name')
+          geography.calais_hash = attributes.delete('subject')
+          geography.attributes = attributes
+          geography.relevance = extract_relevance(geography.calais_hash.value)
+
+          node.remove
+          geography
+        end
+
+        doc.root.xpath("rdf:Description/rdf:type[contains(@rdf:resource, '#{MATCHERS[:defaultlangid]}')]/..").each { |node| node.remove }
+        doc.root.xpath("./*").each { |node| node.remove }
+
+        return
+      end

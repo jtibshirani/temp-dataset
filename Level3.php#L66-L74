@@ -1,0 +1,9 @@
+public function regex(): string
+    {
+        return $this->regex ?? $this->regex = (string) $this
+            ->names
+            ->map(static function(Name $name): string {
+                return "(?<{$name}>[a-zA-Z0-9\%\-\.\_\~]*)";
+            })
+            ->join(',');
+    }

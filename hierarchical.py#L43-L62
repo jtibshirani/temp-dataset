@@ -1,0 +1,20 @@
+def cluster(self, X):
+        X = super().cluster(X)
+        self._distances = linkage(X, method=self.linkage)
+
+        if self.mode == "n_clusters":
+            return fcluster(
+                self._distances,
+                self.n_clusters,
+                criterion="maxclust"
+            )
+
+        elif self.mode == "max_distance":
+            return fcluster(
+                self._distances,
+                self.max_distance,
+                criterion="distance"
+            )
+
+        else:
+            raise ParameterError(f"Unknown / unsupported clustering mode: \"{self.mode}\"")

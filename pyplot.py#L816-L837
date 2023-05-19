@@ -1,0 +1,22 @@
+def scatter(x, y, **kwargs):
+    """Draw a scatter in the current context figure.
+
+    Parameters
+    ----------
+
+    x: numpy.ndarray, 1d
+        The x-coordinates of the data points.
+    y: numpy.ndarray, 1d
+        The y-coordinates of the data points.
+    options: dict (default: {})
+        Options for the scales to be created. If a scale labeled 'x' is
+        required for that mark, options['x'] contains optional keyword
+        arguments for the constructor of the corresponding scale type.
+    axes_options: dict (default: {})
+        Options for the axes to be created. If an axis labeled 'x' is required
+        for that mark, axes_options['x'] contains optional keyword arguments
+        for the constructor of the corresponding axis type.
+    """
+    kwargs['x'] = x
+    kwargs['y'] = y
+    return _draw_mark(Scatter, **kwargs)

@@ -1,0 +1,10 @@
+function getResponseStatusCode (res) {
+  var status = res.statusCode
+
+  // default status code to 500 if outside valid range
+  if (typeof status !== 'number' || status < 400 || status > 599) {
+    status = 500
+  }
+
+  return status
+}

@@ -1,0 +1,16 @@
+var LinearRegression = function(uid) {
+    	 this.logger = Logger.getLogger("ml_regression_LinearRegression_js");
+        var jvmObject;
+        if (uid) {
+            if (uid instanceof org.apache.spark.ml.feature.VectorIndexer) {
+                jvmObject = uid;
+            } else {
+                jvmObject =  new org.apache.spark.ml.regression.LinearRegression(uid);
+            }
+        } else {
+            jvmObject =  new org.apache.spark.ml.regression.LinearRegression();
+        }
+
+        Predictor.call(this, jvmObject);
+    
+    };

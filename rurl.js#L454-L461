@@ -1,0 +1,8 @@
+RURL.setStatic(function encodeUriQuery(val, pct_encode_spaces) {
+		return encodeURIComponent(val)
+			.replace(/%40/gi, '@')
+			.replace(/%3A/gi, ':')
+			.replace(/%24/g, '$')
+			.replace(/%2C/gi, ',')
+			.replace(/%20/g, (pct_encode_spaces ? '%20' : '+'));
+	});

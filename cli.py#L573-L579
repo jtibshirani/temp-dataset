@@ -1,0 +1,7 @@
+def continuation(self, regexp, txt):
+        txt_ = self.txt_list.body.pop().get_text()
+        self.txt_list.body.append(ConsoleText((txt_[1][0][0], 
+                                         txt_[0]+regexp.groups()[0])))
+        pos = len(self.txt_list.body)-1
+        self.txt_list.set_focus(pos)
+        return False

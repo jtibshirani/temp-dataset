@@ -1,0 +1,21 @@
+def sqlalchemy_mysql_trace(request):
+    try:
+        engine = sqlalchemy.create_engine(
+            'mysql+mysqlconnector://{}:{}@{}'.format('root', MYSQL_PASSWORD,
+                                                     DB_HOST))
+        conn = engine.connect()
+
+        query = 'SELECT 2*3'
+
+        result_set = conn.execute(query)
+
+        result = []
+
+        for item in result_set:
+            result.append(item)
+
+        return HttpResponse(str(result))
+
+    except Exception:
+        msg = "Query failed. Check your env vars for connection settings."
+        return HttpResponse(msg, status=500)

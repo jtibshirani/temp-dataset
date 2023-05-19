@@ -1,0 +1,9 @@
+def get_hardforks(self):
+        rows = self._parse_tbodies(self.session.get("/hardForks").text)[0]  # only use first tbody
+        result = []
+        for col in rows:
+            result.append({'name': self._extract_text_from_html( col[0]),
+                      'on_roadmap': True if "yes" in col[1].lower() else False,
+                      'date': self._extract_text_from_html(col[2]),
+                      'block': int(self._extract_text_from_html(col[3]))})
+        return result

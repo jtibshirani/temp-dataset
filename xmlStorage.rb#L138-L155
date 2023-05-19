@@ -1,0 +1,18 @@
+def getLastXmlFile(filename)
+      item = nil
+      # This is a sorted list with the newest items on top
+      @xmlData.each do|x|
+        if x[:docs].include?(filename)
+          item = x
+          break
+        end
+      end
+      return nil if item.nil?
+
+      xml = getXmlFile(filename, item[:time])
+      return nil if xml.nil?
+
+      type = getXmlType(xml)
+      return nil if type == "diff"
+      xml
+    end

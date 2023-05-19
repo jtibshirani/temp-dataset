@@ -1,0 +1,19 @@
+def build_operation_stack(string):
+    stack = []
+    start = 0
+    for i, s in enumerate(string):
+        if s == '(':
+            substring = string[start:i]
+            start = i + 1
+            stack.append(substring)
+        elif s == ',':
+            if i != start:
+                substring = string[start:i]
+                stack.append(substring)
+            start = i + 1
+        elif s == ')':
+            if i != start:
+                substring = string[start:i]
+                stack.append(substring)
+            start = i + 1
+    return stack

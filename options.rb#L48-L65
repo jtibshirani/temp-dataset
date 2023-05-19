@@ -1,0 +1,18 @@
+def option_parser
+      @option_parser ||= begin
+        OptionParser.new do |opts|
+          opts.banner = "Usage: xcunique PROJECT.PBXPROJ [options]"
+          
+          opts.on('-f', '--format=<ascii|json|xml>', 'ascii|json|xml') do |format|
+            self.format = format.chomp.to_sym
+            raise UnknownFormatError.new(%Q{Unknown format "#{format}" - please choose ascii, json or xml}) unless %i{ascii json xml}.include?(self.format)
+            raise MissingDependencyError.new("xcproj is required for converting to ascii") if self.format == :ascii && begin system("command -v xcproj 2&> /dev/null"); !$?.success? end
+          end
+          
+          opts.on('-v', '--verbose') do |verbose|
+            self.verbose = verbose
+          end
+          
+        end
+      end
+    end

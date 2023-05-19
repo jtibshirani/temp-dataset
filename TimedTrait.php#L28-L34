@@ -1,0 +1,7 @@
+protected function formatDateTime(\DateTime $date = null, $format = null)
+    {
+        return $date && $format ?
+            $date->format($format) :
+            $date
+        ;
+    }

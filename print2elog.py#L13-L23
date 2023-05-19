@@ -1,0 +1,11 @@
+def _copy_file(filepath, fulltime):
+    if filepath is None:
+        filepath_out = ''
+    else:
+        filename  = _os.path.basename(filepath)
+        root, ext = _os.path.splitext(filename)
+        filepath_out = fulltime + ext
+        copypath = _os.path.join(basedir, filepath_out)
+        _shutil.copyfile(filepath, copypath)
+
+    return filepath_out

@@ -1,0 +1,5 @@
+def _break(s, find):
+    """Break a string s into the part before the substring to find,
+    and the part including and after the substring."""
+    i = s.find(find)
+    return s[:i], s[i:]

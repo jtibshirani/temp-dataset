@@ -1,0 +1,13 @@
+public function getColumnHtmlObjectEditMode()
+    {
+        $column = $this->getPresetColumnObject();
+        if ($column) {
+            $html = $column->getColumnHtmlObject();
+            $inner = new Element('div');
+            $inner->addClass('ccm-layout-column-inner ccm-layout-column-highlight');
+            $inner->setValue($this->getContents(true));
+            $html->appendChild($inner);
+
+            return $html;
+        }
+    }

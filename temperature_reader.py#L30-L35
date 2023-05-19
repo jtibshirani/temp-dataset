@@ -1,0 +1,6 @@
+def reader1(cls, file):
+        def reader(file):
+            temperature = open(file).read().strip()
+            temperature = int(temperature) // 1000
+            return temperature
+        return partial(reader, file)

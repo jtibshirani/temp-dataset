@@ -1,0 +1,8 @@
+func (r *Ref) currentVal() interface{} {
+	r.enterReadLock()
+	defer r.exitReadLock()
+	if r.tvals == nil {
+		panic(fmt.Errorf("%v is unbound", r))
+	}
+	return r.tvals.val
+}

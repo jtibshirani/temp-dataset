@@ -1,0 +1,5 @@
+def json_pretty_print(d, file=None):
+    args = {'sort_keys': True, 'indent': 2, 'separators': (',', ': ')}
+    if file:
+        return json.dump(d, file, **args)
+    return json.dumps(d, **args)

@@ -1,0 +1,10 @@
+func (file *lFile) AbandonReadBuffer() error {
+	if file.Type() == lFileFile && file.reader != nil {
+		_, err := file.fp.Seek(-int64(file.reader.Buffered()), 1)
+		if err != nil {
+			return err
+		}
+		file.reader = bufio.NewReaderSize(file.fp, fileDefaultReadBuffer)
+	}
+	return nil
+}

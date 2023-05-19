@@ -1,0 +1,11 @@
+Vue.filter('rwtime', function(dateString) {
+        let date = moment(dateString, 'h:mma' , true);
+        if(!date.isValid()){
+            date = moment(dateString, 'HH:mm' , true);
+            if(!date.isValid()){
+                return null;
+            }
+        }
+        return date.format("YYYY-MM-DD HH:mm:ss");
+
+    });

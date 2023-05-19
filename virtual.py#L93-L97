@@ -1,0 +1,5 @@
+def empty_like(self, **overrides):
+        if isinstance(self.array, self.numpy.ndarray):
+            return self.numpy.empty_like(array)
+        else:
+            return self.array.empty_like(**overrides)

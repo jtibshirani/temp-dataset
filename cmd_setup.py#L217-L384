@@ -1,0 +1,168 @@
+def serial_send(msvr, msvr_ip, xsvr, xsvr_ip, node_sn, node_key, port):
+    ### check is configure mode?
+    thread = termui.waiting_echo("Getting device information...")
+    thread.daemon = True
+    thread.start()
+
+    flag = False
+    try:
+        with serial.Serial(port, 115200, timeout=5) as ser:
+            cmd = 'Blank?\r\n'
+            ser.write(cmd.encode('utf-8'))
+            if 'Node' in ser.readline():
+                flag = True
+    except serial.SerialException as e:
+        thread.stop('')
+        thread.join()
+        click.secho('>> ', fg='red', nl=False)
+        click.echo(e)
+        if e.errno == 13:
+            click.echo("For more information, see https://github.com/Seeed-Studio/wio-cli#serial-port-permissions")
+        return None
+
+    thread.stop('')
+    thread.join()
+
+    if flag:
+        click.secho('> ', fg='green', nl=False)
+        click.secho("Found Wio.", fg='green', bold=True)
+        click.echo()
+    else:
+        click.secho('> ', fg='green', nl=False)
+        click.secho("No nearby Wio detected.", fg='white', bold=True)
+        if click.confirm(click.style('? ', fg='green') +
+                click.style("Would you like to wait and monitor for Wio entering configure mode", bold=True),
+                default=True):
+
+            thread = termui.waiting_echo("Waiting for a wild Wio to appear... (press ctrl + C to exit)")
+            thread.daemon = True
+            thread.start()
+
+            flag = False
+            while 1:
+                with serial.Serial(port, 115200, timeout=5) as ser:
+                    cmd = 'Blank?\r\n'
+                    ser.write(cmd.encode('utf-8'))
+                    if 'Node' in ser.readline():
+                        flag = True
+                        break
+
+            thread.stop('')
+            thread.join()
+            click.secho('> ', fg='green', nl=False)
+            click.secho("Found Wio.", fg='green', bold=True)
+            click.echo()
+        else:
+            click.secho('> ', fg='green', nl=False)
+            click.secho("\nQuit wio setup!", bg='white', bold=True)
+
+    while 1:
+        if not click.confirm(click.style('? ', fg='green') +
+                    click.style("Would you like to manually enter your Wi-Fi network configuration?", bold=True),
+                    default=False):
+            thread = termui.waiting_echo("Asking the Wio to scan for nearby Wi-Fi networks...")
+            thread.daemon = True
+            thread.start()
+
+            flag = False
+            with serial.Serial(port, 115200, timeout=3) as ser:
+                cmd = 'SCAN\r\n'
+                ser.write(cmd.encode('utf-8'))
+                ssid_list = []
+                while True:
+                    ssid = ser.readline()
+                    if ssid == '\r\n':
+                        flag = True
+                        break
+                    ssid = ssid.strip('\r\n')
+                    ssid_list.append(ssid)
+
+            if flag:
+                thread.stop('')
+                thread.join()
+            else:
+                thread.stop("\rsearch failure...\n")
+                return None
+
+            while 1:
+                for x in range(len(ssid_list)):
+                    click.echo("%s.) %s" %(x, ssid_list[x]))
+                click.secho('? ', fg='green', nl=False)
+                value = click.prompt(
+                            click.style('Please select the network to which your Wio should connect', bold=True),
+                            type=int)
+                if value >= 0 and value < len(ssid_list):
+                    ssid = ssid_list[value]
+                    break
+                else:
+                    click.echo(click.style('>> ', fg='red') + "invalid input, range 0 to %s" %(len(ssid_list)-1))
+
+            ap = ssid
+        else:
+            ap = click.prompt(click.style('> ', fg='green') +
+                click.style('Please enter the SSID of your Wi-Fi network', bold=True), type=str)
+
+        ap_pwd = click.prompt(click.style('> ', fg='green') +
+            click.style('Please enter your Wi-Fi network password (leave blank for none)', bold=True),
+            default='', show_default=False)
+        d_name = click.prompt(click.style('> ', fg='green') +
+        click.style('Please enter the name of a device will be created', bold=True), type=str)
+
+        click.echo(click.style('> ', fg='green') + "Here's what we're going to send to the Wio:")
+        click.echo()
+        click.echo(click.style('> ', fg='green') + "Wi-Fi network: " +
+            click.style(ap, fg='green', bold=True))
+        ap_pwd_p = ap_pwd
+        if ap_pwd_p == '':
+            ap_pwd_p = 'None'
+        click.echo(click.style('> ', fg='green') + "Password: " +
+            click.style(ap_pwd_p, fg='green', bold=True))
+        click.echo(click.style('> ', fg='green') + "Device name: " +
+            click.style(d_name, fg='green', bold=True))
+        click.echo()
+
+        if click.confirm(click.style('? ', fg='green') +
+            "Would you like to continue with the information shown above?", default=True):
+            break
+
+    click.echo()
+    #waiting ui
+    thread = termui.waiting_echo("Sending Wi-Fi information to device...")
+    thread.daemon = True
+    thread.start()
+
+    # send serial command
+    ## get version
+    version = 1.1
+    with serial.Serial(port, 115200, timeout=10) as ser:
+        cmd = 'VERSION\r\n'
+        ser.write(cmd.encode('utf-8'))
+        res = ser.readline()
+        try:
+            version = float(re.match(r"([0-9]+.[0-9]+)", res).group(0))
+        except Exception as e:
+            version = 1.1
+
+    send_flag = False
+    while 1:
+        with serial.Serial(port, 115200, timeout=10) as ser:
+            if version <= 1.1:
+                cmd = "APCFG: %s\t%s\t%s\t%s\t%s\t%s\t\r\n" %(ap, ap_pwd, node_key, node_sn, xsvr_ip, msvr_ip)
+            elif version >= 1.2:
+                cmd = "APCFG: %s\t%s\t%s\t%s\t%s\t%s\t\r\n" %(ap, ap_pwd, node_key, node_sn, xsvr, msvr)
+            else:
+                cmd = "APCFG: %s\t%s\t%s\t%s\t%s\t%s\t\r\n" %(ap, ap_pwd, node_key, node_sn, xsvr, msvr)
+            # click.echo(cmd)
+            ser.write(cmd.encode('utf-8'))
+            if "ok" in ser.readline():
+                click.echo(click.style('\r> ', fg='green') + "Send Wi-Fi information to device success.")
+                thread.stop('')
+                thread.join()
+                send_flag = True
+        if send_flag:
+            break
+
+    if send_flag:
+        return {'name': d_name}
+    else:
+        return None

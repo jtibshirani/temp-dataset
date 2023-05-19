@@ -1,0 +1,4 @@
+Carl.prototype.pdf = function(x) {
+  var z = (x - this.mean) / Math.sqrt(this.variance);
+  return this.distribution.pdf(x);
+};

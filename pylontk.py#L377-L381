@@ -1,0 +1,5 @@
+def on_excel(self):
+        from pylon.io.excel import ExcelWriter
+        filename = asksaveasfilename(filetypes=[("Excel file", ".xls")])
+        if filename:
+            ExcelWriter(self.case).write(filename)

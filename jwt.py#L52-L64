@@ -1,0 +1,13 @@
+def _list(self, domain=None):
+        # pylint: disable=arguments-differ
+        url = "{base}".format(
+            base=self.local_base_url
+        )
+        param = {}
+        if domain:
+            param['domainUuid'] = domain
+        encode = urllib.urlencode(param)
+        if encode:
+            url += "?"
+            url += encode
+        return self.core.list(url)

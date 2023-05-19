@@ -1,0 +1,23 @@
+var icFile = exports.icFile = function (filename, onDone, to_cache) {
+    
+	// file description
+	// NOTE: declare here will make it unaccessible by using 'this' if called within a callback
+	
+	// file descriptor (as public variable)
+	this.fd = undefined;
+
+	// text content as a string
+	this.data = '';
+	
+	// array to store current text content
+	this.textArray = [];
+
+	// most recently written line
+	this.textLine = '';
+	
+	that = this;
+	
+	if (filename) {
+		this.open(filename, onDone, to_cache);
+	}
+}

@@ -1,0 +1,6 @@
+public function classSetUp()
+    {
+        $this->splPriorityQueue  = new SplPriorityQueue();
+        $this->fastPriorityQueue = new FastPriorityQueue();
+        $this->priorityQueue     = new PriorityQueue();
+    }

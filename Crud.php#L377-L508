@@ -1,0 +1,132 @@
+public static function exportExcel($data, $em)
+        {
+            $config  = static::get('crud.' . get_class($em) . '.info');
+            if (null === $config) {
+                $config = static::defaultConfig($em);
+            }
+
+            $fields = $config['fields'];
+
+            $excel = '<html xmlns:o="urn:schemas-microsoft-com:office:office"
+    xmlns:x="urn:schemas-microsoft-com:office:excel"
+    xmlns="http://www.w3.org/TR/REC-html40">
+
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+            <meta name="ProgId" content="Excel.Sheet">
+            <meta name="Generator" content="Microsoft Excel 11">
+            <style id="Classeur1_17373_Styles">
+            <!--table
+                {mso-displayed-decimal-separator:"\,";
+                mso-displayed-thousand-separator:" ";}
+            .xl1517373
+                {padding-top:1px;
+                padding-right:1px;
+                padding-left:1px;
+                mso-ignore:padding;
+                color:windowtext;
+                font-size:10.0pt;
+                font-weight:400;
+                font-style:normal;
+                text-decoration:none;
+                font-family:Arial;
+                mso-generic-font-family:auto;
+                mso-font-charset:0;
+                mso-number-format:General;
+                text-align:general;
+                vertical-align:bottom;
+                mso-background-source:auto;
+                mso-pattern:auto;
+                white-space:nowrap;}
+            .xl2217373
+                {padding-top:1px;
+                padding-right:1px;
+                padding-left:1px;
+                mso-ignore:padding;
+                color:#FFFF99;
+                font-size:10.0pt;
+                font-weight:700;
+                font-style:normal;
+                text-decoration:none;
+                font-family:Arial, sans-serif;
+                mso-font-charset:0;
+                mso-number-format:General;
+                text-align:center;
+                vertical-align:bottom;
+                background:#003366;
+                mso-pattern:auto none;
+                white-space:nowrap;}
+            -->
+            </style>
+        </head>
+
+            <body>
+            <!--[if !excel]>&nbsp;&nbsp;<![endif]-->
+
+            <div id="Classeur1_17373" align="center" x:publishsource="Excel">
+
+            <table x:str border="0" cellpadding="0" cellspacing="0" width=640 style="border-collapse:
+             collapse; table-layout: fixed; width: 480pt">
+             <col width="80" span=8 style="width: 60pt">
+             <tr height="17" style="height:12.75pt">
+              ##headers##
+             </tr>
+             ##content##
+            </table>
+            </div>
+        </body>
+    </html>';
+            $tplHeader = '<td class="xl2217373">##value##</td>';
+            $tplData = '<td>##value##</td>';
+
+            $headers = array();
+
+            foreach ($fields as $field => $fieldInfos) {
+                if (true === $fieldInfos['onExport']) {
+                    $label = $fieldInfos['label'];
+                    $headers[] = Html\Helper::display($label);
+                }
+            }
+            $xlsHeader = '';
+            foreach ($headers as $header) {
+                $xlsHeader .= repl('##value##', $header, $tplHeader);
+            }
+            $excel = repl('##headers##', $xlsHeader, $excel);
+
+            $xlsContent = '';
+            foreach ($data as $item) {
+                $xlsContent .= '<tr>';
+                foreach ($fields as $field => $fieldInfos) {
+                    if (true === $fieldInfos['onExport']) {
+                        $content = $fieldInfos['content'];
+                        $getter = 'get' . Inflector::camelize($field);
+                        $value = $item->$getter();
+                        if (strstr($content, '##self##') || strstr($content, '##em##')) {
+                            $content = repl(array('##self##', '##em##', '##field##'), array($value, $em, $field), $content);
+                            $value = static::internalFunction($content);
+                        }
+                        if (empty($value)) {
+                            $value = '&nbsp;';
+                        }
+                        $xlsContent .= repl('##value##', Html\Helper::display($value), $tplData);
+                    }
+                }
+                $xlsContent .= '</tr>';
+            }
+
+            $excel = repl('##content##', $xlsContent, $excel);
+
+
+            $redirect = URLSITE . 'file.php?type=xls&name=' . ('extraction_' . $em->_getTable() . '_' . date('d_m_Y_H_i_s') . '.xls') . '&file=' . md5($excel);
+            $cache = CACHE_PATH . DS . md5($excel) . '.xls';
+            file_put_contents($cache, $excel);
+            Utils::go($redirect);
+
+            //*GP* header ("Content-type: application/excel");
+            //*GP* header ('Content-disposition: attachement; filename="extraction_' . $em->_getTable() . '_' . date('d_m_Y_H_i_s') . '.xls"');
+            //*GP* header("Content-Transfer-Encoding: binary");
+            //*GP* header("Expires: 0");
+            //*GP* header("Cache-Control: no-cache, must-revalidate");
+            //*GP* header("Pragma: no-cache");
+            //*GP* die($excel);
+        }

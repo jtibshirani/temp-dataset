@@ -1,0 +1,13 @@
+def reverse_shuffle_string(string):
+    if len(string) < 2:
+        return string
+    new_string = ""
+    odd = (len(string) % 2 == 1)
+    part1 = string[:int(len(string) / 2):1]
+    part2 = string[int(len(string) / 2)::1]
+    for c in range(len(part1)):
+        new_string += part2[c]
+        new_string += part1[c]
+    if odd:
+        new_string += part2[-1]
+    return new_string

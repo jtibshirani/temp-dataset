@@ -1,0 +1,7 @@
+func FuzzReadSubTreesNoProof(data []byte) int {
+	buildAndCompareTreesFromFuzz(data, math.MaxUint64)
+	if len(data) > 2 {
+		return 1
+	}
+	return 0
+}

@@ -1,0 +1,35 @@
+public function extract() // -> mixed [\SplHeap]
+	{
+		$r = null;
+		
+		if($this->valid())
+		{
+			$r = $this->top();
+			$v = $this->hashtIndex($r);
+			
+			unset($this->hasht[$v][$this->btree[1]->tag]);
+			
+			if(empty($this->hasht[$v]))
+			{
+				unset($this->hasht[$v]);
+			}
+			
+			$bottom = array_pop($this->btree);
+			
+			--$this->size;
+			
+			if($this->size > 0)
+			{
+				$this->btree[1]                                              = $bottom;
+				$this->hasht[$this->hashtIndex($bottom->data)][$bottom->tag] = 1;
+				
+				$this->siftDown(1);
+			}
+		}
+		else
+		{
+			throw new ExtractException('Can\'t extract from an empty heap');
+		}
+		
+		return $r;
+	}

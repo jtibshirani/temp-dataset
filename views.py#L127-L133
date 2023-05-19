@@ -1,0 +1,7 @@
+def get_sort_string(self, sort=None):
+        if not sort:
+            sort = self.sort
+        sort_string = ''
+        if not sort == self.default_sort:
+            sort_string = self.sort_parameter + '=' + sort
+        return sort_string

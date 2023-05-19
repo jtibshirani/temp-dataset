@@ -1,0 +1,9 @@
+def write_to_csv(fname, header, rows):
+    with open(fname, 'wb') as csvfile:
+        csvwriter = csv.writer(csvfile, delimiter=',', quotechar='|',
+                               quoting=csv.QUOTE_MINIMAL)
+        csvwriter.writerow(header)
+        for row in rows:
+            csvwriter.writerow(
+                [s.encode("utf-8").replace(',', '').replace('\n', '')
+                 for s in row])

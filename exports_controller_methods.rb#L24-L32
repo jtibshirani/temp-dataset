@@ -1,0 +1,9 @@
+def create
+      @export = params[:original_export_id] ? Export.find(params[:original_export_id]).copy : Export.new(export_params)
+
+      if @export.save
+        redirect_to @export, notice: 'Export was successfully created.'
+      else
+        render :new
+      end
+    end

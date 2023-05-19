@@ -1,0 +1,6 @@
+public function setReadonly($readonly)
+    {
+        parent::setReadonly($readonly);
+        $this->getState()->Readonly = $readonly;
+        return $this;
+    }

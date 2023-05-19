@@ -1,0 +1,23 @@
+def to_html(output=false, options={})
+      html = ''
+      options = @options.merge(options)
+      files = output_directory
+      @builder = Builder.new(@contents) do |builder|
+        builder.title = @path.basename
+        builder.files = files.relative_path_from(files.dirname)
+        builder.style = options[:style] if options.has_key?(:style)
+        # option
+        builder.indecies = @indecies.dup
+        builder.references = @references.dup
+
+        html = builder.build_html
+      end
+      if output
+        create_files if has_image?
+        html_file = output_file(:html)
+        File.open(html_file, 'w:utf-8') do |f|
+          f.puts html
+        end
+      end
+      html
+    end

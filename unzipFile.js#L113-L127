@@ -1,0 +1,15 @@
+function getQueueEntry(zipfile) {
+    return function queueEntry(entry) {
+      queue.push({
+        zipfile: zipfile,
+        workingDir: params.workingDir,
+        entry: entry
+      }, function(err) {
+        if (err) {
+          logger.debug("Error unzipping file params.zipFilePath", err);
+          //If one of the files has failed to unzip correctly. No point in continuing to unzip. Close the zip file.
+          zipfile.close();
+        }
+      });
+    };
+  }

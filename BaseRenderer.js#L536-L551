@@ -1,0 +1,16 @@
+when(all(ctx.promises)).then(function () {
+                        if (outerTemplate) {
+                            ctx.templates["inner"] = template.sourceCode;
+                            if (ctx.outer) {
+                                var inner = newPage;
+                                newPage = ctx.page[ctx.outer.code];
+                                newPage.inner = inner;
+                                delete inner[ctx.outer.code]
+                            } else {
+                                newPage.inner = newPage;
+                            }
+                        }
+                        var sourceCode = outerTemplate ? outerTemplate.sourceCode : template.sourceCode;
+                        var html = me.renderTemplate(sourceCode, newPage, ctx.templates);
+                        renderPromise.resolve({html: html, errors: ctx.errors});
+                    }).otherwise(function (e) {

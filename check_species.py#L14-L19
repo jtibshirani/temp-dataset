@@ -1,0 +1,6 @@
+def parse_command_line_arguments():
+    parser = argparse.ArgumentParser( description='Check species consistency between a VASP POSCAR file and a POTCAR file.' )
+    parser.add_argument( 'poscar', help="filename of the VASP POSCAR to be processed", nargs='?', default='POSCAR' )
+    parser.add_argument( 'potcar', help="filename of the VASP POTCAR to be processed", nargs='?', default='POTCAR' )
+    parser.add_argument( '-p', '--ppset', help="check whether the POTCAR pseudopotentials belong to a specific pseudopotential set", choices=potcar_sets )
+    return parser.parse_args()

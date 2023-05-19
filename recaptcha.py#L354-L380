@@ -1,0 +1,27 @@
+def find_challenge_goal(self, id, raw=False):
+        start = 0
+        matching_strings = []
+
+        def try_find():
+            nonlocal start
+            index = self.js_strings.index(id, start)
+            for i in range(FIND_GOAL_SEARCH_DISTANCE):
+                next_str = self.js_strings[index + i + 1]
+                if re.search(r"\bselect all\b", next_str, re.I):
+                    matching_strings.append((i, index, next_str))
+            start = index + FIND_GOAL_SEARCH_DISTANCE + 1
+
+        try:
+            while True:
+                try_find()
+        except (ValueError, IndexError):
+            pass
+
+        try:
+            goal = min(matching_strings)[2]
+        except ValueError:
+            return None, None
+
+        raw = goal
+        plain = raw.replace("<strong>", "").replace("</strong>", "")
+        return raw, plain

@@ -1,0 +1,53 @@
+def eeg_microstates_clustering(data, n_microstates=4, clustering_method="kmeans", n_jobs=1, n_init=25, occurence_rejection_treshold=0.05, max_refitting=5, verbose=True):
+    """
+    Fit the clustering algorithm.
+    """
+    # Create training set
+    training_set = data.copy()
+
+    if verbose is True:
+        print("- Initializing the clustering algorithm...")
+    if clustering_method == "kmeans":
+        algorithm = sklearn.cluster.KMeans(init='k-means++', n_clusters=n_microstates, n_init=n_init, n_jobs=n_jobs)
+    elif clustering_method == "spectral":
+        algorithm = sklearn.cluster.SpectralClustering(n_clusters=n_microstates, n_init=n_init, n_jobs=n_jobs)
+    elif clustering_method == "agglom":
+        algorithm = sklearn.cluster.AgglomerativeClustering(n_clusters=n_microstates, linkage="complete")
+    elif clustering_method == "dbscan":
+        algorithm = sklearn.cluster.DBSCAN(min_samples=100)
+    elif clustering_method == "affinity":
+        algorithm = sklearn.cluster.AffinityPropagation(damping=0.5)
+    else:
+        print("NeuroKit Error: eeg_microstates(): clustering_method must be 'kmeans', 'spectral', 'dbscan', 'affinity' or 'agglom'")
+
+
+    refitting = 0  # Initialize the number of refittings
+    good_fit_achieved = False
+    while good_fit_achieved is False:
+        good_fit_achieved = True
+        if verbose is True:
+            print("- Fitting the classifier...")
+        # Fit the algorithm
+        algorithm.fit(training_set)
+
+        if verbose is True:
+            print("- Clustering back the initial data...")
+        # Predict the more likely cluster for each observation
+        predicted = algorithm.fit_predict(training_set)
+
+        if verbose is True:
+            print("- Check for abnormalities...")
+        # Check for abnormalities and prune the training set until none found
+        occurences = dict(collections.Counter(predicted))
+        masks = [np.array([True]*len(training_set))]
+        for microstate in occurences:
+            # is the frequency of one microstate inferior to a treshold
+            if occurences[microstate] < len(data)*occurence_rejection_treshold:
+                good_fit_achieved = False
+                refitting += 1  # Increment the refitting
+                print("NeuroKit Warning: eeg_microstates(): detected some outliers: refitting the classifier (n=" + str(refitting) + ").")
+                masks.append(predicted!=microstate)
+        mask = np.all(masks, axis=0)
+        training_set = training_set[mask]
+
+    return(algorithm)

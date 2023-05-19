@@ -1,0 +1,7 @@
+def escape(self, string):
+        """
+        Returns *string* with all instances of '<', '>', and '&' converted into
+        HTML entities.
+        """
+        html_entities = {"&": "&amp;", '<': '&lt;', '>': '&gt;'}
+        return HTML("".join(html_entities.get(c, c) for c in string))

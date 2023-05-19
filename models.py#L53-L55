@@ -1,0 +1,3 @@
+def group_count(self, failures=False):
+        if self.group:
+            return self.get_group_count(self.group, failures)

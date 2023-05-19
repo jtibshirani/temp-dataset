@@ -1,0 +1,35 @@
+def parse_multiple_json(json_file, offset=None):
+    """Parse multiple json records from the given file.
+
+    Seek to the offset as the start point before parsing
+    if offset set. return empty list if the json file does
+    not exists or exception occurs.
+
+    Args:
+        json_file (str): File path to be parsed.
+        offset (int): Initial seek position of the file.
+
+    Returns:
+        A dict of json info.
+        New offset after parsing.
+
+    """
+    json_info_list = []
+    if not os.path.exists(json_file):
+        return json_info_list
+
+    try:
+        with open(json_file, "r") as f:
+            if offset:
+                f.seek(offset)
+            for line in f:
+                if line[-1] != "\n":
+                    # Incomplete line
+                    break
+                json_info = json.loads(line)
+                json_info_list.append(json_info)
+                offset += len(line)
+    except BaseException as e:
+        logging.error(e.message)
+
+    return json_info_list, offset

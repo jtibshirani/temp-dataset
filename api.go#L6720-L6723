@@ -1,0 +1,4 @@
+func (s *CustomErrorResponses) SetItems(v []*CustomErrorResponse) *CustomErrorResponses {
+	s.Items = v
+	return s
+}

@@ -1,0 +1,6 @@
+def html_file(html)
+      file = Tempfile.new(['ghost_in_the_post', '.html'], encoding: Encoding::UTF_8)
+      file.write(html)
+      file.close #closing the file makes it accessible by phantom
+      file
+    end

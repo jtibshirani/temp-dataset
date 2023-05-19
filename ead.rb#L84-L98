@@ -1,0 +1,15 @@
+def create_mead(did, i)
+      mead = [@eadid.dup]
+      if c01s_series?
+        mead << "%03d" % (i + 1) #series
+      else
+        mead << '001'
+      end
+      begin
+        mead << specific_containers(did)
+      rescue
+        return @mead = mead.flatten.join('-')
+      end
+      mead << '001' # stub for first record
+      @mead = mead.flatten.join('-')
+    end

@@ -1,0 +1,9 @@
+public function mean() : ColumnVector
+    {
+        if ($this->n < 1) {
+            throw new RuntimeException('Median is not defined for matrices'
+                . ' with less than 1 column.');
+        }
+
+        return $this->sum()->divide($this->n);
+    }

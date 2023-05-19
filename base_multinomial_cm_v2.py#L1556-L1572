@@ -1,0 +1,17 @@
+def print_summaries(self):
+        """
+        Returns None. Will print the measures of fit and the estimation results
+        for the  model.
+        """
+        if hasattr(self, "fit_summary") and hasattr(self, "summary"):
+            print("\n")
+            print(self.fit_summary)
+            print("=" * 30)
+            print(self.summary)
+
+        else:
+            msg = "This {} object has not yet been estimated so there "
+            msg_2 = "are no estimation summaries to print."
+            raise NotImplementedError(msg.format(self.model_type) + msg_2)
+
+        return None

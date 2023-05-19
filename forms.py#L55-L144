@@ -1,0 +1,90 @@
+def __init__(self, *args, **kwargs):
+        request = kwargs.pop('request', None)
+        model = kwargs.pop('model', None)
+
+        super(WidgetForm, self).__init__(*args, **kwargs)
+
+        if isinstance(model, Page):
+            self.fields['parent'] = PageSelectField(
+                label=_("Parent"), help_text=_("Parent Page"))
+        else:
+            self.fields['parent'].widget = forms.widgets.HiddenInput()
+
+        initial = kwargs.get('initial', None)
+
+        if initial and initial.get('id', None):
+            widget = self._meta.model.objects.get(
+                id=initial['id'])
+            data = widget.dimensions
+
+            self.init_content_themes()
+
+        elif 'instance' in kwargs:
+            widget = kwargs['instance']
+            data = widget.dimensions
+
+            self.init_content_themes()
+        else:
+            data = []
+            widget = None
+
+            # set defaults and delete id field
+            self.init_themes()
+            del self.fields['id']
+
+        # get all fields for widget
+        main_fields = self._meta.model.fields()
+        main_fields.update({'label': 'label'})
+        main_fields.pop("parent", None)
+
+        self.helper.layout = Layout(
+            TabHolder(
+                Tab(self._meta.model._meta.verbose_name.capitalize(),
+                    *self.get_main_fields(main_fields),
+                    css_id='field-{}'.format(slugify(self._meta.model))
+                    ),
+                Tab(_('Styles'),
+                    'base_theme', 'content_theme', 'color_scheme',
+                    'prerendered_content',
+                    Fieldset(_('Positions'), 'layout', 'align',
+                             'vertical_align', 'parent'),
+                    *self.get_id_field(),
+                    css_id='theme-widget-settings'
+                    ),
+                Tab(_('Effects'),
+                    'enter_effect_style', 'enter_effect_duration',
+                    'enter_effect_delay', 'enter_effect_offset',
+                    'enter_effect_iteration',
+                    css_id='theme-widget-effects'
+                    ),
+            ),
+            HTML(render_to_string('widget/_update_preview.html',
+                                  {'class_name': ".".join([
+                                      self._meta.model._meta.app_label,
+                                      self._meta.model._meta.model_name])
+                                   }))
+
+        )
+
+        self.fields['label'].widget = forms.TextInput(
+            attrs={'placeholder': self._meta.model._meta.verbose_name})
+
+        if request:
+            _request = copy.copy(request)
+            _request.POST = {}
+            _request.method = 'GET'
+            from .tables import WidgetDimensionTable
+            dimensions = Tab(_('Dimensions'),
+                             HTML(
+                WidgetDimensionTable(_request,
+                                     widget=widget,
+                                     data=data).render()),
+                             )
+            self.helper.layout[0].append(dimensions)
+
+        # hide label
+        if 'text' in self.fields:
+            self.fields['text'].label = ''
+
+        # finally add custom tabs
+        self.init_custom_tabs()

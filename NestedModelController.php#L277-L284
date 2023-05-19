@@ -1,0 +1,8 @@
+public function httpError($code, $message = null)
+    {
+        if ($this->request->isMedia() || !$response = ErrorPage::response_for($code)) {
+            parent::httpError($code, $message);
+        } else {
+            throw new HTTPResponse_Exception($response);
+        }
+    }

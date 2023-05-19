@@ -1,0 +1,2 @@
+def filterBy(self, array, key, value=None):
+        return Exchange.filter_by(array, key, value)

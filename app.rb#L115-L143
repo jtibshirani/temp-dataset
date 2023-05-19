@@ -1,0 +1,29 @@
+def parse_opts
+      options = DEFAULT_OPTIONS.dup
+
+      @opt_parser = OptionParser.new do |opts|
+        opts.banner = "Usage: dht_sensor [command]"
+        opts.separator ""
+        opts.separator "Options:"
+
+        opts.on("-r", "--read", "Read the current sensor values and print to STDOUT (default)") { options[:command] = :read }
+        opts.on("-j", "--json", "Read the current sensor values and output as JSON") { options[:command] = :json }
+        opts.on("-l", "--loop", "Continuously read from the sensor and print to STDOUT") { options[:command] = :loop }
+        opts.on("-t", "--temp", "Temperature only") { options[:temp] = true }
+        opts.on("-h", "--humidity", "Humidity only") { options[:humidity] = true }
+
+        opts.on("-c", "--celsius", "Display temperature in Celsius (default)") { options[:unit] = :c }
+        opts.on("-f", "--fahrenheit", "Display temperature in Fahrenheit") { options[:unit] = :f }
+
+        opts.on("-p", "--pin PIN", "Pin number which sensor is connected to (default: 4)") { |t| options[:pin] = t.to_i }
+        opts.on("-T", "--type TYPE",  "DHT sensor type, either 11 or 22 (default: 22)") { |t| options[:type] = t.to_i }
+
+        opts.on_tail("--help", "Show this message") do
+          puts opts
+          exit
+        end
+      end
+
+      @opt_parser.parse!(ARGV)
+      options
+    end

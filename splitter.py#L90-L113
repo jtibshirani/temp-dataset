@@ -1,0 +1,24 @@
+def csv_writer(molecules, options, prefix):
+    """
+	Write a csv file.
+	"""
+
+    # output file
+    outdir = os.getcwd()
+    filename = prefix + '.csv'
+    outfile = os.path.join(outdir, filename)
+
+    # initiate csv writer object
+    f = open(outfile, 'w')
+    csv_writer = csv.writer(f)
+
+    # write csv header
+    mol = molecules[0]
+    write_csv_header(mol, csv_writer)
+
+    # write csv lines
+    for mol in molecules:
+        write_csv_line(mol, csv_writer, options)
+
+    # close file
+    f.close()

@@ -1,0 +1,11 @@
+def find_word_prob(word_string, word_total=sum(WORD_DISTRIBUTION.values())):
+    '''
+    Finds the relative probability of the word appearing given context of a base corpus.
+    Returns this probability value as a float instance.
+    '''
+    if word_string is None:
+        return 0
+    elif isinstance(word_string, str):
+        return WORD_DISTRIBUTION[word_string] / word_total
+    else:
+        raise InputError("string or none type variable not passed as argument to find_word_prob")

@@ -1,0 +1,19 @@
+public function extract()
+    {
+        // On charge complètement l'objet
+        $this->forceFullLoad();
+        
+        // On lance l'extract de l'entité
+        $data = $this->getEntity()->extract();
+        
+        // On annule l'alias de la valeur null
+        array_walk($data, function(&$var) {
+            if($var === ":undefined:")
+            {
+                $var = null;
+            }
+        });
+        
+        // On retourne les datas
+        return $data;
+    }

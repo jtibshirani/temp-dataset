@@ -1,0 +1,8 @@
+def data_to_binary(self):
+        """
+        :return: bytes
+        """
+        return chr(COMMAND_CODE) + chr(self.module_type) + \
+            struct.pack('>L', self.current_serial)[2:] + \
+            chr(self.module_address) + \
+            struct.pack('>L', self.new_serial)[2:]

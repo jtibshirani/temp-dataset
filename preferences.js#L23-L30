@@ -1,0 +1,8 @@
+function toBoolean(val) {
+		if (typeof val === 'string') {
+			val = val.toLowerCase();
+			return val == 'yes' || val == 'true' || val == '1';
+		}
+
+		return !!val;
+	}

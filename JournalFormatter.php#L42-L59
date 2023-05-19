@@ -1,0 +1,18 @@
+protected function printSummary(LoggerDataCollector $logger) {
+        $results = $logger->getScenariosStatuses();
+        $result = $results['failed'] > 0 ? 'failed' : 'passed';
+
+        parent::printSummary($logger);
+
+        $this->writeln('<div class="summary ' . $result . '">');
+        $this->writeln(<<<'HTML'
+<div class="switchers screenshot-switchers">
+    <a href="#" onclick="$('.screenshot,.outline-example-result-screenshots-holder').addClass('jq-toggle-opened'); $('#behat_show_all').click(); return false;" id="behat_show_screenshots">[+] screenshots</a>
+    <a href="#" onclick="$('.screenshot,.outline-example-result-screenshots-holder').removeClass('jq-toggle-opened'); $('#behat_hide_all').click(); return false;" id="behat_hide_screenshots">[-] screenshots</a>
+</div>
+HTML
+        );
+        $this->writeln('</div>');
+
+
+    }

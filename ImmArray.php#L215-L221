@@ -1,0 +1,7 @@
+public function sortHeap(SplHeap $heap)
+    {
+        foreach ($this as $item) {
+            $heap->insert($item);
+        }
+        return static::fromItems($heap);
+    }

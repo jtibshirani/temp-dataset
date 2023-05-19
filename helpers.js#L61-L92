@@ -1,0 +1,32 @@
+parseResponseHeaderString: function (string) {
+    if (!string || string === '' || string.indexOf('\r\n') === -1) {
+      return {
+        version: 'HTTP/1.1',
+        statusText: ''
+      }
+    }
+
+    var lines = string.split('\r\n')
+    var status = lines.shift()
+
+    // Remove empty strings
+    lines = lines.filter(Boolean)
+
+    // Parse status line
+    var output = this.parseStartLine(status)
+
+    // init headers object & array
+    output.headersObj = {}
+    output.headersArr = []
+
+    // Parse headers
+    var header
+    for (var i = lines.length; i--;) {
+      header = this.parseHeaderLine(lines[i])
+
+      output.headersArr.push(header)
+      output.headersObj[header.name] = header.value
+    }
+
+    return output
+  },

@@ -1,0 +1,10 @@
+def update(sample)
+      now = Time.new
+      elapsed = now - @time
+      @sum += sample
+      if elapsed > 1.0
+        @value = newValue elapsed, @sum/elapsed
+        @time = now
+        @sum = 0.0
+      end
+    end

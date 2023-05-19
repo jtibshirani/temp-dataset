@@ -1,0 +1,26 @@
+def _trigger_event(
+            self, holder: T.Any, alt_name: str, action: str, *event_args: T.Any
+    ) -> None:
+        """Triggers an event on the associated Observable object.
+        The Holder is the object this property is a member of, alt_name
+        is used as the event name when self.event is not set, action is
+        prepended to the event name and event_args are passed through
+        to the registered event handlers."""
+
+        if isinstance(self.observable, Observable):
+            observable = self.observable
+        elif isinstance(self.observable, str):
+            observable = getattr(holder, self.observable)
+        elif isinstance(holder, Observable):
+            observable = holder
+        else:
+            raise TypeError(
+                "This ObservableProperty is no member of an Observable "
+                "object. Specify where to find the Observable object for "
+                "triggering events with the observable keyword argument "
+                "when initializing the ObservableProperty."
+            )
+
+        name = alt_name if self.event is None else self.event
+        event = "{}_{}".format(action, name)
+        observable.trigger(event, *event_args)

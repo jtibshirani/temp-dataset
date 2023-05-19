@@ -1,0 +1,7 @@
+function readLines(file, lineCb, closeCb) {
+  const lineReader = require('readline').createInterface({
+    input: require('fs').createReadStream(file)
+  });
+  lineReader.on('line', lineCb);
+  lineReader.on('close', closeCb);
+}

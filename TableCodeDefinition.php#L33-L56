@@ -1,0 +1,24 @@
+public function asHtml(ElementNode $el)
+    {
+        $bodyHtml = '';
+        foreach ($el->getChildren() as $child) {
+            $bodyHtml .= $child->getAsHTML();
+        }
+        
+        $trList = array();
+        preg_match_all('#\[tr\](.*?)\[\/tr\]#is', $bodyHtml, $trList);
+        
+        $trList = array_map(function($tr) {
+            $tdList = array();
+            preg_match_all('#\[td\](.*?)\[\/td\]#is', $tr, $tdList);
+
+            $tdList = array_map(function($td)
+            {
+                    return Html::tag('td', $td);
+            }, $tdList[1]);
+
+            return Html::tag('tr', implode('', $tdList));
+        }, $trList[1]);
+       
+        return Html::tag('table', implode('', $trList), ['class' => 'bb-table']);
+    }

@@ -1,0 +1,7 @@
+def tmdd_to_json(doc):
+    converters = TMDDEventConverter.list_from_document(doc)
+    events = [converter.to_json() for converter in converters]
+    return {
+        "meta": dict(version='v1'),
+        "events": events
+    }

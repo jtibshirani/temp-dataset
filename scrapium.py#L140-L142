@@ -1,0 +1,3 @@
+def get_html(self, url):
+        r = self.get(url)
+        return self.html(r.text)

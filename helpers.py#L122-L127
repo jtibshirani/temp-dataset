@@ -1,0 +1,6 @@
+def calculate_hex(hex_string):
+        """Credit for conversion to itsnotlupus/vesync_wsproxy"""
+        hex_conv = hex_string.split(':')
+        converted_hex = (int(hex_conv[0], 16) + int(hex_conv[1], 16))/8192
+
+        return converted_hex
